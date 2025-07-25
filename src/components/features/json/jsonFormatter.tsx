@@ -84,7 +84,7 @@ const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[750px] flex flex-row w-full justify-between gap-4">
-			<Card className="w-full h-full max-w-[550px]">
+			<Card className="w-full h-full max-w-[35%]">
 				<CardHeader>Input JSON</CardHeader>
 				<CardBody className="w-full h-full">
 					<Textarea
@@ -97,12 +97,12 @@ const JsonFormatter = () => {
 					/>
 				</CardBody>
 			</Card>
-			<Card className="w-[75%] max-h-fit">
+			<Card className="min-w-fit max-h-fit">
 				<CardHeader>Formatting Specifications</CardHeader>
 				<CardBody className="flex flex-gap gap-6">
 					<Select
-						aria-label="Options for how to format the JSON output"
-						label="JSON output indentation"
+						aria-label="Options for how to format the JSON output."
+						label="JSON Output Indentation"
 						selectedKeys={[indentation]}
 						onSelectionChange={(e) =>
 							setIndentation(e.currentKey ?? "tab")
@@ -124,7 +124,7 @@ const JsonFormatter = () => {
 								setError(null);
 							}}
 						>
-							Clear Inputs
+							Clear Input
 						</Button>
 						<Button
 							color="primary"
@@ -152,10 +152,12 @@ const JsonFormatter = () => {
 					)}
 				</CardBody>
 			</Card>
-			<Card className="w-full max-w-[550px]">
+			<Card className="w-full max-w-[45%]">
 				<CardHeader>Output JSON</CardHeader>
 				<CardBody>
-					<HighlightSyntax language="json">{output}</HighlightSyntax>
+					<HighlightSyntax showLineNumbers={true} language="json">
+						{output}
+					</HighlightSyntax>
 				</CardBody>
 			</Card>
 		</div>

@@ -13,7 +13,7 @@ import html from "react-syntax-highlighter/dist/esm/languages/hljs/htmlbars";
 import css from "react-syntax-highlighter/dist/esm/languages/hljs/css";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 
-import { useTheme } from "@/hooks/useTheme";
+import useIsDarkTheme from "@/hooks/useIsDarkTheme";
 
 SyntaxHighlighter.registerLanguage("plaintext", plaintext);
 SyntaxHighlighter.registerLanguage("number", number); // JavaScript highlights numbers well
@@ -28,22 +28,25 @@ SyntaxHighlighter.registerLanguage("json", json);
 interface HighlightSyntaxProps {
 	language: "plaintext" | "number" | "xml" | "html" | "css" | "json";
 	children: string;
+	showLineNumbers: boolean;
 }
 
 const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 	language,
 	children,
+	showLineNumbers,
 }) => {
 	//------------------------------------------------------------------------------------
 	//Collect Current Site Theme to Determine the Syntax Theme to Use
 	//------------------------------------------------------------------------------------
-	const isDarkTheme: boolean = useTheme().isDark;
+	const isDarkTheme: boolean = useIsDarkTheme();
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
 		<SyntaxHighlighter
+			showLineNumbers={showLineNumbers}
 			customStyle={{ background: "none" }}
 			language={language}
 			style={isDarkTheme ? atomOneDark : github}
