@@ -1,4 +1,3 @@
-import { Button } from "@heroui/button";
 import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
 import { Input } from "@heroui/input";
@@ -14,11 +13,7 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/hooks/useThemeSwitch";
-import {
-	GithubIcon,
-	HeartFilledIcon,
-	SearchIcon,
-} from "@/components/common/icons";
+import { GithubIcon, SearchIcon } from "@/components/common/icons";
 import { Logo } from "@/components/common/icons";
 
 export const Navbar = () => {
@@ -89,20 +84,6 @@ export const Navbar = () => {
 				</NavbarItem>
 				<NavbarItem className="hidden lg:flex">
 					{searchInput}
-				</NavbarItem>
-				<NavbarItem className="hidden md:flex">
-					<Button
-						isExternal
-						as={Link}
-						className="text-sm font-normal text-default-600 bg-default-100"
-						href={siteConfig.links.sponsor}
-						startContent={
-							<HeartFilledIcon className="text-danger" />
-						}
-						variant="flat"
-					>
-						Sponsor
-					</Button>
 				</NavbarItem>
 			</NavbarContent>
 

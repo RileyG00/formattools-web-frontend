@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -26,10 +26,11 @@ const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	const handleFormat = (raw: string): void => {
 		if (!raw) return;
+		if (error) setError(null);
 
 		let indentStyle: string | number = "\t";
 
-		// If NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
+		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
 		if (indentation === "compact") {
 			indentStyle = "";
 		} else if (!isNaN(parseInt(indentation))) {
@@ -71,88 +72,80 @@ const JsonFormatter = () => {
 	};
 
 	//------------------------------------------------------------------------------------
-	//Effects
-	//------------------------------------------------------------------------------------
-	useEffect(() => {
-		if (error) {
-			setError(null);
-		}
-	}, [input]);
-
-	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[750px] flex flex-row w-full justify-between gap-4">
-			<Card className="w-full h-full max-w-[35%]">
-				<CardHeader>Input JSON</CardHeader>
-				<CardBody className="w-full h-full">
-					<Textarea
-						aria-label="Container for the raw text input"
-						value={input}
-						onValueChange={setInput}
-						classNames={{
-							input: "min-h-[660px]",
-						}}
-					/>
-				</CardBody>
-			</Card>
-			<Card className="min-w-fit max-h-fit">
-				<CardHeader>Formatting Specifications</CardHeader>
-				<CardBody className="flex flex-gap gap-6">
-					<Select
-						aria-label="Options for how to format the JSON output."
-						label="JSON Output Indentation"
-						selectedKeys={[indentation]}
-						onSelectionChange={(e) =>
-							setIndentation(e.currentKey ?? "tab")
-						}
-						variant="bordered"
-					>
-						<SelectItem key={"2"}>2 spaces</SelectItem>
-						<SelectItem key={"4"}>4 spaces</SelectItem>
-						<SelectItem key={"tab"}>Tab</SelectItem>
-						<SelectItem key={"compact"}>Compact</SelectItem>
-					</Select>
-					<div className="flex flex-row gap-2">
-						<Button
-							color="default"
-							className="w-fit"
-							onPress={() => {
-								setInput("");
-								setOutput("");
-								setError(null);
-							}}
-						>
-							Clear Input
-						</Button>
-						<Button
-							color="primary"
-							className="w-fit"
-							onPress={() => handleFormat(input)}
-						>
-							Format JSON
-						</Button>
-						<Button
-							isIconOnly
-							isDisabled={!output}
-							title="Copy output"
-							startContent={<DuplicateDocumentIcon size={18} />}
-							color="secondary"
-							onPress={handleCopyOutput}
+		<div className="h-[800px] container flex flex-col w-full gap-4">
+			<div className="flex flex-row gap-4">
+				<Card className="w-full">
+					<CardHeader>Input JSON</CardHeader>
+					<CardBody>
+						<Textarea
+							aria-label="Container for the raw text input"
+							value={input}
+							onValueChange={setInput}
 						/>
-					</div>
-					{error && (
-						<Alert
-							color="danger"
-							title="Invalid Input"
-							className="max-h-fit"
-							description={error}
-						/>
-					)}
-				</CardBody>
-			</Card>
-			<Card className="w-full max-w-[45%]">
+					</CardBody>
+				</Card>
+				<Card className="w-[450px] h-full">
+					<CardHeader>Formatting Specifications</CardHeader>
+					<CardBody className="flex flex-gap gap-4">
+						<Select
+							aria-label="Options for how to format the JSON output."
+							label="JSON Output Indentation"
+							selectedKeys={[indentation]}
+							onSelectionChange={(e) =>
+								setIndentation(e.currentKey ?? "tab")
+							}
+							variant="bordered"
+						>
+							<SelectItem key={"2"}>2 spaces</SelectItem>
+							<SelectItem key={"4"}>4 spaces</SelectItem>
+							<SelectItem key={"tab"}>Tab</SelectItem>
+							<SelectItem key={"compact"}>Compact</SelectItem>
+						</Select>
+						<div className="flex flex-row gap-2">
+							<Button
+								color="default"
+								className="w-fit"
+								onPress={() => {
+									setInput("");
+									setOutput("");
+									setError(null);
+								}}
+							>
+								Clear Input
+							</Button>
+							<Button
+								color="primary"
+								className="w-fit"
+								onPress={() => handleFormat(input)}
+							>
+								Format JSON
+							</Button>
+							<Button
+								isIconOnly
+								isDisabled={!output}
+								title="Copy output"
+								startContent={
+									<DuplicateDocumentIcon size={18} />
+								}
+								color="secondary"
+								onPress={handleCopyOutput}
+							/>
+						</div>
+						{error && (
+							<Alert
+								color="danger"
+								title="Invalid Input"
+								className="max-h-fit"
+								description={error}
+							/>
+						)}
+					</CardBody>
+				</Card>
+			</div>
+			<Card className="w-full h-full">
 				<CardHeader>Output JSON</CardHeader>
 				<CardBody>
 					<HighlightSyntax showLineNumbers={true} language="json">

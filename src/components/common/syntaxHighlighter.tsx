@@ -1,19 +1,11 @@
-//---------------------------------------------------------------------------------------------------
-//[1] Imports
-//---------------------------------------------------------------------------------------------------
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-	atomOneDark,
-	github,
-} from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import plaintext from "react-syntax-highlighter/dist/esm/languages/hljs/plaintext";
 import number from "react-syntax-highlighter/dist/esm/languages/hljs/javascript"; // No dedicated 'number' language, JavaScript works
 import xml from "react-syntax-highlighter/dist/esm/languages/hljs/xml";
 import html from "react-syntax-highlighter/dist/esm/languages/hljs/htmlbars";
 import css from "react-syntax-highlighter/dist/esm/languages/hljs/css";
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
-
-import useIsDarkTheme from "@/hooks/useIsDarkTheme";
 
 SyntaxHighlighter.registerLanguage("plaintext", plaintext);
 SyntaxHighlighter.registerLanguage("number", number); // JavaScript highlights numbers well
@@ -37,19 +29,15 @@ const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 	showLineNumbers,
 }) => {
 	//------------------------------------------------------------------------------------
-	//Collect Current Site Theme to Determine the Syntax Theme to Use
-	//------------------------------------------------------------------------------------
-	const isDarkTheme: boolean = useIsDarkTheme();
-
-	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
 		<SyntaxHighlighter
+			wrapLongLines
 			showLineNumbers={showLineNumbers}
 			customStyle={{ background: "none" }}
 			language={language}
-			style={isDarkTheme ? atomOneDark : github}
+			style={atomOneDark}
 		>
 			{children}
 		</SyntaxHighlighter>

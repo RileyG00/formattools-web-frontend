@@ -6,17 +6,35 @@ export const Logo: React.FC<IconSvgProps> = ({
 	...props
 }) => (
 	<svg
-		fill="none"
-		height={size || height}
-		viewBox="0 0 32 32"
-		width={size || height}
-		{...props}
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 64 64"
+		width="48"
+		height="48"
+		role="img"
+		aria-label="DevForge icon"
 	>
+		<circle cx="32" cy="32" r="32" fill="url(#grad)" />
+
 		<path
-			clipRule="evenodd"
-			d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+			d="M24 18 L16 32 L24 46"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="4"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		/>
+		<path
+			d="M40 18 L48 32 L40 46"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="4"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		/>
+
+		<polygon
+			points="32,26 34,30 38,32 34,34 32,38 30,34 26,32 30,30"
 			fill="currentColor"
-			fillRule="evenodd"
 		/>
 	</svg>
 );

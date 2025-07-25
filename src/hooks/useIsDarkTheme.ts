@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 const ThemeProps = {
-	key: "theme",
+	key: "heroui-theme",
 	light: "light",
 	dark: "dark",
 } as const;
