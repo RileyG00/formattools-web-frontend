@@ -1,6 +1,6 @@
 import FormattersList from "@/components/common/formattersList";
 import JsonFormatter from "@/components/features/json/jsonFormatter";
-import GradientBackgroundLayout from "@/layouts/GradientBackgroundLayout";
+import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component

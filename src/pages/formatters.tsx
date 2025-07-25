@@ -1,5 +1,5 @@
 import FormattersList from "@/components/common/formattersList";
-import GradientBackgroundLayout from "@/layouts/GradientBackgroundLayout";
+import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component
