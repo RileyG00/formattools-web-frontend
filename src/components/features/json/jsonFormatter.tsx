@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
+import { Input, Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
@@ -49,8 +49,8 @@ const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Copying the Text to the Clipboard
 	//------------------------------------------------------------------------------------
-	const handleCopyInput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(input);
+	const handleCopyOutput = async (): Promise<void> => {
+		const isSuccess: boolean = await copyToClipboard(output);
 
 		if (isSuccess) {
 			addToast({
@@ -89,6 +89,9 @@ const JsonFormatter = () => {
 						aria-label="Container for the raw text input"
 						value={input}
 						onValueChange={setInput}
+						classNames={{
+							input: "min-h-[660px]",
+						}}
 					/>
 				</CardBody>
 			</Card>
@@ -102,6 +105,7 @@ const JsonFormatter = () => {
 						onSelectionChange={(e) =>
 							setIndentation(e.currentKey ?? "\t")
 						}
+						variant="bordered"
 					>
 						<SelectItem key={"2"}>2 spaces</SelectItem>
 						<SelectItem key={"4"}>4 spaces</SelectItem>
@@ -132,7 +136,7 @@ const JsonFormatter = () => {
 							title="Copy output"
 							startContent={<DuplicateDocumentIcon size={18} />}
 							color="secondary"
-							onPress={handleCopyInput}
+							onPress={handleCopyOutput}
 						/>
 					</div>
 					{error && (
