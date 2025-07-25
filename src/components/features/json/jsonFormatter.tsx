@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input, Textarea } from "@heroui/input";
+import { Textarea } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
@@ -30,7 +30,9 @@ const JsonFormatter = () => {
 		let indentStyle: string | number = "\t";
 
 		// If NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
-		if (!isNaN(parseInt(indentation))) {
+		if (indentation === "compact") {
+			indentStyle = "";
+		} else if (!isNaN(parseInt(indentation))) {
 			indentStyle = parseInt(indentation);
 		}
 
@@ -82,7 +84,7 @@ const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[750px] flex flex-row w-full justify-between gap-4">
-			<Card className="w-full h-full">
+			<Card className="w-full h-full max-w-[550px]">
 				<CardHeader>Input JSON</CardHeader>
 				<CardBody className="w-full h-full">
 					<Textarea
@@ -110,6 +112,7 @@ const JsonFormatter = () => {
 						<SelectItem key={"2"}>2 spaces</SelectItem>
 						<SelectItem key={"4"}>4 spaces</SelectItem>
 						<SelectItem key={"tab"}>Tab</SelectItem>
+						<SelectItem key={"compact"}>Compact</SelectItem>
 					</Select>
 					<div className="flex flex-row gap-2">
 						<Button
@@ -149,7 +152,7 @@ const JsonFormatter = () => {
 					)}
 				</CardBody>
 			</Card>
-			<Card className="w-full">
+			<Card className="w-full max-w-[550px]">
 				<CardHeader>Output JSON</CardHeader>
 				<CardBody>
 					<HighlightSyntax language="json">{output}</HighlightSyntax>
