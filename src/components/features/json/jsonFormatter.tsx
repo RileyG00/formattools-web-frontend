@@ -105,7 +105,7 @@ const JsonFormatter = () => {
 						label="JSON output indentation"
 						selectedKeys={[indentation]}
 						onSelectionChange={(e) =>
-							setIndentation(e.currentKey ?? "\t")
+							setIndentation(e.currentKey ?? "tab")
 						}
 						variant="bordered"
 					>
