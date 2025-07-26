@@ -1,9 +1,10 @@
-import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
+import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import JsonFormatterPage from "../subpages/jsonFormatter";
 import XmlFormatterPage from "../subpages/xmlFormatter";
 import HtmlFormatterPage from "../subpages/htmlFormatter";
+import SqlFormatterPage from "../subpages/sqlFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -17,6 +18,8 @@ const FormattersPageRouter = () => {
 	const getFormatterPageByType = (
 		formatterType: SubPageLinkValue | undefined,
 	): ReactNode => {
+		if (!formatterType) return <JsonFormatterPage />;
+
 		const formatterPath = `${navLinks.formatters}/${formatterType}`;
 
 		switch (formatterPath) {
@@ -26,8 +29,8 @@ const FormattersPageRouter = () => {
 				return <XmlFormatterPage />;
 			case subPageLinks.htmlFormatter:
 				return <HtmlFormatterPage />;
-			default:
-				return <JsonFormatterPage />;
+			case subPageLinks.sqlFormatter:
+				return <SqlFormatterPage />;
 		}
 	};
 

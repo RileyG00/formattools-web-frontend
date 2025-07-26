@@ -5,11 +5,6 @@ import { navLinks } from "./config/site";
 import IndexPage from "@/pages/index";
 import FormattersRouter from "@/pages/routers/formattersRouter";
 
-//Sub-pages
-// import JsonFormatterPage from "@/pages/subpages/jsonFormatter";
-// import XmlFormatterPage from "./pages/subpages/xmlFormatter";
-// import HtmlFormatterPage from "./pages/subpages/htmlFormatter";
-
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------

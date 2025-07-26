@@ -108,7 +108,7 @@ const JsonFormatter = () => {
 							<SelectItem key={"tab"}>Tab</SelectItem>
 							<SelectItem key={"compact"}>Compact</SelectItem>
 						</Select>
-						<div className="flex flex-row gap-2">
+						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="default"
 								className="w-fit"

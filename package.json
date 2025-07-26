@@ -38,6 +38,7 @@
 		"react-dom": "19.1.0",
 		"react-router-dom": "^7.7.1",
 		"react-syntax-highlighter": "^15.6.1",
+		"sql-formatter": "^15.6.6",
 		"substitution-ciphers": "^1.1.0",
 		"tailwind-variants": "1.0.0",
 		"tailwindcss": "4.1.11",

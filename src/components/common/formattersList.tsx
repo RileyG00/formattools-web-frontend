@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { subPageLinks } from "@/config/site";
+import { siteConfig, subPageLinks } from "@/config/site";
 import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
 
 //----------------------------------------------------------------------------------------
@@ -27,34 +27,21 @@ const FormattersList = () => {
 				showDivider
 				title="Formatters"
 				aria-label="List of available formatters"
+				items={siteConfig.formatters}
 			>
-				<ListboxItem
-					aria-label="JSON Formatter"
-					key={subPageLinks.jsonFormatter}
-					onPress={() =>
-						handleNavigation(`/${subPageLinks.jsonFormatter}`)
-					}
-				>
-					JSON Formatter
-				</ListboxItem>
-				<ListboxItem
-					aria-label="XML Formatter"
-					key={subPageLinks.xmlFormatter}
-					onPress={() =>
-						handleNavigation(`/${subPageLinks.xmlFormatter}`)
-					}
-				>
-					XML Formatter
-				</ListboxItem>
-				<ListboxItem
-					aria-label="HTML Formatter"
-					key={subPageLinks.htmlFormatter}
-					onPress={() =>
-						handleNavigation(`/${subPageLinks.htmlFormatter}`)
-					}
-				>
-					HTML Formatter
-				</ListboxItem>
+				{(formatter) => {
+					return (
+						<ListboxItem
+							aria-label={formatter.name}
+							key={formatter.key}
+							onPress={() =>
+								handleNavigation(`/${formatter.path}`)
+							}
+						>
+							{formatter.name}
+						</ListboxItem>
+					);
+				}}
 			</ListboxSection>
 		</Listbox>
 	);
