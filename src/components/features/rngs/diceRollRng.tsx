@@ -1,64 +1,70 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input, Textarea } from "@heroui/input";
+import { Select, SelectItem } from "@heroui/select";
 import { NumberInput } from "@heroui/number-input";
+import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/components/utils/textUtils";
-import { Griffinere } from "substitution-ciphers";
+import {
+	copyToClipboard,
+	formatAsArrayString,
+} from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const GriffinereCipher = () => {
+const DiceRollRng = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [key, setKey] = useState<string>("7BBChQKAc5WQ3taqEhUKgBMjEDg7fku3");
-	const [alphabet, setAlphabet] = useState<string>(
-		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-	);
-	const [minLength, setMinLength] = useState<number>(1);
+	const [numSides, setNumSides] = useState<string>("8");
+	const [numDice, setNumDice] = useState<number>(1);
+	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isCiphering: boolean): void => {
-		if (!raw) return;
+	const handleRoll = (): void => {
 		if (error) setError(null);
 
-		if (key === "") {
-			setError("Cipher Key is required.");
-			return;
-		}
-
-		if (alphabet === "") {
-			setError("Alphabet is required.");
-			return;
-		}
-
 		try {
-			if (isCiphering) {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.encryptStringWithMinimumLength(
-					input,
-					minLength,
-				);
-
-				setOutput(msg);
-			} else {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.decryptString(input);
-
-				setOutput(msg);
+			if (numDice > 100000) {
+				throw new Error("Maximum number of dice is 100000");
 			}
+
+			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
+				throw new Error(
+					"Please select a valid number of sides from the drop down.",
+				);
+			}
+
+			const min: number = 1;
+			const max: number = parseInt(numSides);
+
+			let response = "";
+
+			for (let i = 0; i < numDice; i++) {
+				const randomNumber: number =
+					Math.floor(Math.random() * (max - min + 1)) + min;
+
+				if (i === 0) {
+					response += String(randomNumber);
+				} else {
+					response += `, ${String(randomNumber)}`;
+				}
+			}
+
+			if (isFormatAsArray) {
+				response = formatAsArrayString(response);
+			}
+
+			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -94,77 +100,53 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Griffinere Cipher</FeatureHeader>
+			<FeatureHeader>Dice Roll</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input Text</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[1000px] min-w-fit h-full">
-					<CardHeader>Cipher Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
+				<Card className="w-[450px] h-full">
+					<CardHeader>Dice Specifications</CardHeader>
+					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
-							<Input
-								type="text"
+							<Select
+								aria-label="Options for how many sides the dice will have when rolling."
+								label="Number of Sides to the Dice"
+								selectedKeys={[numSides]}
+								onSelectionChange={(e) =>
+									setNumSides(e.currentKey ?? "8")
+								}
 								variant="bordered"
-								value={key}
-								onValueChange={setKey}
-								name="key"
-								label="Cipher Key"
-								description="Each character must be included in the Alphabet."
-							/>
+							>
+								<SelectItem key={"4"}>4-Sided Die</SelectItem>
+								<SelectItem key={"6"}>6-Sided Die</SelectItem>
+								<SelectItem key={"8"}>8-Sided Die</SelectItem>
+								<SelectItem key={"10"}>10-Sided Die</SelectItem>
+								<SelectItem key={"12"}>12-Sided Die</SelectItem>
+								<SelectItem key={"20"}>20-Sided Die</SelectItem>
+							</Select>
 							<NumberInput
-								type="number"
+								value={numDice}
+								onValueChange={setNumDice}
+								label="Number of Dice to Roll"
+								description="Any number between 1 and 100,000"
 								variant="bordered"
-								value={minLength}
-								onValueChange={setMinLength}
-								name="minLength"
 								minValue={1}
-								maxValue={16384}
-								label="Minimum Output Length"
-								description="Set to 1 for no minimum length."
+								maxValue={100000}
 							/>
 						</div>
-						<Input
-							type="text"
-							variant="bordered"
-							value={alphabet}
-							onValueChange={setAlphabet}
-							name="alphabet"
-							label="Cipher Alphabet"
-							description="Each character must be unique."
-						/>
-						<div className="flex flex-row gap-2 justify-end w-full">
-							<Button
-								color="default"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
+						<div className="flex flex-row gap-2 justify-end">
+							<Checkbox
+								isSelected={isFormatAsArray}
+								onValueChange={setIsFormatAsArray}
 								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleFormat(input, false)}
+								aria-label="Controls whether the results should be returned as an array."
 							>
-								Decode
-							</Button>
+								Return results as an array
+							</Checkbox>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input, true)}
+								onPress={() => handleRoll()}
 							>
-								Encode
+								Roll
 							</Button>
 							<Button
 								isIconOnly
@@ -189,12 +171,9 @@ const GriffinereCipher = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Text</CardHeader>
+				<CardHeader>Output Dice Roll</CardHeader>
 				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
+					<HighlightSyntax showLineNumbers={true} language="number">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -203,4 +182,4 @@ const GriffinereCipher = () => {
 	);
 };
 
-export default GriffinereCipher;
+export default DiceRollRng;

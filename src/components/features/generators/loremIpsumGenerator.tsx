@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input, Textarea } from "@heroui/input";
 import { NumberInput } from "@heroui/number-input";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
@@ -8,57 +7,67 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { Griffinere } from "substitution-ciphers";
 import FeatureHeader from "@/components/common/FeatureHeader";
+import { LoremIpsum } from "lorem-ipsum";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const GriffinereCipher = () => {
+const LoremIpsumGenerator = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [key, setKey] = useState<string>("7BBChQKAc5WQ3taqEhUKgBMjEDg7fku3");
-	const [alphabet, setAlphabet] = useState<string>(
-		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-	);
-	const [minLength, setMinLength] = useState<number>(1);
+	const lorem = new LoremIpsum({
+		sentencesPerParagraph: {
+			max: 8,
+			min: 4,
+		},
+		wordsPerSentence: {
+			max: 16,
+			min: 4,
+		},
+	});
+
+	// Number and length of strings
+	const [numWords, setNumWords] = useState<number>(1);
+	const [numSentences, setNumSentences] = useState<number>(5);
+	const [numParagraphs, setNumParagraphs] = useState<number>(7);
+
+	// Outputs
 	const [error, setError] = useState<string | null>(null);
-	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isCiphering: boolean): void => {
-		if (!raw) return;
+	const handleGenerate = (
+		type: "words" | "sentences" | "paragraphs",
+	): void => {
 		if (error) setError(null);
 
-		if (key === "") {
-			setError("Cipher Key is required.");
-			return;
-		}
-
-		if (alphabet === "") {
-			setError("Alphabet is required.");
-			return;
-		}
-
 		try {
-			if (isCiphering) {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.encryptStringWithMinimumLength(
-					input,
-					minLength,
-				);
-
-				setOutput(msg);
-			} else {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.decryptString(input);
-
-				setOutput(msg);
+			if (numWords > 10_000) {
+				throw new Error("Maximum number of words is 10,000");
 			}
+
+			if (numSentences > 1_000) {
+				throw new Error("Maximum number of sentences is 1,000");
+			}
+
+			if (numParagraphs > 500) {
+				throw new Error("Maximum number of paragraphs is 500");
+			}
+
+			let response: string = "";
+			if (type === "words") {
+				response = lorem.generateWords(numWords);
+			} else if (type === "sentences") {
+				response = lorem.generateSentences(numSentences);
+			} else if (type === "paragraphs") {
+				response = lorem.generateParagraphs(numParagraphs);
+			}
+
+			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -94,77 +103,63 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Griffinere Cipher</FeatureHeader>
+			<FeatureHeader>Lorem Ipsum Generator</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input Text</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[1000px] min-w-fit h-full">
-					<CardHeader>Cipher Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
+				<Card className="w-fit h-full">
+					<CardHeader>String Specifications</CardHeader>
+					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
-							<Input
-								type="text"
+							<NumberInput
+								value={numWords}
+								onValueChange={setNumWords}
+								label="Number of Words"
+								description="Any number between 1 and 10,000"
 								variant="bordered"
-								value={key}
-								onValueChange={setKey}
-								name="key"
-								label="Cipher Key"
-								description="Each character must be included in the Alphabet."
+								minValue={1}
+								maxValue={10_000}
 							/>
 							<NumberInput
-								type="number"
+								value={numSentences}
+								onValueChange={setNumSentences}
+								label="Number of Sentences"
+								description="Any number between 1 and 1,000"
 								variant="bordered"
-								value={minLength}
-								onValueChange={setMinLength}
-								name="minLength"
 								minValue={1}
-								maxValue={16384}
-								label="Minimum Output Length"
-								description="Set to 1 for no minimum length."
+								maxValue={1_000}
+							/>
+							<NumberInput
+								value={numParagraphs}
+								onValueChange={setNumParagraphs}
+								label="Number of Paragraphs"
+								description="Any number between 1 and 500"
+								variant="bordered"
+								minValue={1}
+								maxValue={500}
 							/>
 						</div>
-						<Input
-							type="text"
-							variant="bordered"
-							value={alphabet}
-							onValueChange={setAlphabet}
-							name="alphabet"
-							label="Cipher Alphabet"
-							description="Each character must be unique."
-						/>
-						<div className="flex flex-row gap-2 justify-end w-full">
+						<div className="flex flex-row gap-2 justify-end">
 							<Button
-								color="default"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleGenerate("words")}
 							>
-								Clear Input
+								Generate Words
 							</Button>
 							<Button
 								color="secondary"
 								variant="flat"
 								className="w-fit"
-								onPress={() => handleFormat(input, false)}
+								onPress={() => handleGenerate("sentences")}
 							>
-								Decode
+								Generate Sentences
 							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input, true)}
+								onPress={() => handleGenerate("paragraphs")}
 							>
-								Encode
+								Generate Paragraphs
 							</Button>
 							<Button
 								isIconOnly
@@ -189,7 +184,7 @@ const GriffinereCipher = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Text</CardHeader>
+				<CardHeader>Output Strings</CardHeader>
 				<CardBody>
 					<HighlightSyntax
 						showLineNumbers={true}
@@ -203,4 +198,4 @@ const GriffinereCipher = () => {
 	);
 };
 
-export default GriffinereCipher;
+export default LoremIpsumGenerator;

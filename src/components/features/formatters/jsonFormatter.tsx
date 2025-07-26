@@ -8,13 +8,12 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { minify, prettify } from "htmlfy";
-import { title } from "@/components/primitives";
+import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const HtmlFormatter = () => {
+const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -30,27 +29,18 @@ const HtmlFormatter = () => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: number = 0;
+		let indentStyle: string | number = "\t";
 
-		if (indentation === "tab") {
-			indentStyle = 4;
+		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
+		if (indentation === "compact") {
+			indentStyle = "";
 		} else if (!isNaN(parseInt(indentation))) {
 			indentStyle = parseInt(indentation);
 		}
 
 		try {
-			let formatted: string = "";
-
-			if (indentation === "compact") {
-				formatted = minify(input);
-			} else {
-				formatted = prettify(input, { tab_size: indentStyle });
-
-				if (indentation === "tab") {
-					formatted = formatted.replace(/ {4}/g, "\t");
-				}
-			}
-
+			const json: object = JSON.parse(raw);
+			const formatted: string = JSON.stringify(json, null, indentStyle);
 			setOutput(formatted);
 		} catch (error) {
 			const err = error as unknown as Error;
@@ -87,12 +77,10 @@ const HtmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<h1 className={title({ size: "xs", color: "pink" })}>
-				HTML Formatter
-			</h1>
+			<FeatureHeader>JSON Formatter</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input HTML</CardHeader>
+					<CardHeader>Input JSON</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -106,7 +94,7 @@ const HtmlFormatter = () => {
 					<CardBody className="flex flex-gap gap-4">
 						<Select
 							aria-label="Options for how to format the JSON output."
-							label="HTML Output Indentation"
+							label="JSON Output Indentation"
 							selectedKeys={[indentation]}
 							onSelectionChange={(e) =>
 								setIndentation(e.currentKey ?? "tab")
@@ -135,7 +123,7 @@ const HtmlFormatter = () => {
 								className="w-fit"
 								onPress={() => handleFormat(input)}
 							>
-								Format HTML
+								Format JSON
 							</Button>
 							<Button
 								isIconOnly
@@ -160,9 +148,9 @@ const HtmlFormatter = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output HTML</CardHeader>
+				<CardHeader>Output JSON</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="html">
+					<HighlightSyntax showLineNumbers={true} language="json">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -171,4 +159,4 @@ const HtmlFormatter = () => {
 	);
 };
 
-export default HtmlFormatter;
+export default JsonFormatter;

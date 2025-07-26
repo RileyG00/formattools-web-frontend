@@ -1,28 +1,24 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input, Textarea } from "@heroui/input";
-import { NumberInput } from "@heroui/number-input";
+import { Textarea } from "@heroui/input";
+import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { Griffinere } from "substitution-ciphers";
+import xmlFormat from "xml-formatter";
 import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const GriffinereCipher = () => {
+const XmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [key, setKey] = useState<string>("7BBChQKAc5WQ3taqEhUKgBMjEDg7fku3");
-	const [alphabet, setAlphabet] = useState<string>(
-		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-	);
-	const [minLength, setMinLength] = useState<number>(1);
+	const [indentation, setIndentation] = useState<string>("tab");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -30,35 +26,29 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isCiphering: boolean): void => {
+	const handleFormat = (raw: string): void => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		if (key === "") {
-			setError("Cipher Key is required.");
-			return;
-		}
+		let indentStyle: string | number = "\t";
 
-		if (alphabet === "") {
-			setError("Alphabet is required.");
-			return;
+		if (indentation === "compact") {
+			indentStyle = "";
+		} else if (indentation === "2") {
+			indentStyle = "  ";
+		} else if (indentation === "4") {
+			indentStyle = "    ";
 		}
 
 		try {
-			if (isCiphering) {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.encryptStringWithMinimumLength(
-					input,
-					minLength,
-				);
+			const formatted: string = xmlFormat(input, {
+				indentation: indentStyle,
+				lineSeparator: indentStyle === "" ? "" : "\r\n",
+				whiteSpaceAtEndOfSelfclosingTag: true,
+				forceSelfClosingEmptyTag: true,
+			});
 
-				setOutput(msg);
-			} else {
-				const griffinere: Griffinere = new Griffinere(key, alphabet);
-				const msg = griffinere.decryptString(input);
-
-				setOutput(msg);
-			}
+			setOutput(formatted);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -94,10 +84,10 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Griffinere Cipher</FeatureHeader>
+			<FeatureHeader>XML Formatter</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input Text</CardHeader>
+					<CardHeader>Input XML</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -106,43 +96,27 @@ const GriffinereCipher = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[1000px] min-w-fit h-full">
-					<CardHeader>Cipher Specifications</CardHeader>
+				<Card className="w-[450px] h-full">
+					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
-						<div className="flex flex-row gap-4">
-							<Input
-								type="text"
-								variant="bordered"
-								value={key}
-								onValueChange={setKey}
-								name="key"
-								label="Cipher Key"
-								description="Each character must be included in the Alphabet."
-							/>
-							<NumberInput
-								type="number"
-								variant="bordered"
-								value={minLength}
-								onValueChange={setMinLength}
-								name="minLength"
-								minValue={1}
-								maxValue={16384}
-								label="Minimum Output Length"
-								description="Set to 1 for no minimum length."
-							/>
-						</div>
-						<Input
-							type="text"
+						<Select
+							aria-label="Options for how to format the JSON output."
+							label="XML Output Indentation"
+							selectedKeys={[indentation]}
+							onSelectionChange={(e) =>
+								setIndentation(e.currentKey ?? "tab")
+							}
 							variant="bordered"
-							value={alphabet}
-							onValueChange={setAlphabet}
-							name="alphabet"
-							label="Cipher Alphabet"
-							description="Each character must be unique."
-						/>
-						<div className="flex flex-row gap-2 justify-end w-full">
+						>
+							<SelectItem key={"2"}>2 spaces</SelectItem>
+							<SelectItem key={"4"}>4 spaces</SelectItem>
+							<SelectItem key={"tab"}>Tab</SelectItem>
+							<SelectItem key={"compact"}>Compact</SelectItem>
+						</Select>
+						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="default"
+								className="w-fit"
 								onPress={() => {
 									setInput("");
 									setOutput("");
@@ -152,19 +126,11 @@ const GriffinereCipher = () => {
 								Clear Input
 							</Button>
 							<Button
-								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleFormat(input, false)}
-							>
-								Decode
-							</Button>
-							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input, true)}
+								onPress={() => handleFormat(input)}
 							>
-								Encode
+								Format XML
 							</Button>
 							<Button
 								isIconOnly
@@ -189,12 +155,9 @@ const GriffinereCipher = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Text</CardHeader>
+				<CardHeader>Output XML</CardHeader>
 				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
+					<HighlightSyntax showLineNumbers={true} language="xml">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -203,4 +166,4 @@ const GriffinereCipher = () => {
 	);
 };
 
-export default GriffinereCipher;
+export default XmlFormatter;

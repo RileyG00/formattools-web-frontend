@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
-import JsonEscaperPage from "../subpages/escapers/jsonEscaper";
-import UrlEncoderDecoderPage from "../subpages/escapers/urlEncoderDecoder";
+import FeatureContainer from "@/components/common/featureContainer";
+import JsonEscaper from "@/components/features/escapers/jsonEscaper";
+import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder";
+import XmlEscaper from "@/components/features/escapers/xmlEscaper";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -11,27 +13,31 @@ const EscaperPageRouter = () => {
 	//------------------------------------------------------------------------------------
 	//Collect Formatter Type
 	//------------------------------------------------------------------------------------
-	const { escaperType } = useParams();
+	const { type } = useParams();
 
-	const getPageByType = (
-		escaperType: SubPageLinkValue | undefined,
-	): ReactNode => {
-		if (!escaperType) return <JsonEscaperPage />;
+	const getPageByType = (type: SubPageLinkValue | undefined): ReactNode => {
+		if (!type) return <JsonEscaper />;
 
-		const formatterPath = `${navLinks.escapers}/${escaperType}`;
+		const formatterPath = `${navLinks.escapers}/${type}`;
 
 		switch (formatterPath) {
 			case subPageLinks.jsonEscaper:
-				return <JsonEscaperPage />;
+				return <JsonEscaper />;
+			case subPageLinks.xmlEscaper:
+				return <XmlEscaper />;
 			case subPageLinks.urlEncoder:
-				return <UrlEncoderDecoderPage />;
+				return <UrlEncoderDecoder />;
 		}
 	};
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
-	return getPageByType(escaperType as unknown as SubPageLinkValue);
+	return (
+		<FeatureContainer>
+			{getPageByType(type as unknown as SubPageLinkValue)}
+		</FeatureContainer>
+	);
 };
 
 export default EscaperPageRouter;

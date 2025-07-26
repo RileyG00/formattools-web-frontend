@@ -2,34 +2,31 @@ import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
-import JsonFormatter from "@/components/features/formatters/jsonFormatter";
-import XmlFormatter from "@/components/features/formatters/xmlFormatter";
-import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
-import SqlFormatter from "@/components/features/formatters/sqlFormatter";
+import StringGenerator from "@/components/features/generators/stringGenerator";
+import LoremIpsumGenerator from "@/components/features/generators/loremIpsumGenerator";
+import NumberGenerator from "@/components/features/generators/numberGenerator";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const FormattersPageRouter = () => {
+const GeneratorsPageRouter = () => {
 	//------------------------------------------------------------------------------------
 	//Collect Formatter Type
 	//------------------------------------------------------------------------------------
 	const { type } = useParams();
 
 	const getPageByType = (type: SubPageLinkValue | undefined): ReactNode => {
-		if (!type) return <JsonFormatter />;
+		if (!type) return <StringGenerator />;
 
-		const formatterPath = `${navLinks.formatters}/${type}`;
+		const formatterPath = `${navLinks.generators}/${type}`;
 
 		switch (formatterPath) {
-			case subPageLinks.jsonFormatter:
-				return <JsonFormatter />;
-			case subPageLinks.xmlFormatter:
-				return <XmlFormatter />;
-			case subPageLinks.htmlFormatter:
-				return <HtmlFormatter />;
-			case subPageLinks.sqlFormatter:
-				return <SqlFormatter />;
+			case subPageLinks.stringGenerator:
+				return <StringGenerator />;
+			case subPageLinks.numberGenerator:
+				return <NumberGenerator />;
+			case subPageLinks.loremIpsumGenerator:
+				return <LoremIpsumGenerator />;
 		}
 	};
 
@@ -43,4 +40,4 @@ const FormattersPageRouter = () => {
 	);
 };
 
-export default FormattersPageRouter;
+export default GeneratorsPageRouter;

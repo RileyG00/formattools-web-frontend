@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { siteConfig } from "@/config/site";
 import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
 
@@ -6,15 +5,6 @@ import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
 //Create Component
 //----------------------------------------------------------------------------------------
 const NavigationList = () => {
-	//------------------------------------------------------------------------------------
-	//Variables
-	//------------------------------------------------------------------------------------
-	const navigate = useNavigate();
-
-	const handleNavigation = (path: string): void => {
-		navigate(path);
-	};
-
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
@@ -27,19 +17,17 @@ const NavigationList = () => {
 			<ListboxSection
 				showDivider
 				title="Formatters"
-				aria-label="List of available formatters"
+				aria-label="List of available formatters."
 				items={siteConfig.formatters}
 			>
-				{(formatter) => {
+				{(item) => {
 					return (
 						<ListboxItem
-							aria-label={formatter.name}
-							key={formatter.key}
-							onPress={() =>
-								handleNavigation(`/${formatter.path}`)
-							}
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
 						>
-							{formatter.name}
+							{item.name}
 						</ListboxItem>
 					);
 				}}
@@ -47,17 +35,17 @@ const NavigationList = () => {
 			<ListboxSection
 				showDivider
 				title="Escapers / Encoders"
-				aria-label="List of available escapers"
+				aria-label="List of available escapers."
 				items={siteConfig.escapers}
 			>
-				{(escaper) => {
+				{(item) => {
 					return (
 						<ListboxItem
-							aria-label={escaper.name}
-							key={escaper.key}
-							onPress={() => handleNavigation(`/${escaper.path}`)}
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
 						>
-							{escaper.name}
+							{item.name}
 						</ListboxItem>
 					);
 				}}
@@ -65,17 +53,53 @@ const NavigationList = () => {
 			<ListboxSection
 				showDivider
 				title="Ciphers"
-				aria-label="List of available ciphers"
+				aria-label="List of available ciphers."
 				items={siteConfig.ciphers}
 			>
-				{(ciphers) => {
+				{(item) => {
 					return (
 						<ListboxItem
-							aria-label={ciphers.name}
-							key={ciphers.key}
-							onPress={() => handleNavigation(`/${ciphers.path}`)}
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
 						>
-							{ciphers.name}
+							{item.name}
+						</ListboxItem>
+					);
+				}}
+			</ListboxSection>
+			<ListboxSection
+				showDivider
+				title="RNGs"
+				aria-label="List of available random number generators."
+				items={siteConfig.rngs}
+			>
+				{(item) => {
+					return (
+						<ListboxItem
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
+						>
+							{item.name}
+						</ListboxItem>
+					);
+				}}
+			</ListboxSection>
+			<ListboxSection
+				showDivider
+				title="Generators"
+				aria-label="List of available generators, such as strings."
+				items={siteConfig.generators}
+			>
+				{(item) => {
+					return (
+						<ListboxItem
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
+						>
+							{item.name}
 						</ListboxItem>
 					);
 				}}

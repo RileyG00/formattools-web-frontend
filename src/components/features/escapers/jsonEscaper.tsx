@@ -12,7 +12,7 @@ import {
 	escapeJson,
 	unescapeJson,
 } from "@/components/utils/textUtils";
-import { title } from "@/components/primitives";
+import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -92,9 +92,7 @@ const JsonEscaper = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<h1 className={title({ size: "xs", color: "pink" })}>
-				JSON Escaper
-			</h1>
+			<FeatureHeader>JSON Escaper</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input JSON</CardHeader>

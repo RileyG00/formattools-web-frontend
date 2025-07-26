@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
-import GriffinereCipherPage from "../subpages/ciphers/griffinere";
+import FeatureContainer from "@/components/common/featureContainer";
+import GriffinereCipher from "@/components/features/ciphers/griffinereCipher";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -10,25 +11,27 @@ const CiphersPageRouter = () => {
 	//------------------------------------------------------------------------------------
 	//Collect Formatter Type
 	//------------------------------------------------------------------------------------
-	const { cipherType } = useParams();
+	const { type } = useParams();
 
-	const getPageByType = (
-		cipherType: SubPageLinkValue | undefined,
-	): ReactNode => {
-		if (!cipherType) return <GriffinereCipherPage />;
+	const getPageByType = (type: SubPageLinkValue | undefined): ReactNode => {
+		if (!type) return <GriffinereCipher />;
 
-		const formatterPath = `${navLinks.ciphers}/${cipherType}`;
+		const formatterPath = `${navLinks.ciphers}/${type}`;
 
 		switch (formatterPath) {
 			case subPageLinks.griffinereCipher:
-				return <GriffinereCipherPage />;
+				return <GriffinereCipher />;
 		}
 	};
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
-	return getPageByType(cipherType as unknown as SubPageLinkValue);
+	return (
+		<FeatureContainer>
+			{getPageByType(type as unknown as SubPageLinkValue)}
+		</FeatureContainer>
+	);
 };
 
 export default CiphersPageRouter;
