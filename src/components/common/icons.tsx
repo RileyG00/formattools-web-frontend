@@ -15,17 +15,17 @@ export const Logo: React.FC = () => (
 			d="M24 18 L16 32 L24 46"
 			fill="none"
 			stroke="currentColor"
-			stroke-width="4"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+			strokeWidth="4"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 		<path
 			d="M40 18 L48 32 L40 46"
 			fill="none"
 			stroke="currentColor"
-			stroke-width="4"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+			strokeWidth="4"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 
 		<polygon
