@@ -4,6 +4,7 @@ import { navLinks } from "./config/site";
 // Pages
 import IndexPage from "@/pages/index";
 import FormattersRouter from "@/pages/routers/formattersRouter";
+import EscaperPageRouter from "./pages/routers/escaperRouter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -18,6 +19,10 @@ const App: React.FC = () => {
 			<Route
 				element={<FormattersRouter />}
 				path={`${navLinks.formatters}/:formatterType?`}
+			/>
+			<Route
+				element={<EscaperPageRouter />}
+				path={`${navLinks.escapers}/:escapeType?`}
 			/>
 		</Routes>
 	);

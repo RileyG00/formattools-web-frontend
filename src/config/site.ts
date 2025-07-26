@@ -3,6 +3,7 @@ export type SiteConfig = typeof siteConfig;
 export const navLinks = {
 	home: "/",
 	formatters: "formatters",
+	escapers: "escapers",
 } as const;
 
 export const subPageLinks = {
@@ -10,6 +11,7 @@ export const subPageLinks = {
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
+	jsonEscaper: `${navLinks.escapers}/json-escape`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -35,6 +37,13 @@ export const siteConfig = {
 			key: subPageLinks.sqlFormatter,
 			name: "SQL Formatter",
 			path: subPageLinks.sqlFormatter,
+		},
+	],
+	escapers: [
+		{
+			key: subPageLinks.jsonEscaper,
+			name: "JSON Escape/Unescape",
+			path: subPageLinks.jsonEscaper,
 		},
 	],
 	navItems: [

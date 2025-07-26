@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { siteConfig, subPageLinks } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const FormattersList = () => {
+const NavigationList = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -43,8 +43,26 @@ const FormattersList = () => {
 					);
 				}}
 			</ListboxSection>
+			<ListboxSection
+				showDivider
+				title="Escapers"
+				aria-label="List of available escapers"
+				items={siteConfig.escapers}
+			>
+				{(escaper) => {
+					return (
+						<ListboxItem
+							aria-label={escaper.name}
+							key={escaper.key}
+							onPress={() => handleNavigation(`/${escaper.path}`)}
+						>
+							{escaper.name}
+						</ListboxItem>
+					);
+				}}
+			</ListboxSection>
 		</Listbox>
 	);
 };
 
-export default FormattersList;
+export default NavigationList;
