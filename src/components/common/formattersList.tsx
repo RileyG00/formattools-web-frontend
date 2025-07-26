@@ -35,7 +35,13 @@ const FormattersList = () => {
 				>
 					JSON Formatter
 				</ListboxItem>
-				<ListboxItem>Item B</ListboxItem>
+				<ListboxItem
+					onPress={() =>
+						handleNavigation(`/${subPageLinks.xmlFormatter}`)
+					}
+				>
+					XML Formatter
+				</ListboxItem>
 			</ListboxSection>
 			<ListboxSection
 				showDivider

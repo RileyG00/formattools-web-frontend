@@ -7,6 +7,7 @@ export const navLinks = {
 
 export const subPageLinks = {
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
+	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 };
 
 export const siteConfig = {
