@@ -8,13 +8,13 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import xmlFormat from "xml-formatter";
+import { minify, prettify } from "htmlfy";
 import { title } from "@/components/primitives";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatter = () => {
+const HtmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -30,23 +30,26 @@ const XmlFormatter = () => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
+		let indentStyle: number = 0;
 
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (indentation === "2") {
-			indentStyle = "  ";
-		} else if (indentation === "4") {
-			indentStyle = "    ";
+		if (indentation === "tab") {
+			indentStyle = 4;
+		} else if (!isNaN(parseInt(indentation))) {
+			indentStyle = parseInt(indentation);
 		}
 
 		try {
-			const formatted: string = xmlFormat(input, {
-				indentation: indentStyle,
-				lineSeparator: indentStyle === "" ? "" : "\r\n",
-				whiteSpaceAtEndOfSelfclosingTag: true,
-				forceSelfClosingEmptyTag: true,
-			});
+			let formatted: string = "";
+
+			if (indentation === "compact") {
+				formatted = minify(input);
+			} else {
+				formatted = prettify(input, { tab_size: indentStyle });
+
+				if (indentation === "tab") {
+					formatted = formatted.replace(/ {4}/g, "\t");
+				}
+			}
 
 			setOutput(formatted);
 		} catch (error) {
@@ -85,11 +88,11 @@ const XmlFormatter = () => {
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<h1 className={title({ size: "xs", color: "pink" })}>
-				XML Formatter
+				HTML Formatter
 			</h1>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input XML</CardHeader>
+					<CardHeader>Input HTML</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -103,7 +106,7 @@ const XmlFormatter = () => {
 					<CardBody className="flex flex-gap gap-4">
 						<Select
 							aria-label="Options for how to format the JSON output."
-							label="XML Output Indentation"
+							label="HTML Output Indentation"
 							selectedKeys={[indentation]}
 							onSelectionChange={(e) =>
 								setIndentation(e.currentKey ?? "tab")
@@ -132,7 +135,7 @@ const XmlFormatter = () => {
 								className="w-fit"
 								onPress={() => handleFormat(input)}
 							>
-								Format XML
+								Format HTML
 							</Button>
 							<Button
 								isIconOnly
@@ -157,9 +160,9 @@ const XmlFormatter = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output XML</CardHeader>
+				<CardHeader>Output HTML</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="xml">
+					<HighlightSyntax showLineNumbers={true} language="html">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -168,4 +171,4 @@ const XmlFormatter = () => {
 	);
 };
 
-export default XmlFormatter;
+export default HtmlFormatter;

@@ -1,20 +1,22 @@
-import FormattersList from "@/components/common/formattersList";
+import NavigationList from "@/components/common/navigationList";
+import SqlFormatter from "@/components/features/sql/sqlFormatter";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const FormattersPage = () => {
+const SqlFormatterPage = () => {
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<GradientBackgroundLayout isIncludeSvg={false}>
-			<main className="w-full flex flex-col items-start justify-start gap-4 px-[4%] py-16">
-				<FormattersList />
+		<GradientBackgroundLayout isIncludeSvg={true}>
+			<main className="w-full flex flex-row justify-between items-between px-[4%] pt-8 h-full flex-grow-1">
+				<NavigationList />
+				<SqlFormatter />
 			</main>
 		</GradientBackgroundLayout>
 	);
 };
 
-export default FormattersPage;
+export default SqlFormatterPage;

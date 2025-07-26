@@ -7,14 +7,17 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/components/utils/textUtils";
-import xmlFormat from "xml-formatter";
+import {
+	copyToClipboard,
+	escapeJson,
+	unescapeJson,
+} from "@/components/utils/textUtils";
 import { title } from "@/components/primitives";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatter = () => {
+const JsonEscaper = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -26,29 +29,34 @@ const XmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string): void => {
+	const handleFormat = (raw: string, isEscaping: boolean): void => {
 		if (!raw) return;
 		if (error) setError(null);
 
 		let indentStyle: string | number = "\t";
 
+		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
 		if (indentation === "compact") {
 			indentStyle = "";
-		} else if (indentation === "2") {
-			indentStyle = "  ";
-		} else if (indentation === "4") {
-			indentStyle = "    ";
+		} else if (!isNaN(parseInt(indentation))) {
+			indentStyle = parseInt(indentation);
 		}
 
 		try {
-			const formatted: string = xmlFormat(input, {
-				indentation: indentStyle,
-				lineSeparator: indentStyle === "" ? "" : "\r\n",
-				whiteSpaceAtEndOfSelfclosingTag: true,
-				forceSelfClosingEmptyTag: true,
-			});
+			if (isEscaping) {
+				const escapedJsonStr: string = escapeJson(raw);
+				setOutput(escapedJsonStr);
+			} else {
+				const unescapedJsonStr: string = unescapeJson(raw);
 
-			setOutput(formatted);
+				const json: object = JSON.parse(unescapedJsonStr);
+				const formatted: string = JSON.stringify(
+					json,
+					null,
+					indentStyle,
+				);
+				setOutput(formatted);
+			}
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -85,11 +93,11 @@ const XmlFormatter = () => {
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<h1 className={title({ size: "xs", color: "pink" })}>
-				XML Formatter
+				JSON Escaper
 			</h1>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input XML</CardHeader>
+					<CardHeader>Input JSON</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -98,12 +106,12 @@ const XmlFormatter = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] h-full">
+				<Card className="w-[450px] min-w-fit h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<Select
 							aria-label="Options for how to format the JSON output."
-							label="XML Output Indentation"
+							label="JSON Output Indentation"
 							selectedKeys={[indentation]}
 							onSelectionChange={(e) =>
 								setIndentation(e.currentKey ?? "tab")
@@ -115,10 +123,9 @@ const XmlFormatter = () => {
 							<SelectItem key={"tab"}>Tab</SelectItem>
 							<SelectItem key={"compact"}>Compact</SelectItem>
 						</Select>
-						<div className="flex flex-row gap-2 justify-end">
+						<div className="flex flex-row gap-2 justify-end w-fit">
 							<Button
 								color="default"
-								className="w-fit"
 								onPress={() => {
 									setInput("");
 									setOutput("");
@@ -128,11 +135,19 @@ const XmlFormatter = () => {
 								Clear Input
 							</Button>
 							<Button
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleFormat(input, false)}
+							>
+								Unescape
+							</Button>
+							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input)}
+								onPress={() => handleFormat(input, true)}
 							>
-								Format XML
+								Escape
 							</Button>
 							<Button
 								isIconOnly
@@ -157,9 +172,9 @@ const XmlFormatter = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output XML</CardHeader>
+				<CardHeader>Output JSON</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="xml">
+					<HighlightSyntax showLineNumbers={true} language="json">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -168,4 +183,4 @@ const XmlFormatter = () => {
 	);
 };
 
-export default XmlFormatter;
+export default JsonEscaper;

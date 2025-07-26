@@ -1,3 +1,5 @@
 /formatters /index.html 200
 /formatters/json-formatter /index.html 200
 /formatters/xml-formatter /index.html 200
+/formatters/html-formatter /index.html 200
+/formatters/sql-formatter /index.html 200

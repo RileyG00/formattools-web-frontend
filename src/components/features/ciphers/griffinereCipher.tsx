@@ -1,24 +1,28 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
+import { Input, Textarea } from "@heroui/input";
+import { NumberInput } from "@heroui/number-input";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import xmlFormat from "xml-formatter";
 import { title } from "@/components/primitives";
+import { Griffinere } from "substitution-ciphers";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatter = () => {
+const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
+	const [key, setKey] = useState<string>("7BBChQKAc5WQ3taqEhUKgBMjEDg7fku3");
+	const [alphabet, setAlphabet] = useState<string>(
+		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+	);
+	const [minLength, setMinLength] = useState<number>(1);
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -26,29 +30,35 @@ const XmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string): void => {
+	const handleFormat = (raw: string, isCiphering: boolean): void => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
+		if (key === "") {
+			setError("Cipher Key is required.");
+			return;
+		}
 
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (indentation === "2") {
-			indentStyle = "  ";
-		} else if (indentation === "4") {
-			indentStyle = "    ";
+		if (alphabet === "") {
+			setError("Alphabet is required.");
+			return;
 		}
 
 		try {
-			const formatted: string = xmlFormat(input, {
-				indentation: indentStyle,
-				lineSeparator: indentStyle === "" ? "" : "\r\n",
-				whiteSpaceAtEndOfSelfclosingTag: true,
-				forceSelfClosingEmptyTag: true,
-			});
+			if (isCiphering) {
+				const griffinere: Griffinere = new Griffinere(key, alphabet);
+				const msg = griffinere.encryptStringWithMinimumLength(
+					input,
+					minLength,
+				);
 
-			setOutput(formatted);
+				setOutput(msg);
+			} else {
+				const griffinere: Griffinere = new Griffinere(key, alphabet);
+				const msg = griffinere.decryptString(input);
+
+				setOutput(msg);
+			}
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -85,11 +95,11 @@ const XmlFormatter = () => {
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<h1 className={title({ size: "xs", color: "pink" })}>
-				XML Formatter
+				Griffinere Cipher
 			</h1>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input XML</CardHeader>
+					<CardHeader>Input Text</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -98,27 +108,43 @@ const XmlFormatter = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
+				<Card className="w-[1000px] min-w-fit h-full">
+					<CardHeader>Cipher Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the JSON output."
-							label="XML Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
+						<div className="flex flex-row gap-4">
+							<Input
+								type="text"
+								variant="bordered"
+								value={key}
+								onValueChange={setKey}
+								name="key"
+								label="Cipher Key"
+								description="Each character must be included in the Alphabet."
+							/>
+							<NumberInput
+								type="number"
+								variant="bordered"
+								value={minLength}
+								onValueChange={setMinLength}
+								name="minLength"
+								minValue={1}
+								maxValue={16384}
+								label="Minimum Output Length"
+								description="Set to 1 for no minimum length."
+							/>
+						</div>
+						<Input
+							type="text"
 							variant="bordered"
-						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
-						</Select>
-						<div className="flex flex-row gap-2 justify-end">
+							value={alphabet}
+							onValueChange={setAlphabet}
+							name="alphabet"
+							label="Cipher Alphabet"
+							description="Each character must be unique."
+						/>
+						<div className="flex flex-row gap-2 justify-end w-full">
 							<Button
 								color="default"
-								className="w-fit"
 								onPress={() => {
 									setInput("");
 									setOutput("");
@@ -128,11 +154,19 @@ const XmlFormatter = () => {
 								Clear Input
 							</Button>
 							<Button
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleFormat(input, false)}
+							>
+								Decode
+							</Button>
+							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input)}
+								onPress={() => handleFormat(input, true)}
 							>
-								Format XML
+								Encode
 							</Button>
 							<Button
 								isIconOnly
@@ -157,9 +191,12 @@ const XmlFormatter = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output XML</CardHeader>
+				<CardHeader>Output Text</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="xml">
+					<HighlightSyntax
+						showLineNumbers={true}
+						language="plaintext"
+					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -168,4 +205,4 @@ const XmlFormatter = () => {
 	);
 };
 
-export default XmlFormatter;
+export default GriffinereCipher;

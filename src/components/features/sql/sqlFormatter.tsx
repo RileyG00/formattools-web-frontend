@@ -8,17 +8,20 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import xmlFormat from "xml-formatter";
 import { title } from "@/components/primitives";
+import { format, KeywordCase } from "sql-formatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatter = () => {
+const SqlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
 	const [indentation, setIndentation] = useState<string>("tab");
+	const [keywordCasing, setKeywordCasing] = useState<string>("preserve");
+	const [identifierCasing, setIdentifierCasing] =
+		useState<string>("preserve");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -30,22 +33,17 @@ const XmlFormatter = () => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
-
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (indentation === "2") {
-			indentStyle = "  ";
-		} else if (indentation === "4") {
-			indentStyle = "    ";
-		}
-
 		try {
-			const formatted: string = xmlFormat(input, {
-				indentation: indentStyle,
-				lineSeparator: indentStyle === "" ? "" : "\r\n",
-				whiteSpaceAtEndOfSelfclosingTag: true,
-				forceSelfClosingEmptyTag: true,
+			const formatted: string = format(input, {
+				language: "sql",
+				tabWidth: !isNaN(parseInt(indentation))
+					? parseInt(indentation)
+					: 1, // If not a NaN, it means the user is not using the tab option,
+				useTabs: indentation === "tab",
+				keywordCase: keywordCasing as unknown as KeywordCase,
+				functionCase: keywordCasing as unknown as KeywordCase,
+				identifierCase: identifierCasing as unknown as KeywordCase,
+				linesBetweenQueries: 2,
 			});
 
 			setOutput(formatted);
@@ -85,11 +83,11 @@ const XmlFormatter = () => {
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<h1 className={title({ size: "xs", color: "pink" })}>
-				XML Formatter
+				SQL Formatter
 			</h1>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input XML</CardHeader>
+					<CardHeader>Input SQL</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -98,12 +96,12 @@ const XmlFormatter = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] h-full">
+				<Card className="min-w-[450px] h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<Select
-							aria-label="Options for how to format the JSON output."
-							label="XML Output Indentation"
+							aria-label="Options for how to format the SQL output."
+							label="SQL Output Indentation"
 							selectedKeys={[indentation]}
 							onSelectionChange={(e) =>
 								setIndentation(e.currentKey ?? "tab")
@@ -113,8 +111,41 @@ const XmlFormatter = () => {
 							<SelectItem key={"2"}>2 spaces</SelectItem>
 							<SelectItem key={"4"}>4 spaces</SelectItem>
 							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
 						</Select>
+						<div className="flex flex-row gap-2">
+							<Select
+								aria-label="Options for how to set the keyword casing."
+								label="Keyword Casing"
+								selectedKeys={[keywordCasing]}
+								onSelectionChange={(e) =>
+									setKeywordCasing(e.currentKey ?? "preserve")
+								}
+								variant="bordered"
+							>
+								<SelectItem key={"preserve"}>
+									Preserve
+								</SelectItem>
+								<SelectItem key={"upper"}>Uppercase</SelectItem>
+								<SelectItem key={"lower"}>Lowercase</SelectItem>
+							</Select>
+							<Select
+								aria-label="Options for how to set the identifier casing."
+								label="Identifier Casing"
+								selectedKeys={[identifierCasing]}
+								onSelectionChange={(e) =>
+									setIdentifierCasing(
+										e.currentKey ?? "preserve",
+									)
+								}
+								variant="bordered"
+							>
+								<SelectItem key={"preserve"}>
+									Preserve
+								</SelectItem>
+								<SelectItem key={"upper"}>Uppercase</SelectItem>
+								<SelectItem key={"lower"}>Lowercase</SelectItem>
+							</Select>
+						</div>
 						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="default"
@@ -132,7 +163,7 @@ const XmlFormatter = () => {
 								className="w-fit"
 								onPress={() => handleFormat(input)}
 							>
-								Format XML
+								Format SQL
 							</Button>
 							<Button
 								isIconOnly
@@ -157,9 +188,9 @@ const XmlFormatter = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output XML</CardHeader>
+				<CardHeader>Output SQL</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="xml">
+					<HighlightSyntax showLineNumbers={true} language="sql">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -168,4 +199,4 @@ const XmlFormatter = () => {
 	);
 };
 
-export default XmlFormatter;
+export default SqlFormatter;
