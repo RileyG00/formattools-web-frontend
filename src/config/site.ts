@@ -3,13 +3,15 @@ export type SiteConfig = typeof siteConfig;
 export const navLinks = {
 	home: "/",
 	formatters: "formatters",
-};
+} as const;
 
 export const subPageLinks = {
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
-};
+} as const;
+
+export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
 
 export const siteConfig = {
 	navItems: [
