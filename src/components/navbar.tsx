@@ -1,6 +1,6 @@
-import { Kbd } from "@heroui/kbd";
+//import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
+//import { Input } from "@heroui/input";
 import {
 	Navbar as HeroUINavbar,
 	NavbarBrand,
@@ -13,29 +13,30 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/hooks/useThemeSwitch";
-import { GithubIcon, SearchIcon } from "@/components/common/icons";
+import { GithubIcon } from "@/components/common/icons";
+//import { SearchIcon } from "@/components/common/icons";
 import { Logo } from "@/components/common/icons";
 
 export const Navbar = () => {
-	const searchInput = (
-		<Input
-			aria-label="Search"
-			classNames={{
-				inputWrapper: "bg-default-100",
-				input: "text-sm min-w-[175px]",
-			}}
-			endContent={
-				<Kbd className="inline-block" keys={["ctrl"]}>
-					K
-				</Kbd>
-			}
-			placeholder="Search..."
-			startContent={
-				<SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-			}
-			type="search"
-		/>
-	);
+	// const searchInput = (
+	// 	<Input
+	// 		aria-label="Search"
+	// 		classNames={{
+	// 			inputWrapper: "bg-default-100",
+	// 			input: "text-sm min-w-[175px]",
+	// 		}}
+	// 		endContent={
+	// 			<Kbd className="inline-block" keys={["ctrl"]}>
+	// 				K
+	// 			</Kbd>
+	// 		}
+	// 		placeholder="Search..."
+	// 		startContent={
+	// 			<SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+	// 		}
+	// 		type="search"
+	// 	/>
+	// );
 
 	return (
 		<HeroUINavbar maxWidth="xl" position="sticky">
@@ -82,9 +83,9 @@ export const Navbar = () => {
 					</Link>
 					<ThemeSwitch />
 				</NavbarItem>
-				<NavbarItem className="hidden lg:flex">
+				{/* <NavbarItem className="hidden lg:flex">
 					{searchInput}
-				</NavbarItem>
+				</NavbarItem> */}
 			</NavbarContent>
 
 			<NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

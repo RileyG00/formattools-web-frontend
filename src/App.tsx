@@ -7,6 +7,7 @@ import FormattersPage from "@/pages/formatters";
 
 //Sub-pages
 import JsonFormatterPage from "@/pages/subpages/jsonFormatter";
+import XmlFormatterPage from "./pages/subpages/xmlFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -22,6 +23,10 @@ const App: React.FC = () => {
 			<Route
 				element={<JsonFormatterPage />}
 				path={subPageLinks.jsonFormatter}
+			/>
+			<Route
+				element={<XmlFormatterPage />}
+				path={subPageLinks.xmlFormatter}
 			/>
 		</Routes>
 	);

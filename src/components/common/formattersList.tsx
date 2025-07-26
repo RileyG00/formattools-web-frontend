@@ -29,21 +29,23 @@ const FormattersList = () => {
 				aria-label="List of available formatters"
 			>
 				<ListboxItem
+					aria-label="JSON Formatter"
+					key={subPageLinks.jsonFormatter}
 					onPress={() =>
 						handleNavigation(`/${subPageLinks.jsonFormatter}`)
 					}
 				>
 					JSON Formatter
 				</ListboxItem>
-				<ListboxItem>Item B</ListboxItem>
-			</ListboxSection>
-			<ListboxSection
-				showDivider
-				title="Validators"
-				aria-label="List of available obfuscators"
-			>
-				<ListboxItem>Item A</ListboxItem>
-				<ListboxItem>Item B</ListboxItem>
+				<ListboxItem
+					aria-label="XML Formatter"
+					key={subPageLinks.xmlFormatter}
+					onPress={() =>
+						handleNavigation(`/${subPageLinks.xmlFormatter}`)
+					}
+				>
+					XML Formatter
+				</ListboxItem>
 			</ListboxSection>
 		</Listbox>
 	);

@@ -1,10 +1,6 @@
 import { IconSvgProps } from "@/types";
 
-export const Logo: React.FC<IconSvgProps> = ({
-	size = 36,
-	height,
-	...props
-}) => (
+export const Logo: React.FC = () => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 64 64"
@@ -19,17 +15,17 @@ export const Logo: React.FC<IconSvgProps> = ({
 			d="M24 18 L16 32 L24 46"
 			fill="none"
 			stroke="currentColor"
-			stroke-width="4"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+			strokeWidth="4"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 		<path
 			d="M40 18 L48 32 L40 46"
 			fill="none"
 			stroke="currentColor"
-			stroke-width="4"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+			strokeWidth="4"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 
 		<polygon
