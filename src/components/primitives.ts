@@ -13,6 +13,7 @@ export const title = tv({
 			foreground: "dark:from-[#FFFFFF] dark:to-[#4B4B4B]",
 		},
 		size: {
+			xs: "text-2xl lg:text-3xl",
 			sm: "text-3xl lg:text-4xl",
 			md: "text-[2.3rem] lg:text-5xl",
 			lg: "text-4xl lg:text-6xl",
@@ -22,7 +23,7 @@ export const title = tv({
 		},
 	},
 	defaultVariants: {
-		size: "md",
+		size: "sm",
 	},
 	compoundVariants: [
 		{

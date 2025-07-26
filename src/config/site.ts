@@ -8,6 +8,7 @@ export const navLinks = {
 export const subPageLinks = {
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
+	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 };
 
 export const siteConfig = {
@@ -26,4 +27,3 @@ export const siteConfig = {
 		sponsor: "https://www.google.com",
 	},
 };
-

@@ -10,7 +10,7 @@ const FormattersPage = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<GradientBackgroundLayout isIncludeSvg={false}>
-			<main className="w-full flex flex-col items-start justify-start gap-4 px-[4%] py-16">
+			<main className="w-full flex flex-col items-start justify-start gap-4 px-[4%] py-8">
 				<FormattersList />
 			</main>
 		</GradientBackgroundLayout>

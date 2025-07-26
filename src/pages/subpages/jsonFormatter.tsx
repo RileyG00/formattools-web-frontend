@@ -11,7 +11,7 @@ const JsonFormatterPage = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<GradientBackgroundLayout isIncludeSvg={false}>
-			<main className="w-full flex flex-row items-start justify-start gap-20 px-[4%] pt-16 h-full flex-grow-1">
+			<main className="w-full flex flex-row items-start justify-start gap-20 px-[4%] pt-8 h-full flex-grow-1">
 				<FormattersList />
 				<JsonFormatter />
 			</main>

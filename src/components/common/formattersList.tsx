@@ -46,6 +46,15 @@ const FormattersList = () => {
 				>
 					XML Formatter
 				</ListboxItem>
+				<ListboxItem
+					aria-label="HTML Formatter"
+					key={subPageLinks.htmlFormatter}
+					onPress={() =>
+						handleNavigation(`/${subPageLinks.htmlFormatter}`)
+					}
+				>
+					HTML Formatter
+				</ListboxItem>
 			</ListboxSection>
 		</Listbox>
 	);

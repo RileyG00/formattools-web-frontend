@@ -1,11 +1,11 @@
 import FormattersList from "@/components/common/formattersList";
-import XmlFormatter from "@/components/features/xml/xmlFormatter";
+import HtmlFormatter from "@/components/features/html/htmlFormatter";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatterPage = () => {
+const HtmlFormatterPage = () => {
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
@@ -13,10 +13,10 @@ const XmlFormatterPage = () => {
 		<GradientBackgroundLayout isIncludeSvg={false}>
 			<main className="w-full flex flex-row items-start justify-start gap-20 px-[4%] pt-8 h-full flex-grow-1">
 				<FormattersList />
-				<XmlFormatter />
+				<HtmlFormatter />
 			</main>
 		</GradientBackgroundLayout>
 	);
 };
 
-export default XmlFormatterPage;
+export default HtmlFormatterPage;

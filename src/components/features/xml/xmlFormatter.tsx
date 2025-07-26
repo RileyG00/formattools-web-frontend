@@ -9,6 +9,7 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
 import xmlFormat from "xml-formatter";
+import { title } from "@/components/primitives";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -31,7 +32,6 @@ const XmlFormatter = () => {
 
 		let indentStyle: string | number = "\t";
 
-		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
 		if (indentation === "compact") {
 			indentStyle = "";
 		} else if (indentation === "2") {
@@ -84,6 +84,9 @@ const XmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
+			<h1 className={title({ size: "xs", color: "pink" })}>
+				XML Formatter
+			</h1>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input XML</CardHeader>
