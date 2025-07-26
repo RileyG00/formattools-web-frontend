@@ -28,6 +28,7 @@ export const subPageLinks = {
 
 	// Generators
 	stringGenerator: `${navLinks.generators}/string-generator`,
+	numberGenerator: `${navLinks.generators}/number-generator`,
 	loremIpsumGenerator: `${navLinks.generators}/lorem-ipsum-generator`,
 } as const;
 
@@ -87,6 +88,11 @@ export const siteConfig = {
 			key: subPageLinks.stringGenerator,
 			name: "String Generator",
 			path: subPageLinks.stringGenerator,
+		},
+		{
+			key: subPageLinks.numberGenerator,
+			name: "Number Generator",
+			path: subPageLinks.numberGenerator,
 		},
 		{
 			key: subPageLinks.loremIpsumGenerator,
