@@ -4,6 +4,7 @@ import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
 import JsonEscaper from "@/components/features/escapers/jsonEscaper";
 import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder";
+import XmlEscaper from "@/components/features/escapers/xmlEscaper";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -22,6 +23,8 @@ const EscaperPageRouter = () => {
 		switch (formatterPath) {
 			case subPageLinks.jsonEscaper:
 				return <JsonEscaper />;
+			case subPageLinks.xmlEscaper:
+				return <XmlEscaper />;
 			case subPageLinks.urlEncoder:
 				return <UrlEncoderDecoder />;
 		}

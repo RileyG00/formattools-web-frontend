@@ -118,6 +118,22 @@ export const unescapeJson = (input: string): string =>
 		.replace(/\\"/g, '"')
 		.replace(/\\\\/g, "\\");
 
+export const escapeXml = (input: string): string =>
+	input
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&apos;");
+
+export const unescapeXml = (input: string): string =>
+	input
+		.replace(/&apos;/g, "'")
+		.replace(/&quot;/g, '"')
+		.replace(/&gt;/g, ">")
+		.replace(/&lt;/g, "<")
+		.replace(/&amp;/g, "&");
+
 export const formatAsArrayString = (input: string): string => `[${input}]`;
 
 export const getRandomCharacter = (

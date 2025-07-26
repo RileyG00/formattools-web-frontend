@@ -18,6 +18,7 @@ export const subPageLinks = {
 
 	// Escapers
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
+	xmlEscaper: `${navLinks.escapers}/xml-escape`,
 	urlEncoder: `${navLinks.escapers}/url-encoder`,
 
 	// Ciphers
@@ -62,6 +63,11 @@ export const siteConfig = {
 			key: subPageLinks.jsonEscaper,
 			name: "JSON Escape/Unescape",
 			path: subPageLinks.jsonEscaper,
+		},
+		{
+			key: subPageLinks.xmlEscaper,
+			name: "XML Escape/Unescape",
+			path: subPageLinks.xmlEscaper,
 		},
 		{
 			key: subPageLinks.urlEncoder,
