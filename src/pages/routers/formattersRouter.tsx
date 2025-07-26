@@ -2,10 +2,10 @@ import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
-import JsonFormatter from "@/components/features/json/jsonFormatter";
-import XmlFormatter from "@/components/features/xml/xmlFormatter";
-import HtmlFormatter from "@/components/features/html/htmlFormatter";
-import SqlFormatter from "@/components/features/sql/sqlFormatter";
+import JsonFormatter from "@/components/features/formatters/jsonFormatter";
+import XmlFormatter from "@/components/features/formatters/xmlFormatter";
+import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
+import SqlFormatter from "@/components/features/formatters/sqlFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component

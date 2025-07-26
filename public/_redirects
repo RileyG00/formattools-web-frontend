@@ -1,4 +1,6 @@
-/formatters/*     /index.html  200
-/escapers/*       /index.html  200
-/ciphers/*        /index.html  200
-/random-number-generators/*
+/formatters/*       /index.html  200
+/escapers/*         /index.html  200
+/ciphers/*          /index.html  200
+/random-number/*    /index.html  200
+/random-number/*    /index.html  200
+/generators/*       /index.html  200

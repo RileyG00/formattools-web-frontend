@@ -86,6 +86,24 @@ const NavigationList = () => {
 					);
 				}}
 			</ListboxSection>
+			<ListboxSection
+				showDivider
+				title="Generators"
+				aria-label="List of available generators, such as strings."
+				items={siteConfig.generators}
+			>
+				{(item) => {
+					return (
+						<ListboxItem
+							aria-label={item.name}
+							key={item.key}
+							href={`/${item.path}`}
+						>
+							{item.name}
+						</ListboxItem>
+					);
+				}}
+			</ListboxSection>
 		</Listbox>
 	);
 };

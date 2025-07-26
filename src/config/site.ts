@@ -5,26 +5,30 @@ export const navLinks = {
 	formatters: "formatters",
 	escapers: "escapers",
 	ciphers: "ciphers",
-	rngs: "random-number-generators",
+	rngs: "random-number",
+	generators: "generators",
 } as const;
 
 export const subPageLinks = {
-	//Formatters
+	// Formatters
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
 
-	//Escapers
+	// Escapers
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
 	urlEncoder: `${navLinks.escapers}/url-encoder`,
 
-	//Ciphers
+	// Ciphers
 	griffinereCipher: `${navLinks.ciphers}/griffinere`,
 
-	//RNGs
+	// RNGs
 	diceRoleRng: `${navLinks.rngs}/dice-role`,
-	stringGenerator: `${navLinks.rngs}/string-generator`,
+
+	// Generators
+	stringGenerator: `${navLinks.generators}/string-generator`,
+	loremIpsumGenerator: `${navLinks.generators}/lorem-ipsum-generator`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -77,10 +81,17 @@ export const siteConfig = {
 			name: "Dice Roll",
 			path: subPageLinks.diceRoleRng,
 		},
+	],
+	generators: [
 		{
 			key: subPageLinks.stringGenerator,
 			name: "String Generator",
 			path: subPageLinks.stringGenerator,
+		},
+		{
+			key: subPageLinks.loremIpsumGenerator,
+			name: "Lorem Ipsum Generator",
+			path: subPageLinks.loremIpsumGenerator,
 		},
 	],
 	navItems: [

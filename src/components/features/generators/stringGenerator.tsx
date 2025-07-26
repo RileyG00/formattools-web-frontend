@@ -127,7 +127,7 @@ const StringGenerator = () => {
 			<FeatureHeader>String Generator</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-fit h-full">
-					<CardHeader>Dice Specifications</CardHeader>
+					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
 							<NumberInput

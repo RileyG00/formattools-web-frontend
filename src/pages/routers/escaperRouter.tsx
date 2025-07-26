@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
-import JsonEscaper from "@/components/features/json/jsonEscaper";
-import UrlEncoderDecoder from "@/components/features/url/urlEncoderDecoder";
+import JsonEscaper from "@/components/features/escapers/jsonEscaper";
+import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder";
 
 //----------------------------------------------------------------------------------------
 //Create Component

@@ -7,6 +7,7 @@ import FormattersRouter from "@/pages/routers/formattersRouter";
 import EscaperPageRouter from "./pages/routers/escaperRouter";
 import CiphersPageRouter from "./pages/routers/ciphersRouter";
 import RngsPageRouter from "./pages/routers/rngsRouter";
+import GeneratorsPageRouter from "./pages/routers/generatorsRouter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -33,6 +34,10 @@ const App: React.FC = () => {
 			<Route
 				element={<RngsPageRouter />}
 				path={`${navLinks.rngs}/:type?`}
+			/>
+			<Route
+				element={<GeneratorsPageRouter />}
+				path={`${navLinks.generators}/:type?`}
 			/>
 		</Routes>
 	);
