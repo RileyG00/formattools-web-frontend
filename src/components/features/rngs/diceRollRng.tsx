@@ -8,7 +8,10 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/components/utils/textUtils";
+import {
+	copyToClipboard,
+	formatAsArrayString,
+} from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
@@ -46,10 +49,6 @@ const DiceRollRng = () => {
 
 			let response = "";
 
-			if (isFormatAsArray) {
-				response += "[";
-			}
-
 			for (let i = 0; i < numDice; i++) {
 				const randomNumber: number =
 					Math.floor(Math.random() * (max - min + 1)) + min;
@@ -62,7 +61,7 @@ const DiceRollRng = () => {
 			}
 
 			if (isFormatAsArray) {
-				response += "]";
+				response = formatAsArrayString(response);
 			}
 
 			setOutput(response);
@@ -127,7 +126,7 @@ const DiceRollRng = () => {
 								value={numDice}
 								onValueChange={setNumDice}
 								label="Number of Dice to Roll"
-								description="Any number between 1 and 100000"
+								description="Any number between 1 and 100,000"
 								variant="bordered"
 								minValue={1}
 								maxValue={100000}
@@ -174,10 +173,7 @@ const DiceRollRng = () => {
 			<Card className="w-full h-full">
 				<CardHeader>Output Dice Roll</CardHeader>
 				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
+					<HighlightSyntax showLineNumbers={true} language="number">
 						{output}
 					</HighlightSyntax>
 				</CardBody>

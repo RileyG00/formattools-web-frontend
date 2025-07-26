@@ -24,6 +24,7 @@ export const subPageLinks = {
 
 	//RNGs
 	diceRoleRng: `${navLinks.rngs}/dice-role`,
+	stringGenerator: `${navLinks.rngs}/string-generator`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -75,6 +76,11 @@ export const siteConfig = {
 			key: subPageLinks.diceRoleRng,
 			name: "Dice Roll",
 			path: subPageLinks.diceRoleRng,
+		},
+		{
+			key: subPageLinks.stringGenerator,
+			name: "String Generator",
+			path: subPageLinks.stringGenerator,
 		},
 	],
 	navItems: [

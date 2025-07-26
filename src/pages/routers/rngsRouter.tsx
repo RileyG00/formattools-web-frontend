@@ -4,6 +4,7 @@ import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
 import GriffinereCipher from "@/components/features/ciphers/griffinereCipher";
 import DiceRollRng from "@/components/features/rngs/diceRollRng";
+import StringGenerator from "@/components/features/strings/stringGenerator";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -22,6 +23,8 @@ const RngsPageRouter = () => {
 		switch (formatterPath) {
 			case subPageLinks.diceRoleRng:
 				return <DiceRollRng />;
+			case subPageLinks.stringGenerator:
+				return <StringGenerator />;
 		}
 	};
 
