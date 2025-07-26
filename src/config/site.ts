@@ -5,6 +5,7 @@ export const navLinks = {
 	formatters: "formatters",
 	escapers: "escapers",
 	ciphers: "ciphers",
+	rngs: "random-number-generators",
 } as const;
 
 export const subPageLinks = {
@@ -20,6 +21,9 @@ export const subPageLinks = {
 
 	//Ciphers
 	griffinereCipher: `${navLinks.ciphers}/griffinere`,
+
+	//RNGs
+	diceRoleRng: `${navLinks.rngs}/dice-role`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -64,6 +68,13 @@ export const siteConfig = {
 			key: subPageLinks.griffinereCipher,
 			name: "Griffinere",
 			path: subPageLinks.griffinereCipher,
+		},
+	],
+	rngs: [
+		{
+			key: subPageLinks.diceRoleRng,
+			name: "Dice Roll",
+			path: subPageLinks.diceRoleRng,
 		},
 	],
 	navItems: [

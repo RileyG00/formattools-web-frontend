@@ -8,8 +8,8 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { title } from "@/components/primitives";
 import { Griffinere } from "substitution-ciphers";
+import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -94,9 +94,7 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<h1 className={title({ size: "xs", color: "pink" })}>
-				Griffinere Cipher
-			</h1>
+			<FeatureHeader>Griffinere Cipher</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Text</CardHeader>

@@ -2,34 +2,26 @@ import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
-import JsonFormatter from "@/components/features/json/jsonFormatter";
-import XmlFormatter from "@/components/features/xml/xmlFormatter";
-import HtmlFormatter from "@/components/features/html/htmlFormatter";
-import SqlFormatter from "@/components/features/sql/sqlFormatter";
+import GriffinereCipher from "@/components/features/ciphers/griffinereCipher";
+import DiceRollRng from "@/components/features/rngs/diceRollRng";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const FormattersPageRouter = () => {
+const RngsPageRouter = () => {
 	//------------------------------------------------------------------------------------
 	//Collect Formatter Type
 	//------------------------------------------------------------------------------------
 	const { type } = useParams();
 
 	const getPageByType = (type: SubPageLinkValue | undefined): ReactNode => {
-		if (!type) return <JsonFormatter />;
+		if (!type) return <GriffinereCipher />;
 
-		const formatterPath = `${navLinks.formatters}/${type}`;
+		const formatterPath = `${navLinks.rngs}/${type}`;
 
 		switch (formatterPath) {
-			case subPageLinks.jsonFormatter:
-				return <JsonFormatter />;
-			case subPageLinks.xmlFormatter:
-				return <XmlFormatter />;
-			case subPageLinks.htmlFormatter:
-				return <HtmlFormatter />;
-			case subPageLinks.sqlFormatter:
-				return <SqlFormatter />;
+			case subPageLinks.diceRoleRng:
+				return <DiceRollRng />;
 		}
 	};
 
@@ -43,4 +35,4 @@ const FormattersPageRouter = () => {
 	);
 };
 
-export default FormattersPageRouter;
+export default RngsPageRouter;

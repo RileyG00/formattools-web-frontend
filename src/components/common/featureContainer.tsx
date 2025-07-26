@@ -1,22 +1,26 @@
-import NavigationList from "@/components/common/navigationList";
-import XmlFormatter from "@/components/features/xml/xmlFormatter";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
+import NavigationList from "./navigationList";
+import { ReactNode } from "react";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlFormatterPage = () => {
+interface FeatureContainerProps {
+	children: ReactNode;
+}
+
+const FeatureContainer: React.FC<FeatureContainerProps> = ({ children }) => {
 	//------------------------------------------------------------------------------------
-	//Return
+	//Create Component
 	//------------------------------------------------------------------------------------
 	return (
 		<GradientBackgroundLayout isIncludeSvg={true}>
 			<main className="w-full flex flex-row justify-between items-between px-[4%] pt-8 h-full flex-grow-1">
 				<NavigationList />
-				<XmlFormatter />
+				{children}
 			</main>
 		</GradientBackgroundLayout>
 	);
 };
 
-export default XmlFormatterPage;
+export default FeatureContainer;

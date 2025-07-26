@@ -8,7 +8,7 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { title } from "@/components/primitives";
+import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -77,9 +77,7 @@ const JsonFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<h1 className={title({ size: "xs", color: "pink" })}>
-				JSON Formatter
-			</h1>
+			<FeatureHeader>JSON Formatter</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input JSON</CardHeader>

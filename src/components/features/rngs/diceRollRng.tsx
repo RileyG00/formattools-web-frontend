@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
+import { Select, SelectItem } from "@heroui/select";
+import { NumberInput } from "@heroui/number-input";
+import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -12,29 +14,58 @@ import FeatureHeader from "@/components/common/FeatureHeader";
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const UrlEncoderDecoder = () => {
+const DiceRollRng = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
+	const [numSides, setNumSides] = useState<string>("8");
+	const [numDice, setNumDice] = useState<number>(1);
+	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isEncoding: boolean): void => {
-		if (!raw) return;
+	const handleRoll = (): void => {
 		if (error) setError(null);
 
 		try {
-			if (isEncoding) {
-				const encodedUri: string = encodeURI(raw);
-				setOutput(encodedUri);
-			} else {
-				const decodedUri: string = decodeURI(raw);
-				setOutput(decodedUri);
+			if (numDice > 100000) {
+				throw new Error("Maximum number of dice is 100000");
 			}
+
+			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
+				throw new Error(
+					"Please select a valid number of sides from the drop down.",
+				);
+			}
+
+			const min: number = 1;
+			const max: number = parseInt(numSides);
+
+			let response = "";
+
+			if (isFormatAsArray) {
+				response += "[";
+			}
+
+			for (let i = 0; i < numDice; i++) {
+				const randomNumber: number =
+					Math.floor(Math.random() * (max - min + 1)) + min;
+
+				if (i === 0) {
+					response += String(randomNumber);
+				} else {
+					response += `, ${String(randomNumber)}`;
+				}
+			}
+
+			if (isFormatAsArray) {
+				response += "]";
+			}
+
+			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -70,46 +101,53 @@ const UrlEncoderDecoder = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>URL Encoder / Decoder</FeatureHeader>
+			<FeatureHeader>Dice Roll</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input URL</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[450px] min-w-fit h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<div className="flex flex-row gap-2 justify-end w-fit">
-							<Button
-								color="default"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
+				<Card className="w-[450px] h-full">
+					<CardHeader>Dice Specifications</CardHeader>
+					<CardBody className="flex flex-col gap-4">
+						<div className="flex flex-row gap-4">
+							<Select
+								aria-label="Options for how many sides the dice will have when rolling."
+								label="Number of Sides to the Dice"
+								selectedKeys={[numSides]}
+								onSelectionChange={(e) =>
+									setNumSides(e.currentKey ?? "8")
+								}
+								variant="bordered"
 							>
-								Clear Input
-							</Button>
-							<Button
+								<SelectItem key={"4"}>4-Sided Die</SelectItem>
+								<SelectItem key={"6"}>6-Sided Die</SelectItem>
+								<SelectItem key={"8"}>8-Sided Die</SelectItem>
+								<SelectItem key={"10"}>10-Sided Die</SelectItem>
+								<SelectItem key={"12"}>12-Sided Die</SelectItem>
+								<SelectItem key={"20"}>20-Sided Die</SelectItem>
+							</Select>
+							<NumberInput
+								value={numDice}
+								onValueChange={setNumDice}
+								label="Number of Dice to Roll"
+								description="Any number between 1 and 100000"
+								variant="bordered"
+								minValue={1}
+								maxValue={100000}
+							/>
+						</div>
+						<div className="flex flex-row gap-2 justify-end">
+							<Checkbox
+								isSelected={isFormatAsArray}
+								onValueChange={setIsFormatAsArray}
 								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleFormat(input, false)}
+								aria-label="Controls whether the results should be returned as an array."
 							>
-								Decode
-							</Button>
+								Return results as an array
+							</Checkbox>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input, true)}
+								onPress={() => handleRoll()}
 							>
-								Encode
+								Roll
 							</Button>
 							<Button
 								isIconOnly
@@ -134,7 +172,7 @@ const UrlEncoderDecoder = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output URL</CardHeader>
+				<CardHeader>Output Dice Roll</CardHeader>
 				<CardBody>
 					<HighlightSyntax
 						showLineNumbers={true}
@@ -148,4 +186,4 @@ const UrlEncoderDecoder = () => {
 	);
 };
 
-export default UrlEncoderDecoder;
+export default DiceRollRng;

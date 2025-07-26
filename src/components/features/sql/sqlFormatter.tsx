@@ -8,8 +8,8 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/components/utils/textUtils";
-import { title } from "@/components/primitives";
 import { format, KeywordCase } from "sql-formatter";
+import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -82,9 +82,7 @@ const SqlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<h1 className={title({ size: "xs", color: "pink" })}>
-				SQL Formatter
-			</h1>
+			<FeatureHeader>SQL Formatter</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input SQL</CardHeader>
