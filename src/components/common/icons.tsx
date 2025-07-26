@@ -1,10 +1,6 @@
 import { IconSvgProps } from "@/types";
 
-export const Logo: React.FC<IconSvgProps> = ({
-	size = 36,
-	height,
-	...props
-}) => (
+export const Logo: React.FC = () => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 64 64"
