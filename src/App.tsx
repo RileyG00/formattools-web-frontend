@@ -5,6 +5,7 @@ import { navLinks } from "./config/site";
 import IndexPage from "@/pages/index";
 import FormattersRouter from "@/pages/routers/formattersRouter";
 import EscaperPageRouter from "./pages/routers/escaperRouter";
+import CiphersPageRouter from "./pages/routers/ciphersRouter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -23,6 +24,10 @@ const App: React.FC = () => {
 			<Route
 				element={<EscaperPageRouter />}
 				path={`${navLinks.escapers}/:escaperType?`}
+			/>
+			<Route
+				element={<CiphersPageRouter />}
+				path={`${navLinks.ciphers}/:cipherType?`}
 			/>
 		</Routes>
 	);

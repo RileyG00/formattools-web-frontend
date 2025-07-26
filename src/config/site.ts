@@ -4,15 +4,22 @@ export const navLinks = {
 	home: "/",
 	formatters: "formatters",
 	escapers: "escapers",
+	ciphers: "ciphers",
 } as const;
 
 export const subPageLinks = {
+	//Formatters
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
+
+	//Escapers
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
 	urlEncoder: `${navLinks.escapers}/url-encoder`,
+
+	//Ciphers
+	griffinereCipher: `${navLinks.ciphers}/griffinere`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -50,6 +57,13 @@ export const siteConfig = {
 			key: subPageLinks.urlEncoder,
 			name: "URL Encoder/Decoder",
 			path: subPageLinks.urlEncoder,
+		},
+	],
+	ciphers: [
+		{
+			key: subPageLinks.griffinereCipher,
+			name: "Griffinere",
+			path: subPageLinks.griffinereCipher,
 		},
 	],
 	navItems: [

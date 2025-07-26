@@ -22,6 +22,7 @@ const NavigationList = () => {
 		<Listbox
 			className="w-fit"
 			aria-label="List of available formatters, obfuscators, and validators."
+			variant="flat"
 		>
 			<ListboxSection
 				showDivider
@@ -57,6 +58,24 @@ const NavigationList = () => {
 							onPress={() => handleNavigation(`/${escaper.path}`)}
 						>
 							{escaper.name}
+						</ListboxItem>
+					);
+				}}
+			</ListboxSection>
+			<ListboxSection
+				showDivider
+				title="Ciphers"
+				aria-label="List of available ciphers"
+				items={siteConfig.ciphers}
+			>
+				{(ciphers) => {
+					return (
+						<ListboxItem
+							aria-label={ciphers.name}
+							key={ciphers.key}
+							onPress={() => handleNavigation(`/${ciphers.path}`)}
+						>
+							{ciphers.name}
 						</ListboxItem>
 					);
 				}}
