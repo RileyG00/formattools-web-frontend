@@ -45,7 +45,7 @@ const NavigationList = () => {
 			</ListboxSection>
 			<ListboxSection
 				showDivider
-				title="Escapers"
+				title="Escapers / Encoders"
 				aria-label="List of available escapers"
 				items={siteConfig.escapers}
 			>

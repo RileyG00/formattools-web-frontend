@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
-import JsonFormatterPage from "../subpages/escapers/jsonFormatter";
-import XmlFormatterPage from "../subpages/escapers/xmlFormatter";
-import HtmlFormatterPage from "../subpages/escapers/htmlFormatter";
-import SqlFormatterPage from "../subpages/escapers/sqlFormatter";
+import JsonFormatterPage from "../subpages/formatters/jsonFormatter";
+import XmlFormatterPage from "../subpages/formatters/xmlFormatter";
+import HtmlFormatterPage from "../subpages/formatters/htmlFormatter";
+import SqlFormatterPage from "../subpages/formatters/sqlFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component

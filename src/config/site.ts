@@ -12,6 +12,7 @@ export const subPageLinks = {
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
+	urlEncoder: `${navLinks.escapers}/url-encoder`,
 } as const;
 
 export type SubPageLinkValue = (typeof subPageLinks)[keyof typeof subPageLinks];
@@ -44,6 +45,11 @@ export const siteConfig = {
 			key: subPageLinks.jsonEscaper,
 			name: "JSON Escape/Unescape",
 			path: subPageLinks.jsonEscaper,
+		},
+		{
+			key: subPageLinks.urlEncoder,
+			name: "URL Encoder/Decoder",
+			path: subPageLinks.urlEncoder,
 		},
 	],
 	navItems: [

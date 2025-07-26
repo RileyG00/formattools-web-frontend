@@ -22,7 +22,7 @@ const App: React.FC = () => {
 			/>
 			<Route
 				element={<EscaperPageRouter />}
-				path={`${navLinks.escapers}/:escapeType?`}
+				path={`${navLinks.escapers}/:escaperType?`}
 			/>
 		</Routes>
 	);

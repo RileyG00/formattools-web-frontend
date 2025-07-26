@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
-import JsonEscaperPage from "../subpages/formatters/jsonEscaper";
+import JsonEscaperPage from "../subpages/escapers/jsonEscaper";
+import UrlEncoderDecoderPage from "../subpages/escapers/urlEncoderDecoder";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -22,6 +23,8 @@ const EscaperPageRouter = () => {
 		switch (formatterPath) {
 			case subPageLinks.jsonEscaper:
 				return <JsonEscaperPage />;
+			case subPageLinks.urlEncoder:
+				return <UrlEncoderDecoderPage />;
 		}
 	};
 
