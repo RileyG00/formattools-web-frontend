@@ -2,7 +2,7 @@ import { Link } from "@heroui/link";
 import { button as buttonStyles } from "@heroui/theme";
 import { title, subtitle } from "@/components/primitives";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
-import { navLinks, subPageLinks } from "@/config/site";
+import { navLinks } from "@/config/site";
 
 //----------------------------------------------------------------------------------------
 //Create Component
