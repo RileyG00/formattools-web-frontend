@@ -13,7 +13,7 @@ import {
 	formatAsArrayString,
 	getRandomCharacter,
 } from "@/components/utils/textUtils";
-import FeatureHeader from "@/components/common/FeatureHeader";
+import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component

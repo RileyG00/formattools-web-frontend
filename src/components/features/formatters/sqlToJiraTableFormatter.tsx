@@ -11,7 +11,7 @@ import {
 	copyAsRichHtmlTable,
 	generateHtmlTable,
 } from "@/components/utils/textUtils";
-import FeatureHeader from "@/components/common/FeatureHeader";
+import FeatureHeader from "@/components/common/featureHeader";
 import { prettify } from "htmlfy";
 
 //----------------------------------------------------------------------------------------

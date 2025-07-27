@@ -11,7 +11,7 @@ import {
 	decodeBase64,
 	encodeBase64,
 } from "@/components/utils/textUtils";
-import FeatureHeader from "@/components/common/FeatureHeader";
+import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
