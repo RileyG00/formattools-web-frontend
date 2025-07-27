@@ -26,7 +26,7 @@ const IndexPage: React.FC = () => {
 					</span>
 					<div className={subtitle({ class: "mt-4" })}>
 						Formatters, Obfuscators, Validators, all included in one
-						tool. 30+ pro-grade coding tools. Format faster,
+						tool. 15+ pro-grade coding tools. Format faster,
 						ad-free, right from your browser.
 					</div>
 				</div>
@@ -49,4 +49,3 @@ const IndexPage: React.FC = () => {
 };
 
 export default IndexPage;
-

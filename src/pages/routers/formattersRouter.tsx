@@ -6,6 +6,7 @@ import JsonFormatter from "@/components/features/formatters/jsonFormatter";
 import XmlFormatter from "@/components/features/formatters/xmlFormatter";
 import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
 import SqlFormatter from "@/components/features/formatters/sqlFormatter";
+import SqlToJiraTableFormatter from "@/components/features/formatters/sqlToJiraTableFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -30,6 +31,8 @@ const FormattersPageRouter = () => {
 				return <HtmlFormatter />;
 			case subPageLinks.sqlFormatter:
 				return <SqlFormatter />;
+			case subPageLinks.sqlToJiraTableFormatter:
+				return <SqlToJiraTableFormatter />;
 		}
 	};
 

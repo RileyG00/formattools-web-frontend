@@ -190,3 +190,41 @@ export const decodeBase64 = (base64: string): string => {
 
 	return Buffer.from(base64, "base64").toString("utf-8");
 };
+
+export const toProperCase = (input: string): string => {
+	if (!input) return ""; // Handle empty strings to avoid RangeErrors
+	if (input.length === 1) return input.toUpperCase(); // Handle strings with one character to avoid RangeErrors when rejoining the substring
+
+	return input.charAt(0).toUpperCase() + input.substring(1);
+};
+
+export const generateHtmlTable = (
+	columns: string[],
+	rows: string[][],
+	setHeaderRowToPropercase: boolean = true,
+): string => {
+	const body = rows
+		.map(
+			(row) =>
+				`<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`,
+		)
+		.join("");
+
+	if (columns.length > 0) {
+		const header = columns
+			.map(
+				(col) =>
+					`<th>${setHeaderRowToPropercase ? toProperCase(col) : col}</th>`,
+			)
+			.join("");
+		return `<table><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
+	} else {
+		return `<table><tbody>${body}</tbody></table>`;
+	}
+};
+
+export const copyAsRichHtmlTable = async (html: string): Promise<void> => {
+	const blob = new Blob([html], { type: "text/html" });
+	const clipboardItem = new ClipboardItem({ "text/html": blob });
+	await navigator.clipboard.write([clipboardItem]);
+};

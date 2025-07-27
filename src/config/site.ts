@@ -15,6 +15,7 @@ export const subPageLinks = {
 	xmlFormatter: `${navLinks.formatters}/xml-formatter`,
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
+	sqlToJiraTableFormatter: `${navLinks.formatters}/sql-to-jira-table-formatter`,
 
 	// Escapers / Encoders
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
@@ -58,6 +59,11 @@ export const siteConfig = {
 			key: subPageLinks.sqlFormatter,
 			name: "SQL Formatter",
 			path: subPageLinks.sqlFormatter,
+		},
+		{
+			key: subPageLinks.sqlToJiraTableFormatter,
+			name: "SQL To Jira Table Formatter",
+			path: subPageLinks.sqlToJiraTableFormatter,
 		},
 	],
 	escapers: [
