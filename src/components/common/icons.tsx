@@ -302,6 +302,7 @@ export const ArrowRightStartOnRectangleIcon = ({
 		viewBox="0 0 24 24"
 		width={size || width}
 		{...props}
+		name="Data Formatters Logo"
 	>
 		<path
 			stroke="currentColor"

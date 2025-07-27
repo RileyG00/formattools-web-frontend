@@ -105,7 +105,11 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 				{options.map((option, index) => {
 					return (
 						<li key={option.path}>
-							<Card isHoverable className="h-[225px]">
+							<Card
+								isHoverable
+								className="h-[225px]"
+								title={option.name}
+							>
 								<CardHeader className="flex flex-row gap-3">
 									{getIcon(index)}
 									<h3>{option.name}</h3>
@@ -117,6 +121,7 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 										variant="flat"
 										as={Link}
 										href={option.path}
+										title={`Visit page for ${option.name}`}
 									>
 										Visit Page
 									</Button>

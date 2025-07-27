@@ -1,6 +1,4 @@
-//import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
-//import { Input } from "@heroui/input";
 import {
 	Navbar as HeroUINavbar,
 	NavbarBrand,
@@ -8,65 +6,37 @@ import {
 	NavbarItem,
 	NavbarMenuToggle,
 } from "@heroui/navbar";
-import { link as linkStyles } from "@heroui/theme";
-import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/hooks/useThemeSwitch";
 import { GithubIcon } from "@/components/common/icons";
-//import { SearchIcon } from "@/components/common/icons";
 import { Logo } from "@/components/common/icons";
 
 export const Navbar = () => {
-	// const searchInput = (
-	// 	<Input
-	// 		aria-label="Search"
-	// 		classNames={{
-	// 			inputWrapper: "bg-default-100",
-	// 			input: "text-sm min-w-[175px]",
-	// 		}}
-	// 		endContent={
-	// 			<Kbd className="inline-block" keys={["ctrl"]}>
-	// 				K
-	// 			</Kbd>
-	// 		}
-	// 		placeholder="Search..."
-	// 		startContent={
-	// 			<SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-	// 		}
-	// 		type="search"
-	// 	/>
-	// );
-
 	return (
 		<HeroUINavbar maxWidth="xl" position="sticky">
-			<NavbarContent>
-				<NavbarBrand className="gap-3 max-w-fit">
-					<Link
-						className="flex justify-start items-center gap-1"
-						color="foreground"
-						href="/"
-					>
-						<Logo />
-						<p className="font-bold text-inherit">DevForge</p>
-					</Link>
-				</NavbarBrand>
-				<div className="hidden lg:flex gap-8 justify-start ml-2">
-					{siteConfig.navItems.map((item) => (
-						<NavbarItem key={item.href}>
-							<Link
-								className={clsx(
-									linkStyles({ color: "foreground" }),
-									"data-[active=true]:text-primary data-[active=true]:font-medium",
-								)}
-								color="foreground"
-								href={item.href}
-							>
-								{item.label}
-							</Link>
-						</NavbarItem>
-					))}
-				</div>
+			<NavbarContent className="flex flex-row gap-8">
+				<li>
+					<NavbarBrand className="gap-3 max-w-fit">
+						<Link
+							className="flex justify-start items-center gap-1"
+							color="foreground"
+							href="/"
+						>
+							<Logo />
+							<p className="font-bold text-inherit">
+								Data Formatters
+							</p>
+						</Link>
+					</NavbarBrand>
+				</li>
+				{siteConfig.navItems.map((item) => (
+					<NavbarItem key={item.href}>
+						<Link color="foreground" href={item.href}>
+							{item.label}
+						</Link>
+					</NavbarItem>
+				))}
 			</NavbarContent>
 
 			<NavbarContent
@@ -86,11 +56,21 @@ export const Navbar = () => {
 			</NavbarContent>
 
 			<NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-				<Link isExternal href={siteConfig.links.github}>
-					<GithubIcon className="text-default-500" />
-				</Link>
-				<ThemeSwitch />
-				<NavbarMenuToggle />
+				<NavbarItem>
+					<Link
+						isExternal
+						href={siteConfig.links.github}
+						aria-label="Navigate to RileyG00's GitHub page."
+						title="Navigate to RileyG00's GitHub page."
+					>
+						<GithubIcon
+							className="text-default-500"
+							id="githubIcon"
+						/>
+					</Link>
+					<ThemeSwitch />
+					<NavbarMenuToggle />
+				</NavbarItem>
 			</NavbarContent>
 		</HeroUINavbar>
 	);

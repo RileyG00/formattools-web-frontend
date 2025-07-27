@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useId } from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { SwitchProps, useSwitch } from "@heroui/switch";
 import clsx from "clsx";
@@ -15,6 +15,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
 	className,
 	classNames,
 }) => {
+	const id = useId();
 	const [isMounted, setIsMounted] = useState(false);
 
 	const { theme, setTheme } = useTheme();
@@ -36,7 +37,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
 	}, [isMounted]);
 
 	// Prevent Hydration Mismatch
-	if (!isMounted) return <div className="w-6 h-6" />;
+	if (!isMounted) return <div className="w-6 h-6" aria-hidden="true" />;
 
 	return (
 		<Component
@@ -52,7 +53,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
 			})}
 		>
 			<VisuallyHidden>
-				<input {...getInputProps()} />
+				<input {...getInputProps()} id={id} />
 			</VisuallyHidden>
 			<div
 				{...getWrapperProps()}
