@@ -51,7 +51,7 @@ export const Navbar = () => {
 						<p className="font-bold text-inherit">DevForge</p>
 					</Link>
 				</NavbarBrand>
-				<div className="hidden lg:flex gap-4 justify-start ml-2">
+				<div className="hidden lg:flex gap-8 justify-start ml-2">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
 							<Link
@@ -83,9 +83,6 @@ export const Navbar = () => {
 					</Link>
 					<ThemeSwitch />
 				</NavbarItem>
-				{/* <NavbarItem className="hidden lg:flex">
-					{searchInput}
-				</NavbarItem> */}
 			</NavbarContent>
 
 			<NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -98,4 +95,3 @@ export const Navbar = () => {
 		</HeroUINavbar>
 	);
 };
-

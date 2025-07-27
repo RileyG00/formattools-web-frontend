@@ -18,7 +18,7 @@ const NavigationList = () => {
 				showDivider
 				title="Formatters"
 				aria-label="List of available formatters."
-				items={siteConfig.formatters}
+				items={siteConfig.formatters.items}
 			>
 				{(item) => {
 					return (
@@ -36,7 +36,7 @@ const NavigationList = () => {
 				showDivider
 				title="Escapers / Encoders"
 				aria-label="List of available escapers."
-				items={siteConfig.escapers}
+				items={siteConfig.escapers.items}
 			>
 				{(item) => {
 					return (
@@ -54,7 +54,7 @@ const NavigationList = () => {
 				showDivider
 				title="Ciphers"
 				aria-label="List of available ciphers."
-				items={siteConfig.ciphers}
+				items={siteConfig.ciphers.items}
 			>
 				{(item) => {
 					return (
@@ -72,7 +72,7 @@ const NavigationList = () => {
 				showDivider
 				title="RNGs"
 				aria-label="List of available random number generators."
-				items={siteConfig.rngs}
+				items={siteConfig.rngs.items}
 			>
 				{(item) => {
 					return (
@@ -90,7 +90,7 @@ const NavigationList = () => {
 				showDivider
 				title="Generators"
 				aria-label="List of available generators, such as strings."
-				items={siteConfig.generators}
+				items={siteConfig.generators.items}
 			>
 				{(item) => {
 					return (

@@ -11,7 +11,7 @@ import {
 	copyToClipboard,
 	formatAsArrayString,
 } from "@/components/utils/textUtils";
-import FeatureHeader from "@/components/common/FeatureHeader";
+import FeatureHeader from "@/components/common/featureHeader";
 import { getRandomInt } from "@/components/utils/numberUtils";
 
 //----------------------------------------------------------------------------------------

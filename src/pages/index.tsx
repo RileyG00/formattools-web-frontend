@@ -2,7 +2,7 @@ import { Link } from "@heroui/link";
 import { button as buttonStyles } from "@heroui/theme";
 import { title, subtitle } from "@/components/primitives";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
-import { subPageLinks } from "@/config/site";
+import { navLinks } from "@/config/site";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -14,19 +14,21 @@ const IndexPage: React.FC = () => {
 	return (
 		<GradientBackgroundLayout isIncludeSvg={true}>
 			<main className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-				<div className="max-w-2xl text-center justify-center mt-20">
-					<span className={title()}>Your All-in-One&nbsp;</span>
+				<div className="max-w-3xl text-center justify-center mt-20">
+					<span className={title({ size: "lg" })}>
+						Your All-in-One&nbsp;
+					</span>
 					<br />
-					<span className={title({ color: "pink" })}>
+					<span className={title({ size: "lg", color: "pink" })}>
 						Developer Toolbox&nbsp;
 					</span>
 					<br />
-					<span className={title()}>
+					<span className={title({ size: "lg" })}>
 						Entitely Free. Always Online.
 					</span>
-					<div className={subtitle({ class: "mt-4" })}>
+					<div className={subtitle({ size: "sm", class: "mt-4" })}>
 						Formatters, Obfuscators, Validators, all included in one
-						tool. 30+ pro-grade coding tools. Format faster,
+						tool. 15+ pro-grade coding tools. Format faster,
 						ad-free, right from your browser.
 					</div>
 				</div>
@@ -38,7 +40,7 @@ const IndexPage: React.FC = () => {
 							radius: "full",
 							variant: "shadow",
 						})}
-						href={subPageLinks.jsonFormatter}
+						href={navLinks.formatters}
 					>
 						Get Started
 					</Link>
@@ -49,4 +51,3 @@ const IndexPage: React.FC = () => {
 };
 
 export default IndexPage;
-

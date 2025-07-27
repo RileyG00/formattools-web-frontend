@@ -12,7 +12,7 @@ import {
 	copyToClipboard,
 	formatAsArrayString,
 } from "@/components/utils/textUtils";
-import FeatureHeader from "@/components/common/FeatureHeader";
+import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -132,15 +132,15 @@ const DiceRollRng = () => {
 								maxValue={100000}
 							/>
 						</div>
+						<Checkbox
+							isSelected={isFormatAsArray}
+							onValueChange={setIsFormatAsArray}
+							color="secondary"
+							aria-label="Controls whether the results should be returned as an array."
+						>
+							Return results as an array
+						</Checkbox>
 						<div className="flex flex-row gap-2 justify-end">
-							<Checkbox
-								isSelected={isFormatAsArray}
-								onValueChange={setIsFormatAsArray}
-								color="secondary"
-								aria-label="Controls whether the results should be returned as an array."
-							>
-								Return results as an array
-							</Checkbox>
 							<Button
 								color="primary"
 								className="w-fit"

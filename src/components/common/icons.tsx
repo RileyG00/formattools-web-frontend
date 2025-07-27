@@ -209,3 +209,106 @@ export const DuplicateDocumentIcon = ({
 	</svg>
 );
 
+export const CodeBracketIcon = ({
+	size = 24,
+	width,
+	height,
+	...props
+}: IconSvgProps) => (
+	<svg
+		aria-hidden="true"
+		fill="none"
+		focusable="false"
+		height={size || height}
+		role="presentation"
+		viewBox="0 0 24 24"
+		width={size || width}
+		{...props}
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.5"
+			d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
+		/>
+	</svg>
+);
+
+export const LockClosedIcon = ({
+	size = 24,
+	width,
+	height,
+	...props
+}: IconSvgProps) => (
+	<svg
+		aria-hidden="true"
+		fill="none"
+		focusable="false"
+		height={size || height}
+		role="presentation"
+		viewBox="0 0 24 24"
+		width={size || width}
+		{...props}
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.5"
+			d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+		/>
+	</svg>
+);
+
+export const CalculatorIcon = ({
+	size = 24,
+	width,
+	height,
+	...props
+}: IconSvgProps) => (
+	<svg
+		aria-hidden="true"
+		fill="none"
+		focusable="false"
+		height={size || height}
+		role="presentation"
+		viewBox="0 0 24 24"
+		width={size || width}
+		{...props}
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.5"
+			d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V13.5Zm0 2.25h.008v.008H8.25v-.008Zm0 2.25h.008v.008H8.25V18Zm2.498-6.75h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V13.5Zm0 2.25h.007v.008h-.007v-.008Zm0 2.25h.007v.008h-.007V18Zm2.504-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5Zm0 2.25h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V18Zm2.498-6.75h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V13.5ZM8.25 6h7.5v2.25h-7.5V6ZM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 0 0 2.25 2.25h10.5a2.25 2.25 0 0 0 2.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0 0 12 2.25Z"
+		/>
+	</svg>
+);
+
+export const ArrowRightStartOnRectangleIcon = ({
+	size = 24,
+	width,
+	height,
+	...props
+}: IconSvgProps) => (
+	<svg
+		aria-hidden="true"
+		fill="none"
+		focusable="false"
+		height={size || height}
+		role="presentation"
+		viewBox="0 0 24 24"
+		width={size || width}
+		{...props}
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.5"
+			d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+		/>
+	</svg>
+);

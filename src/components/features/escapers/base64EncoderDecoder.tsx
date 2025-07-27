@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -9,19 +8,18 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyToClipboard,
-	escapeJson,
-	unescapeJson,
+	decodeBase64,
+	encodeBase64,
 } from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const JsonEscaper = () => {
+const Base64EncoderDecoder = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -29,33 +27,17 @@ const JsonEscaper = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isEscaping: boolean): void => {
+	const handleFormat = (raw: string, isEncoding: boolean): void => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
-
-		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (!isNaN(parseInt(indentation))) {
-			indentStyle = parseInt(indentation);
-		}
-
 		try {
-			if (isEscaping) {
-				const escapedJsonStr: string = escapeJson(raw);
-				setOutput(escapedJsonStr);
+			if (isEncoding) {
+				const encodedUri: string = encodeBase64(raw);
+				setOutput(encodedUri);
 			} else {
-				const unescapedJsonStr: string = unescapeJson(raw);
-
-				const json: object = JSON.parse(unescapedJsonStr);
-				const formatted: string = JSON.stringify(
-					json,
-					null,
-					indentStyle,
-				);
-				setOutput(formatted);
+				const decodedUri: string = decodeBase64(raw);
+				setOutput(decodedUri);
 			}
 		} catch (error) {
 			const err = error as unknown as Error;
@@ -92,10 +74,10 @@ const JsonEscaper = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>JSON Escaper</FeatureHeader>
+			<FeatureHeader>Base64 Encoder / Decoder</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input JSON</CardHeader>
+					<CardHeader>Input Text</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -107,20 +89,6 @@ const JsonEscaper = () => {
 				<Card className="w-[450px] min-w-fit h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the JSON output."
-							label="JSON Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
-							variant="bordered"
-						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
-						</Select>
 						<div className="flex flex-row gap-2 justify-end w-fit">
 							<Button
 								color="default"
@@ -138,14 +106,14 @@ const JsonEscaper = () => {
 								className="w-fit"
 								onPress={() => handleFormat(input, false)}
 							>
-								Unescape
+								Decode
 							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
 								onPress={() => handleFormat(input, true)}
 							>
-								Escape
+								Encode
 							</Button>
 							<Button
 								isIconOnly
@@ -170,9 +138,12 @@ const JsonEscaper = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output JSON</CardHeader>
+				<CardHeader>Output Text</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="json">
+					<HighlightSyntax
+						showLineNumbers={true}
+						language="plaintext"
+					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -181,4 +152,4 @@ const JsonEscaper = () => {
 	);
 };
 
-export default JsonEscaper;
+export default Base64EncoderDecoder;

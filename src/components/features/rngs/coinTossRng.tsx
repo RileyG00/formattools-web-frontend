@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
+import { Input } from "@heroui/input";
+import { NumberInput } from "@heroui/number-input";
+import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -9,54 +10,57 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyToClipboard,
-	escapeJson,
-	unescapeJson,
+	formatAsArrayString,
 } from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const JsonEscaper = () => {
+const CoinTossRng = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
+	const [headSideIdentifier, setHeadSideIdentifier] = useState<string>("H");
+	const [tailsSideIdentifier, setTailSideIdentifier] = useState<string>("T");
+	const [numTosses, setNumTosses] = useState<number>(1);
+	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isEscaping: boolean): void => {
-		if (!raw) return;
+	const handleRoll = (): void => {
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
-
-		// If not NaN, meaning that 'tab' was not selected, then set to the digit spacing selected, else, leave as a tab.
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (!isNaN(parseInt(indentation))) {
-			indentStyle = parseInt(indentation);
-		}
-
 		try {
-			if (isEscaping) {
-				const escapedJsonStr: string = escapeJson(raw);
-				setOutput(escapedJsonStr);
-			} else {
-				const unescapedJsonStr: string = unescapeJson(raw);
-
-				const json: object = JSON.parse(unescapedJsonStr);
-				const formatted: string = JSON.stringify(
-					json,
-					null,
-					indentStyle,
-				);
-				setOutput(formatted);
+			if (numTosses > 100000) {
+				throw new Error("Maximum number of tosses is 100000");
 			}
+
+			let response = "";
+
+			for (let i = 0; i < numTosses; i++) {
+				const randomNumber: number = Math.floor(Math.random() * 2);
+
+				//0: Tails, 1: Heads
+				const result: string =
+					randomNumber === 0
+						? tailsSideIdentifier
+						: headSideIdentifier;
+				if (i === 0) {
+					response += `"${result}"`;
+				} else {
+					response += `, "${result}"`;
+				}
+			}
+
+			if (isFormatAsArray) {
+				response = formatAsArrayString(response);
+			}
+
+			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -92,60 +96,49 @@ const JsonEscaper = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>JSON Escaper</FeatureHeader>
+			<FeatureHeader>Coin Toss</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input JSON</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[450px] min-w-fit h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the JSON output."
-							label="JSON Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
-							variant="bordered"
+				<Card className="w-[650px] h-full">
+					<CardHeader>Coin Toss Specifications</CardHeader>
+					<CardBody className="flex flex-col gap-4">
+						<div className="flex flex-row gap-4">
+							<NumberInput
+								value={numTosses}
+								onValueChange={setNumTosses}
+								label="Number of Tosses"
+								description="Any number between 1 and 100,000"
+								variant="bordered"
+								minValue={1}
+								maxValue={100_000}
+							/>
+							<Input
+								value={tailsSideIdentifier}
+								onValueChange={setTailSideIdentifier}
+								label="Identifier for Tails Side"
+								variant="bordered"
+							/>
+							<Input
+								value={headSideIdentifier}
+								onValueChange={setHeadSideIdentifier}
+								label="Identifier for Heads Side"
+								variant="bordered"
+							/>
+						</div>
+						<Checkbox
+							isSelected={isFormatAsArray}
+							onValueChange={setIsFormatAsArray}
+							color="secondary"
+							aria-label="Controls whether the results should be returned as an array."
 						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
-						</Select>
-						<div className="flex flex-row gap-2 justify-end w-fit">
-							<Button
-								color="default"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleFormat(input, false)}
-							>
-								Unescape
-							</Button>
+							Return results as an array
+						</Checkbox>
+						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleFormat(input, true)}
+								onPress={() => handleRoll()}
 							>
-								Escape
+								Toss
 							</Button>
 							<Button
 								isIconOnly
@@ -170,9 +163,12 @@ const JsonEscaper = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output JSON</CardHeader>
+				<CardHeader>Output Coin Toss</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="json">
+					<HighlightSyntax
+						showLineNumbers={true}
+						language="plaintext"
+					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -181,4 +177,4 @@ const JsonEscaper = () => {
 	);
 };
 
-export default JsonEscaper;
+export default CoinTossRng;
