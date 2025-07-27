@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Select, SelectItem } from "@heroui/select";
+import { Input } from "@heroui/input";
 import { NumberInput } from "@heroui/number-input";
 import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
@@ -17,12 +17,13 @@ import FeatureHeader from "@/components/common/FeatureHeader";
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const DiceRollRng = () => {
+const CoinTossRng = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [numSides, setNumSides] = useState<string>("8");
-	const [numDice, setNumDice] = useState<number>(1);
+	const [headSideIdentifier, setHeadSideIdentifier] = useState<string>("H");
+	const [tailsSideIdentifier, setTailSideIdentifier] = useState<string>("T");
+	const [numTosses, setNumTosses] = useState<number>(1);
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
@@ -34,29 +35,24 @@ const DiceRollRng = () => {
 		if (error) setError(null);
 
 		try {
-			if (numDice > 100000) {
-				throw new Error("Maximum number of dice is 100000");
+			if (numTosses > 100000) {
+				throw new Error("Maximum number of tosses is 100000");
 			}
-
-			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
-				throw new Error(
-					"Please select a valid number of sides from the drop down.",
-				);
-			}
-
-			const min: number = 1;
-			const max: number = parseInt(numSides);
 
 			let response = "";
 
-			for (let i = 0; i < numDice; i++) {
-				const randomNumber: number =
-					Math.floor(Math.random() * (max - min + 1)) + min;
+			for (let i = 0; i < numTosses; i++) {
+				const randomNumber: number = Math.floor(Math.random() * 2);
 
+				//0: Tails, 1: Heads
+				const result: string =
+					randomNumber === 0
+						? tailsSideIdentifier
+						: headSideIdentifier;
 				if (i === 0) {
-					response += String(randomNumber);
+					response += `"${result}"`;
 				} else {
-					response += `, ${String(randomNumber)}`;
+					response += `, "${result}"`;
 				}
 			}
 
@@ -102,34 +98,30 @@ const DiceRollRng = () => {
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<FeatureHeader>Dice Roll</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-[450px] h-full">
-					<CardHeader>Dice Specifications</CardHeader>
+				<Card className="w-[650px] h-full">
+					<CardHeader>Coin Toss Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
-							<Select
-								aria-label="Options for how many sides the dice will have when rolling."
-								label="Number of Sides to the Dice"
-								selectedKeys={[numSides]}
-								onSelectionChange={(e) =>
-									setNumSides(e.currentKey ?? "8")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"4"}>4-Sided Die</SelectItem>
-								<SelectItem key={"6"}>6-Sided Die</SelectItem>
-								<SelectItem key={"8"}>8-Sided Die</SelectItem>
-								<SelectItem key={"10"}>10-Sided Die</SelectItem>
-								<SelectItem key={"12"}>12-Sided Die</SelectItem>
-								<SelectItem key={"20"}>20-Sided Die</SelectItem>
-							</Select>
 							<NumberInput
-								value={numDice}
-								onValueChange={setNumDice}
-								label="Number of Dice to Roll"
+								value={numTosses}
+								onValueChange={setNumTosses}
+								label="Number of Tosses"
 								description="Any number between 1 and 100,000"
 								variant="bordered"
 								minValue={1}
-								maxValue={100000}
+								maxValue={100_000}
+							/>
+							<Input
+								value={tailsSideIdentifier}
+								onValueChange={setTailSideIdentifier}
+								label="Identifier for Tails Side"
+								variant="bordered"
+							/>
+							<Input
+								value={headSideIdentifier}
+								onValueChange={setHeadSideIdentifier}
+								label="Identifier for Heads Side"
+								variant="bordered"
 							/>
 						</div>
 						<Checkbox
@@ -146,7 +138,7 @@ const DiceRollRng = () => {
 								className="w-fit"
 								onPress={() => handleRoll()}
 							>
-								Roll
+								Toss
 							</Button>
 							<Button
 								isIconOnly
@@ -171,9 +163,12 @@ const DiceRollRng = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Dice Roll</CardHeader>
+				<CardHeader>Output Coin Toss</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="number">
+					<HighlightSyntax
+						showLineNumbers={true}
+						language="plaintext"
+					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -182,4 +177,4 @@ const DiceRollRng = () => {
 	);
 };
 
-export default DiceRollRng;
+export default CoinTossRng;

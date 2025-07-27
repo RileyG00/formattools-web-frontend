@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { navLinks, subPageLinks, SubPageLinkValue } from "@/config/site";
 import FeatureContainer from "@/components/common/featureContainer";
 import DiceRollRng from "@/components/features/rngs/diceRollRng";
+import CoinTossRng from "@/components/features/rngs/coinTossRng";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -21,6 +22,8 @@ const RngsPageRouter = () => {
 		switch (formatterPath) {
 			case subPageLinks.diceRoleRng:
 				return <DiceRollRng />;
+			case subPageLinks.coinTossRng:
+				return <CoinTossRng />;
 		}
 	};
 

@@ -26,6 +26,7 @@ export const subPageLinks = {
 
 	// RNGs
 	diceRoleRng: `${navLinks.rngs}/dice-role`,
+	coinTossRng: `${navLinks.rngs}/coin-toss`,
 
 	// Generators
 	stringGenerator: `${navLinks.generators}/string-generator`,
@@ -87,6 +88,11 @@ export const siteConfig = {
 			key: subPageLinks.diceRoleRng,
 			name: "Dice Roll",
 			path: subPageLinks.diceRoleRng,
+		},
+		{
+			key: subPageLinks.coinTossRng,
+			name: "Coin Toss",
+			path: subPageLinks.coinTossRng,
 		},
 	],
 	generators: [
