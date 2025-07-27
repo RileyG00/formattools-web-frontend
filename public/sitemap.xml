@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<!-- Home -->
+	<url>
+		<loc>https://dataformatters.netlify.app/</loc>
+	</url>
+	<!-- Formatters -->
+	<url>
+		<loc>https://dataformatters.netlify.app/formatters/json-formatter</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/formatters/xml-formatter</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/formatters/html-formatter</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/formatters/sql-formatter</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/formatters/sql-to-jira-table-formatter</loc>
+	</url>
+	<!-- Escapers / Encoders -->
+	<url>
+		<loc>https://dataformatters.netlify.app/escapers/json-escape</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/escapers/xml-escape</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/escapers/url-encoder</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/escapers/base64-encoder-decoder</loc>
+	</url>
+	<!-- Ciphers -->
+	<url>
+		<loc>https://dataformatters.netlify.app/ciphers/griffinere</loc>
+	</url>
+	<!-- RNGs -->
+	<url>
+		<loc>https://dataformatters.netlify.app/random-number/dice-role</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/random-number/coin-toss</loc>
+	</url>
+	<!-- Generators -->
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/string-generator</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/number-generator</loc>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/lorem-ipsum-generator</loc>
+	</url>
+</urlset>
