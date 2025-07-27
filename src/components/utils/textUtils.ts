@@ -174,3 +174,19 @@ export const getRandomCharacter = (
 
 	return optionsArray[randIndex];
 };
+
+export const encodeBase64 = (input: string): string => {
+	if (typeof window !== "undefined" && typeof btoa === "function") {
+		return btoa(input);
+	}
+
+	return Buffer.from(input, "utf-8").toString("base64");
+};
+
+export const decodeBase64 = (base64: string): string => {
+	if (typeof window !== "undefined" && typeof atob === "function") {
+		return atob(base64);
+	}
+
+	return Buffer.from(base64, "base64").toString("utf-8");
+};

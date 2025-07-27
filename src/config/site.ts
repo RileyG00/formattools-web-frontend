@@ -16,10 +16,11 @@ export const subPageLinks = {
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
 
-	// Escapers
+	// Escapers / Encoders
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
 	xmlEscaper: `${navLinks.escapers}/xml-escape`,
 	urlEncoder: `${navLinks.escapers}/url-encoder`,
+	base64Encoder: `${navLinks.escapers}/base64-encoder-decoder`,
 
 	// Ciphers
 	griffinereCipher: `${navLinks.ciphers}/griffinere`,
@@ -74,6 +75,11 @@ export const siteConfig = {
 			key: subPageLinks.urlEncoder,
 			name: "URL Encoder/Decoder",
 			path: subPageLinks.urlEncoder,
+		},
+		{
+			key: subPageLinks.base64Encoder,
+			name: "Base64 Encoder/Decoder",
+			path: subPageLinks.base64Encoder,
 		},
 	],
 	ciphers: [

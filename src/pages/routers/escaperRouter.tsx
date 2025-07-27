@@ -5,6 +5,7 @@ import FeatureContainer from "@/components/common/featureContainer";
 import JsonEscaper from "@/components/features/escapers/jsonEscaper";
 import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder";
 import XmlEscaper from "@/components/features/escapers/xmlEscaper";
+import Base64EncoderDecoder from "@/components/features/escapers/base64EncoderDecoder";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -27,6 +28,8 @@ const EscaperPageRouter = () => {
 				return <XmlEscaper />;
 			case subPageLinks.urlEncoder:
 				return <UrlEncoderDecoder />;
+			case subPageLinks.base64Encoder:
+				return <Base64EncoderDecoder />;
 		}
 	};
 

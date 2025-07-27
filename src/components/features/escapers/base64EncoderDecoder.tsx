@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
+import { Textarea } from "@heroui/input";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
@@ -10,57 +8,37 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyToClipboard,
-	formatAsArrayString,
+	decodeBase64,
+	encodeBase64,
 } from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/FeatureHeader";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const CoinTossRng = () => {
+const Base64EncoderDecoder = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [headSideIdentifier, setHeadSideIdentifier] = useState<string>("H");
-	const [tailsSideIdentifier, setTailSideIdentifier] = useState<string>("T");
-	const [numTosses, setNumTosses] = useState<number>(1);
-	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleRoll = (): void => {
+	const handleFormat = (raw: string, isEncoding: boolean): void => {
+		if (!raw) return;
 		if (error) setError(null);
 
 		try {
-			if (numTosses > 100000) {
-				throw new Error("Maximum number of tosses is 100000");
+			if (isEncoding) {
+				const encodedUri: string = encodeBase64(raw);
+				setOutput(encodedUri);
+			} else {
+				const decodedUri: string = decodeBase64(raw);
+				setOutput(decodedUri);
 			}
-
-			let response = "";
-
-			for (let i = 0; i < numTosses; i++) {
-				const randomNumber: number = Math.floor(Math.random() * 2);
-
-				//0: Tails, 1: Heads
-				const result: string =
-					randomNumber === 0
-						? tailsSideIdentifier
-						: headSideIdentifier;
-				if (i === 0) {
-					response += `"${result}"`;
-				} else {
-					response += `, "${result}"`;
-				}
-			}
-
-			if (isFormatAsArray) {
-				response = formatAsArrayString(response);
-			}
-
-			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -96,49 +74,46 @@ const CoinTossRng = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Coin Toss</FeatureHeader>
+			<FeatureHeader>Base64 Encoder / Decoder</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-[650px] h-full">
-					<CardHeader>Coin Toss Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
-							<NumberInput
-								value={numTosses}
-								onValueChange={setNumTosses}
-								label="Number of Tosses"
-								description="Any number between 1 and 100,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={100_000}
-							/>
-							<Input
-								value={tailsSideIdentifier}
-								onValueChange={setTailSideIdentifier}
-								label="Identifier for Tails Side"
-								variant="bordered"
-							/>
-							<Input
-								value={headSideIdentifier}
-								onValueChange={setHeadSideIdentifier}
-								label="Identifier for Heads Side"
-								variant="bordered"
-							/>
-						</div>
-						<Checkbox
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-							color="secondary"
-							aria-label="Controls whether the results should be returned as an array."
-						>
-							Return results as an array
-						</Checkbox>
-						<div className="flex flex-row gap-2 justify-end">
+				<Card className="w-full">
+					<CardHeader>Input Text</CardHeader>
+					<CardBody>
+						<Textarea
+							aria-label="Container for the raw text input"
+							value={input}
+							onValueChange={setInput}
+						/>
+					</CardBody>
+				</Card>
+				<Card className="w-[450px] min-w-fit h-full">
+					<CardHeader>Formatting Specifications</CardHeader>
+					<CardBody className="flex flex-gap gap-4">
+						<div className="flex flex-row gap-2 justify-end w-fit">
+							<Button
+								color="default"
+								onPress={() => {
+									setInput("");
+									setOutput("");
+									setError(null);
+								}}
+							>
+								Clear Input
+							</Button>
+							<Button
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleFormat(input, false)}
+							>
+								Decode
+							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleRoll()}
+								onPress={() => handleFormat(input, true)}
 							>
-								Toss
+								Encode
 							</Button>
 							<Button
 								isIconOnly
@@ -163,7 +138,7 @@ const CoinTossRng = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Coin Toss</CardHeader>
+				<CardHeader>Output Text</CardHeader>
 				<CardBody>
 					<HighlightSyntax
 						showLineNumbers={true}
@@ -177,4 +152,4 @@ const CoinTossRng = () => {
 	);
 };
 
-export default CoinTossRng;
+export default Base64EncoderDecoder;
