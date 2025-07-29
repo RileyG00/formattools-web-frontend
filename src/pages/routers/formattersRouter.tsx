@@ -13,6 +13,7 @@ import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
 import SqlFormatter from "@/components/features/formatters/sqlFormatter";
 import SqlToJiraTableFormatter from "@/components/features/formatters/sqlToJiraTableFormatter";
 import OptionsDescriptions from "../optionsDescriptions";
+import TabularToSqlInsertFormatter from "@/components/features/formatters/tabularToSqlInsertFormatter";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -47,6 +48,8 @@ const FormattersPageRouter = () => {
 				return <SqlFormatter />;
 			case subPageLinks.sqlToJiraTableFormatter:
 				return <SqlToJiraTableFormatter />;
+			case subPageLinks.tabDelimitedToSqlInsertFormatter:
+				return <TabularToSqlInsertFormatter />;
 			default:
 				return (
 					<OptionsDescriptions
