@@ -9,6 +9,8 @@ export const navLinks = {
 	generators: "generators",
 } as const;
 
+export type NavLinkKeys = keyof typeof navLinks;
+
 export const subPageLinks = {
 	// Formatters
 	jsonFormatter: `${navLinks.formatters}/json-formatter`,
@@ -16,6 +18,7 @@ export const subPageLinks = {
 	htmlFormatter: `${navLinks.formatters}/html-formatter`,
 	sqlFormatter: `${navLinks.formatters}/sql-formatter`,
 	sqlToJiraTableFormatter: `${navLinks.formatters}/sql-to-jira-table-formatter`,
+	tabDelimitedToSqlInsertFormatter: `${navLinks.formatters}/tabular-to-sql-insert-formatter`,
 
 	// Escapers / Encoders
 	jsonEscaper: `${navLinks.escapers}/json-escape`,
@@ -108,6 +111,13 @@ export const siteConfig: {
 				path: subPageLinks.sqlToJiraTableFormatter,
 				description:
 					"Convert SQL result sets into Jira-compatible HTML tables that paste straight into Visual Mode comments. No manual markup or reformatting needed.",
+			},
+			{
+				key: subPageLinks.tabDelimitedToSqlInsertFormatter,
+				name: "Tabular to SQL Insert Formatter",
+				path: subPageLinks.tabDelimitedToSqlInsertFormatter,
+				description:
+					"Convert tabular columns and rows of data into a Microsoft SQL-formatted insert statement for ease-of-use when copying data from a source and inserting it into a table structure.",
 			},
 		],
 	},

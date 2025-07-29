@@ -89,6 +89,26 @@ const specialCharacters: string[] = [
 	"~",
 ];
 
+const sqlDataTypesThatRequireQuotes = [
+	"char",
+	"varchar",
+	"nchar",
+	"nvarchar",
+	"text",
+	"ntext",
+	"date",
+	"datetime",
+	"smalldatetime",
+	"datetime2",
+	"datetimeoffset",
+	"time",
+	"uniqueidentifier",
+	"xml",
+	"hierarchyid",
+	"geometry",
+	"geography",
+];
+
 export const copyToClipboard = async (text: string): Promise<boolean> => {
 	try {
 		await navigator.clipboard.writeText(text);
@@ -135,6 +155,12 @@ export const unescapeXml = (input: string): string =>
 		.replace(/&amp;/g, "&");
 
 export const formatAsArrayString = (input: string): string => `[${input}]`;
+
+export const encloseTextInSingleQuotes = (input: string): string =>
+	`'${input}'`;
+
+export const removeAllSpaces = (input: string): string =>
+	input.replace(/ /g, "");
 
 export const getRandomCharacter = (
 	isIncludeLower: boolean,
@@ -227,4 +253,15 @@ export const copyAsRichHtmlTable = async (html: string): Promise<void> => {
 	const blob = new Blob([html], { type: "text/html" });
 	const clipboardItem = new ClipboardItem({ "text/html": blob });
 	await navigator.clipboard.write([clipboardItem]);
+};
+
+export const doesSqlDataTypeRequireQuotes = (dataType: string) =>
+	sqlDataTypesThatRequireQuotes.includes(dataType.toLowerCase());
+
+export const splitOnCommaOrTab = (source: string): string[] => {
+	const delimiter: string = source.includes(",") ? "," : "\t";
+	return source
+		.split(delimiter)
+		.map((s) => s.trim())
+		.filter(Boolean);
 };
