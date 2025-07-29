@@ -8,10 +8,7 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import {
-	copyToClipboard,
-	formatAsArrayString,
-} from "@/components/utils/textUtils";
+import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------

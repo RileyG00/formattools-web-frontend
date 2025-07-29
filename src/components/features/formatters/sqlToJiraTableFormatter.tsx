@@ -7,10 +7,7 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import {
-	copyAsRichHtmlTable,
-	generateHtmlTable,
-} from "@/components/utils/textUtils";
+import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { prettify } from "htmlfy";
 

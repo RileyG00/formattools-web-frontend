@@ -12,7 +12,7 @@ import {
 	copyToClipboard,
 	formatAsArrayString,
 	getRandomCharacter,
-} from "@/components/utils/textUtils";
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 
 //----------------------------------------------------------------------------------------

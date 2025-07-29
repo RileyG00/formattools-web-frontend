@@ -9,10 +9,10 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyAsRichHtmlTable,
 	encloseTextInSingleQuotes,
-} from "@/components/utils/textUtils";
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { format } from "sql-formatter";
-import { isNumber } from "@/components/utils/numberUtils";
+import { isNumber } from "@/utils/numberUtils";
 
 //----------------------------------------------------------------------------------------
 //Create Component
