@@ -24,6 +24,7 @@
 		"@heroui/number-input": "^2.0.14",
 		"@heroui/select": "^2.4.24",
 		"@heroui/snippet": "2.2.24",
+		"@heroui/spacer": "^2.2.18",
 		"@heroui/switch": "2.2.21",
 		"@heroui/system": "2.4.19",
 		"@heroui/theme": "2.4.19",

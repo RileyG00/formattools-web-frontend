@@ -35,7 +35,6 @@ const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 	//------------------------------------------------------------------------------------
 	return (
 		<SyntaxHighlighter
-			wrapLongLines
 			showLineNumbers={showLineNumbers}
 			customStyle={{ background: "none" }}
 			language={language}

@@ -15,7 +15,7 @@ const FeatureContainer: React.FC<FeatureContainerProps> = ({ children }) => {
 	//------------------------------------------------------------------------------------
 	return (
 		<GradientBackgroundLayout isIncludeSvg={true}>
-			<main className="w-full flex flex-row justify-between items-between px-[4%] pt-8 h-full flex-grow-1">
+			<main className="w-full flex flex-row justify-between items-between px-[4%] pt-8 h-full flex-grow-1 gap-8">
 				<NavigationList />
 				{children}
 			</main>

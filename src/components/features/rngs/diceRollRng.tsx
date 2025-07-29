@@ -34,8 +34,8 @@ const DiceRollRng = () => {
 		if (error) setError(null);
 
 		try {
-			if (numDice > 100000) {
-				throw new Error("Maximum number of dice is 100000");
+			if (numDice > 10_000) {
+				throw new Error("Maximum number of dice is 10,000");
 			}
 
 			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
@@ -62,6 +62,8 @@ const DiceRollRng = () => {
 
 			if (isFormatAsArray) {
 				response = formatAsArrayString(response);
+				const jsonObject: object = JSON.parse(response);
+				response = JSON.stringify(jsonObject, null, "\t");
 			}
 
 			setOutput(response);
@@ -126,10 +128,10 @@ const DiceRollRng = () => {
 								value={numDice}
 								onValueChange={setNumDice}
 								label="Number of Dice to Roll"
-								description="Any number between 1 and 100,000"
+								description="Any number between 1 and 10,000"
 								variant="bordered"
 								minValue={1}
-								maxValue={100000}
+								maxValue={10_000}
 							/>
 						</div>
 						<Checkbox

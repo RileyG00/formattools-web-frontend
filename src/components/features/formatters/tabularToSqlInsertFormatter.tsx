@@ -8,13 +8,11 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyAsRichHtmlTable,
-	doesSqlDataTypeRequireQuotes,
 	encloseTextInSingleQuotes,
-	removeAllSpaces,
-	splitOnCommaOrTab,
 } from "@/components/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { format } from "sql-formatter";
+import { isNumber } from "@/components/utils/numberUtils";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -24,8 +22,6 @@ const TabularToSqlInsertFormatter = () => {
 	//Variables
 	//------------------------------------------------------------------------------------
 	const [table, setTable] = useState<string>("");
-	const [columns, setColumns] = useState<string>("");
-	const [columnDataTypes, setColumnDataTypes] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -45,26 +41,6 @@ const TabularToSqlInsertFormatter = () => {
 			setError("Please specify the table to insert data into.");
 			return;
 		}
-		if (!columns) {
-			setError("Please specify the columns to insert data into.");
-			return;
-		}
-		if (!columnDataTypes) {
-			setError("Please specify the column data types for the insert.");
-			return;
-		}
-
-		// Split the user‑supplied comma‑ or tab‑delimited strings into arrays
-		const dataTypes: string[] = splitOnCommaOrTab(columnDataTypes);
-		const columnNames: string[] = splitOnCommaOrTab(columns);
-
-		// Ensure there is one data type per column name
-		if (columnNames.length !== dataTypes.length) {
-			setError(
-				"Every column must have exactly one accompanying data type.",
-			);
-			return;
-		}
 
 		// Build a 2‑D array where each inner array represents a row of values
 		const rows: string[][] = raw
@@ -77,18 +53,7 @@ const TabularToSqlInsertFormatter = () => {
 			return;
 		}
 
-		const expectedColumnCount: number = columnNames.length;
-
-		// Verify every row has the same number of columns as the header
-		if (rows.some((r) => r.length !== expectedColumnCount)) {
-			setError(
-				"Each row must contain the same number of columns as the column list.",
-			);
-			return;
-		}
-
 		const MAX_ROWS_PER_INSERT = 1000;
-		const columnsSegment: string = columnNames.join(", ");
 
 		/**
 		 * Helper to translate a chunk of rows into the VALUES segment.
@@ -97,14 +62,11 @@ const TabularToSqlInsertFormatter = () => {
 			chunk
 				.map((row) =>
 					row
-						.map((value, colIdx) => {
-							const typeForColumn: string = removeAllSpaces(
-								dataTypes[colIdx],
-							);
-							// Quote the value if the SQL data type requires it
-							return doesSqlDataTypeRequireQuotes(typeForColumn)
-								? encloseTextInSingleQuotes(value)
-								: value;
+						.map((value) => {
+							// Quote the value if the SQL data type requires it (i.e not a string)
+							return isNumber(value)
+								? parseInt(value)
+								: encloseTextInSingleQuotes(value);
 						})
 						.join(", "),
 				)
@@ -121,7 +83,7 @@ const TabularToSqlInsertFormatter = () => {
 			const chunk = rows.slice(offset, offset + MAX_ROWS_PER_INSERT);
 			const valuesSegment = buildValuesSegment(chunk);
 			insertStatements.push(
-				`insert into ${table} (${columnsSegment}) values\n${valuesSegment}`,
+				`insert into ${table} values\n${valuesSegment}`,
 			);
 		}
 
@@ -176,7 +138,7 @@ const TabularToSqlInsertFormatter = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[1000px] h-full">
+				<Card className="w-[550px] h-full">
 					<CardHeader>Insert Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<Input
@@ -189,28 +151,6 @@ const TabularToSqlInsertFormatter = () => {
 							spellCheck="false"
 							description="Enter the database, schema, and table you want to insert data into."
 						/>
-						<div className="flex flex-row gap-4">
-							<Input
-								name="columns"
-								label="Column List"
-								variant="bordered"
-								placeholder="ColumnA,ColumnB,ColumnC"
-								value={columns}
-								onValueChange={setColumns}
-								spellCheck="false"
-								description="Comma or tab-delimited list of column names to insert data into."
-							/>
-							<Input
-								name="types"
-								label="Column Data Types List"
-								variant="bordered"
-								placeholder="varchar,char,int,tiny,binary"
-								value={columnDataTypes}
-								onValueChange={setColumnDataTypes}
-								spellCheck="false"
-								description="Comma or tab-delimited list of column data types for the specified columns."
-							/>
-						</div>
 						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="default"

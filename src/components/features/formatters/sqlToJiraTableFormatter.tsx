@@ -101,7 +101,7 @@ const SqlToJiraTableFormatter = () => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] h-full">
+				<Card className="w-[550px] h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<Checkbox

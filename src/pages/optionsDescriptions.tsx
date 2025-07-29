@@ -1,5 +1,6 @@
 import FeatureHeader from "@/components/common/featureHeader";
 import FeatureSubHeader from "@/components/common/featureSubHeader";
+import { Spacer } from "@heroui/spacer";
 import {
 	ArrowRightStartOnRectangleIcon,
 	CalculatorIcon,
@@ -98,16 +99,17 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<div className="h-[800px] container flex flex-col w-full">
 			<FeatureHeader>{featureHeader}</FeatureHeader>
 			<FeatureSubHeader>{featureSubheader}</FeatureSubHeader>
+			<Spacer y={4} />
 			<ul className="w-full h-fit grid grid-cols-3 gap-4">
 				{options.map((option, index) => {
 					return (
 						<li key={option.path}>
 							<Card
 								isHoverable
-								className="h-[225px]"
+								className="h-[225px] border-1 border-secondary-100/25"
 								title={option.name}
 							>
 								<CardHeader className="flex flex-row gap-3">
@@ -117,8 +119,7 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 								<CardBody>{option.description}</CardBody>
 								<CardFooter className="flex flex-row justify-end">
 									<Button
-										color="default"
-										variant="flat"
+										className="bg-secondary-400/20"
 										as={Link}
 										href={option.path}
 										title={`Visit page for ${option.name}`}

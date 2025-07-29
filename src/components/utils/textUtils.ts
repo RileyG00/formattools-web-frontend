@@ -89,26 +89,6 @@ const specialCharacters: string[] = [
 	"~",
 ];
 
-const sqlDataTypesThatRequireQuotes = [
-	"char",
-	"varchar",
-	"nchar",
-	"nvarchar",
-	"text",
-	"ntext",
-	"date",
-	"datetime",
-	"smalldatetime",
-	"datetime2",
-	"datetimeoffset",
-	"time",
-	"uniqueidentifier",
-	"xml",
-	"hierarchyid",
-	"geometry",
-	"geography",
-];
-
 export const copyToClipboard = async (text: string): Promise<boolean> => {
 	try {
 		await navigator.clipboard.writeText(text);
@@ -254,9 +234,6 @@ export const copyAsRichHtmlTable = async (html: string): Promise<void> => {
 	const clipboardItem = new ClipboardItem({ "text/html": blob });
 	await navigator.clipboard.write([clipboardItem]);
 };
-
-export const doesSqlDataTypeRequireQuotes = (dataType: string) =>
-	sqlDataTypesThatRequireQuotes.includes(dataType.toLowerCase());
 
 export const splitOnCommaOrTab = (source: string): string[] => {
 	const delimiter: string = source.includes(",") ? "," : "\t";

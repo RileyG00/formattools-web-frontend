@@ -117,7 +117,7 @@ export const siteConfig: {
 				name: "Tabular to SQL Insert Formatter",
 				path: subPageLinks.tabDelimitedToSqlInsertFormatter,
 				description:
-					"Convert tabular columns and rows of data into a Microsoft SQL-formatted insert statement for ease-of-use when copying data from a source and inserting it into a table structure.",
+					"Convert tabular columns and rows of data into a SQL-formatted insert statement for ease-of-use when copying data from a source and inserting it into a table structure.",
 			},
 		],
 	},
