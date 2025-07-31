@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input } from "@heroui/input";
 import { NumberInput } from "@heroui/number-input";
 import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
@@ -36,7 +35,6 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 	// Outputs
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
-	const [separator, setSeparator] = useState<string>(",");
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
 
 	//------------------------------------------------------------------------------------
@@ -56,10 +54,6 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 
 			let response = "";
 
-			const characterExclusionList: string[] = isFormatAsArray
-				? []
-				: [separator];
-
 			for (let i = 0; i < numStrings; i++) {
 				let currentString: string = "";
 
@@ -69,7 +63,7 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 						isIncludeUppercase,
 						isIncludeDigits,
 						isIncludeSpecial,
-						characterExclusionList,
+						[],
 					);
 
 					currentString += randomCharacter;
@@ -78,7 +72,7 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 				if (i === 0) {
 					response += `"${currentString}"`;
 				} else {
-					response += `${isFormatAsArray ? "," : separator}"${currentString}"`;
+					response += `${isFormatAsArray ? "," : "\r\n"}"${currentString}"`;
 				}
 			}
 
@@ -127,7 +121,7 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-fit h-full">
+				<Card className="w-fit min-w-[650px] h-full">
 					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
@@ -148,14 +142,6 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 								variant="bordered"
 								minValue={1}
 								maxValue={1_000}
-							/>
-							<Input
-								value={separator}
-								className="min-w-fit"
-								onValueChange={setSeparator}
-								label="String Separator"
-								description="Only applicable if not returning results as an array"
-								variant="bordered"
 							/>
 						</div>
 						<div className="flex flex-row gap-8">
@@ -239,7 +225,7 @@ const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 				<CardBody>
 					<HighlightSyntax
 						showLineNumbers={true}
-						language="plaintext"
+						language={isFormatAsArray ? "json" : "plaintext"}
 					>
 						{output}
 					</HighlightSyntax>

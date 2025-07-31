@@ -62,12 +62,8 @@ const NumberGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 
 			let response = "";
 
-			//console.log({ minNumber, maxNumber, numbersToGenerate });
-
 			for (let i: number = 0; i < numbersToGenerate; i++) {
 				const randomNumber: number = getRandomInt(minNumber, maxNumber);
-
-				console.log(randomNumber);
 
 				if (i === 0) {
 					response += randomNumber;

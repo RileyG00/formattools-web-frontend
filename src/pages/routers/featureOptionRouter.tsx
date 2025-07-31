@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useGetFeatureOptionByKey } from "@/hooks/useGetOptionItem";
 import { FeatureRoutePath } from "@/types/siteConfigs";
 import FeatureContainer from "@/components/common/featureContainer";
+import { useGetFeatureOptionByKey } from "@/hooks/useGetOption";
 
 export const FeatureOptionRouter: React.FC = () => {
 	const { featureOption } = useParams();

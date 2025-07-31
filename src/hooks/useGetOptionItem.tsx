@@ -7,6 +7,7 @@ import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
 import JsonFormatter from "@/components/features/formatters/jsonFormatter";
 import SqlFormatter from "@/components/features/formatters/sqlFormatter";
 import SqlToJiraTableFormatter from "@/components/features/formatters/sqlToJiraTableFormatter";
+import StringFormatter from "@/components/features/formatters/stringFormatter";
 import TabularToSqlInsertFormatter from "@/components/features/formatters/tabularToSqlInsertFormatter";
 import XmlFormatter from "@/components/features/formatters/xmlFormatter";
 import LoremIpsumGenerator from "@/components/features/generators/loremIpsumGenerator";
@@ -15,9 +16,7 @@ import StringGenerator from "@/components/features/generators/stringGenerator";
 import CoinTossRng from "@/components/features/rngs/coinTossRng";
 import DiceRollRng from "@/components/features/rngs/diceRollRng";
 import { featureRoutes, featureSubRoutes } from "@/config/site";
-import OptionsDescriptions from "@/pages/optionsDescriptions";
 import {
-	FeatureOption,
 	FeatureOptionItem,
 	FeatureOptionItemKey,
 	FeatureOptionKey,
@@ -25,21 +24,11 @@ import {
 	FeatureRouteSubPath,
 } from "@/types/siteConfigs";
 import {
-	getFeatureOptionByKey,
 	getFeatureOptionItemByKey,
 	getFeatureOptionItemKey,
 	getFeatureOptionKey,
 } from "@/utils/configUtils";
 import { ReactNode, useCallback } from "react";
-
-export const useGetFeatureOptionByKey = (routeRootPath: FeatureRoutePath) => {
-	return useCallback((): ReactNode => {
-		const optionKey: FeatureOptionKey = getFeatureOptionKey(routeRootPath);
-		const option: FeatureOption = getFeatureOptionByKey(optionKey);
-
-		return <OptionsDescriptions featureOption={option} />;
-	}, [routeRootPath]);
-};
 
 export const useGetFeatureOptionItemByKey = (
 	routeRootPath: FeatureRoutePath,
@@ -96,6 +85,8 @@ export const useGetFeatureOptionItemByKey = (
 				return <TabularToSqlInsertFormatter optionItem={optionItem} />;
 			} else if (routeSubPath === featureSubRoutes.formatter_xml) {
 				return <XmlFormatter optionItem={optionItem} />;
+			} else if (routeSubPath === featureSubRoutes.formatter_string) {
+				return <StringFormatter optionItem={optionItem} />;
 			} else {
 				throw new Error("Invalid Feature Option Item path.");
 			}

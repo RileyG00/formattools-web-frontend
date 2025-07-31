@@ -1,3 +1,4 @@
+const lineBreakRegex = /\r\n|\r|\n/;
 const lowercaseLetters: string[] = [
 	"a",
 	"b",
@@ -138,6 +139,12 @@ export const formatAsArrayString = (input: string): string => `[${input}]`;
 
 export const encloseTextInSingleQuotes = (input: string): string =>
 	`'${input}'`;
+
+export const encloseTextInDoubleQuotes = (input: string): string =>
+	`"${input}"`;
+
+export const splitOnLineBreak = (input: string): string[] =>
+	input.split(lineBreakRegex);
 
 export const removeAllSpaces = (input: string): string =>
 	input.replace(/ /g, "");

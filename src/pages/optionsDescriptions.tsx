@@ -12,7 +12,6 @@ import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Link } from "@heroui/link";
 import { FeatureOption } from "@/types/siteConfigs";
-import { useEffect } from "react";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -90,15 +89,11 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 		}
 	};
 
-	useEffect(() => {
-		console.log(featureOption);
-	}, [featureOption]);
-
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full">
+		<div className="flex flex-col w-full">
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
 			<Spacer y={4} />

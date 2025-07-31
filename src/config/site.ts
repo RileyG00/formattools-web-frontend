@@ -25,6 +25,8 @@ export const featureSubRoutes = {
 	formatter_sql: "sql-formatter",
 	formatter_tabularToTable: "tabular-to-table",
 	formatter_tabularToSqlInsert: "tabular-to-sql-insert",
+	formatter_string: "string-formatter",
+	formatter_number: "number-formatter",
 
 	// Escapers / Encoders
 	escaper_json: "json-escape",
@@ -165,6 +167,19 @@ export const featureConfigs: FeatureOption[] = [
 				),
 				description:
 					"Convert tabular columns and rows of data into a SQL-formatted insert statement for ease-of-use when copying data from a source and inserting it into a table structure.",
+			},
+			{
+				key: getFeatureOptionItemKey(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_string,
+				),
+				name: "String Formatter",
+				path: getFeatureRouteUniquePath(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_string,
+				),
+				description:
+					"Convert a string, or strings, into uppercase, lowercase, surround with quotes, or format the results as an array.",
 			},
 		],
 	},
