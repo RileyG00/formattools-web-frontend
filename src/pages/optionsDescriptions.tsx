@@ -57,7 +57,7 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
 					/>
 				);
-			case "key:escapers-encoders":
+			case "key:escapers":
 				return (
 					<CodeBracketIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
