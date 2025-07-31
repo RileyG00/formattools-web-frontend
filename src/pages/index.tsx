@@ -2,7 +2,7 @@ import { Link } from "@heroui/link";
 import { button as buttonStyles } from "@heroui/theme";
 import { title, subtitle } from "@/components/primitives";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
-import { navLinks } from "@/config/site";
+import { featureConfigs } from "@/config/site";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -40,7 +40,7 @@ const IndexPage: React.FC = () => {
 							radius: "full",
 							variant: "shadow",
 						})}
-						href={navLinks.formatters}
+						href={featureConfigs[0].path}
 					>
 						Get Started
 					</Link>

@@ -10,11 +10,12 @@ import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const DiceRollRng = () => {
+const DiceRollRng: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ const DiceRollRng = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Dice Roll</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-[450px] h-full">
 					<CardHeader>Dice Specifications</CardHeader>

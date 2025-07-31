@@ -9,11 +9,12 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { LoremIpsum } from "lorem-ipsum";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const LoremIpsumGenerator = () => {
+const LoremIpsumGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -103,7 +104,7 @@ const LoremIpsumGenerator = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Lorem Ipsum Generator</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>

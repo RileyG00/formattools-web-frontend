@@ -8,26 +8,21 @@ import {
 	LockClosedIcon,
 	WrenchIcon,
 } from "@/components/common/icons";
-import { navLinks, OptionItems } from "@/config/site";
 import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Link } from "@heroui/link";
+import { FeatureOption } from "@/types/siteConfigs";
+import { useEffect } from "react";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
 interface OptionsDescriptionsProps {
-	identifier: keyof typeof navLinks;
-	featureHeader: string;
-	featureSubheader: string;
-	options: OptionItems;
+	featureOption: FeatureOption;
 }
 
 const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
-	identifier,
-	featureHeader,
-	featureSubheader,
-	options,
+	featureOption,
 }) => {
 	//------------------------------------------------------------------------------------
 	//Get Icon to Use
@@ -55,32 +50,32 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 
 		color = colorOptions[newIndex];
 
-		switch (identifier) {
-			case "formatters":
+		switch (featureOption.key) {
+			case "key:formatters":
 				return (
 					<WrenchIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
 					/>
 				);
-			case "escapers":
+			case "key:escapers-encoders":
 				return (
 					<CodeBracketIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
 					/>
 				);
-			case "ciphers":
+			case "key:ciphers":
 				return (
 					<LockClosedIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
 					/>
 				);
-			case "rngs":
+			case "key:random-numbers":
 				return (
 					<CalculatorIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
 					/>
 				);
-			case "generators":
+			case "key:generators":
 				return (
 					<ArrowRightStartOnRectangleIcon
 						className={`min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md ${color} text-white`}
@@ -95,16 +90,20 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 		}
 	};
 
+	useEffect(() => {
+		console.log(featureOption);
+	}, [featureOption]);
+
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full">
-			<FeatureHeader>{featureHeader}</FeatureHeader>
-			<FeatureSubHeader>{featureSubheader}</FeatureSubHeader>
+			<FeatureHeader>{featureOption.header}</FeatureHeader>
+			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
 			<Spacer y={4} />
 			<ul className="w-full h-fit grid grid-cols-3 gap-4">
-				{options.map((option, index) => {
+				{featureOption.items.map((option, index) => {
 					return (
 						<li key={option.path}>
 							<Card

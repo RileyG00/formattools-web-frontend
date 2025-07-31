@@ -10,11 +10,12 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/utils/textUtils";
 import { Griffinere } from "substitution-ciphers";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const GriffinereCipher = () => {
+const GriffinereCipher: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -94,7 +95,7 @@ const GriffinereCipher = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Griffinere Cipher</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Text</CardHeader>

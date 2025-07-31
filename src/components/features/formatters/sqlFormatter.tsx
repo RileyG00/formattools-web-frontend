@@ -10,11 +10,12 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/utils/textUtils";
 import { format, KeywordCase } from "sql-formatter";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const SqlFormatter = () => {
+const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -82,7 +83,7 @@ const SqlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>SQL Formatter</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input SQL</CardHeader>

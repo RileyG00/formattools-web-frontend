@@ -10,11 +10,12 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/utils/textUtils";
 import { minify, prettify } from "htmlfy";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const HtmlFormatter = () => {
+const HtmlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -87,7 +88,7 @@ const HtmlFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>HTML Formatter</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input HTML</CardHeader>

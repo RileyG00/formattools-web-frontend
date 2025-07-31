@@ -10,11 +10,12 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { prettify } from "htmlfy";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const SqlToJiraTableFormatter = () => {
+const SqlToJiraTableFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ const SqlToJiraTableFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>SQL to Jira Table Formatter</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Tabular Data</CardHeader>
@@ -148,7 +149,7 @@ const SqlToJiraTableFormatter = () => {
 						<Alert
 							color="secondary"
 							title="Note"
-							description="For the copy and paste to work in Jira, you need to use the 'copy' button above."
+							description="For the copy and paste to work in Jira (or MS Teams), you need to use the 'copy' button above."
 						/>
 						{error && (
 							<Alert
