@@ -7,17 +7,15 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import {
-	copyToClipboard,
-	formatAsArrayString,
-} from "@/components/utils/textUtils";
+import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
-import { getRandomInt } from "@/components/utils/numberUtils";
+import { getRandomInt } from "@/utils/numberUtils";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const NumberGenerator = () => {
+const NumberGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -118,7 +116,7 @@ const NumberGenerator = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Number Generator</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>

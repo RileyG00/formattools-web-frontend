@@ -1,4 +1,4 @@
-import { siteConfig } from "@/config/site";
+import { featureConfigs } from "@/config/site";
 import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
 
 //----------------------------------------------------------------------------------------
@@ -14,112 +14,34 @@ const NavigationList = () => {
 				className="w-fit"
 				aria-label="List of available formatters, obfuscators, and validators."
 				variant="flat"
+				items={featureConfigs}
 			>
-				<ListboxSection
-					showDivider
-					role="group"
-					title="Formatters"
-					aria-label="List of available formatters."
-					items={siteConfig.formatters.items}
-				>
-					{(item) => {
-						return (
-							<ListboxItem
-								aria-label={item.name}
-								role="option"
-								title={item.name}
-								key={item.key}
-								href={`/${item.path}`}
-							>
-								{item.name}
-							</ListboxItem>
-						);
-					}}
-				</ListboxSection>
-				<ListboxSection
-					showDivider
-					role="group"
-					title="Escapers / Encoders"
-					aria-label="List of available escapers."
-					items={siteConfig.escapers.items}
-				>
-					{(item) => {
-						return (
-							<ListboxItem
-								aria-label={item.name}
-								role="option"
-								title={item.name}
-								key={item.key}
-								href={`/${item.path}`}
-							>
-								{item.name}
-							</ListboxItem>
-						);
-					}}
-				</ListboxSection>
-				<ListboxSection
-					showDivider
-					role="group"
-					title="Ciphers"
-					aria-label="List of available ciphers."
-					items={siteConfig.ciphers.items}
-				>
-					{(item) => {
-						return (
-							<ListboxItem
-								aria-label={item.name}
-								role="option"
-								title={item.name}
-								key={item.key}
-								href={`/${item.path}`}
-							>
-								{item.name}
-							</ListboxItem>
-						);
-					}}
-				</ListboxSection>
-				<ListboxSection
-					showDivider
-					role="group"
-					title="RNGs"
-					aria-label="List of available random number generators."
-					items={siteConfig.rngs.items}
-				>
-					{(item) => {
-						return (
-							<ListboxItem
-								aria-label={item.name}
-								role="option"
-								title={item.name}
-								key={item.key}
-								href={`/${item.path}`}
-							>
-								{item.name}
-							</ListboxItem>
-						);
-					}}
-				</ListboxSection>
-				<ListboxSection
-					showDivider
-					role="group"
-					title="Generators"
-					aria-label="List of available generators, such as strings."
-					items={siteConfig.generators.items}
-				>
-					{(item) => {
-						return (
-							<ListboxItem
-								aria-label={item.name}
-								role="option"
-								title={item.name}
-								key={item.key}
-								href={`/${item.path}`}
-							>
-								{item.name}
-							</ListboxItem>
-						);
-					}}
-				</ListboxSection>
+				{(feature) => {
+					return (
+						<ListboxSection
+							showDivider
+							key={feature.key}
+							role="group"
+							title={feature.header}
+							aria-label={`Collection of elements under the '${feature.header} feature.'`}
+							items={feature.items}
+						>
+							{(item) => {
+								return (
+									<ListboxItem
+										aria-label={item.name}
+										role="option"
+										title={item.name}
+										key={item.key}
+										href={`/${item.path}`}
+									>
+										{item.name}
+									</ListboxItem>
+								);
+							}}
+						</ListboxSection>
+					);
+				}}
 			</Listbox>
 		</nav>
 	);

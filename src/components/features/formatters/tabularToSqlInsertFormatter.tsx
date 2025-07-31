@@ -9,15 +9,18 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyAsRichHtmlTable,
 	encloseTextInSingleQuotes,
-} from "@/components/utils/textUtils";
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { format } from "sql-formatter";
-import { isNumber } from "@/components/utils/numberUtils";
+import { isNumber } from "@/utils/numberUtils";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const TabularToSqlInsertFormatter = () => {
+const TabularToSqlInsertFormatter: React.FC<FeatureProps> = ({
+	optionItem,
+}) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -125,7 +128,7 @@ const TabularToSqlInsertFormatter = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Tabular to SQL Insert Statement</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Tabular Data</CardHeader>

@@ -6,13 +6,14 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/components/utils/textUtils";
+import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const UrlEncoderDecoder = () => {
+const UrlEncoderDecoder: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -70,7 +71,7 @@ const UrlEncoderDecoder = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>URL Encoder / Decoder</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input URL</CardHeader>

@@ -6,17 +6,14 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import {
-	copyToClipboard,
-	decodeBase64,
-	encodeBase64,
-} from "@/components/utils/textUtils";
+import { copyToClipboard, decodeBase64, encodeBase64 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const Base64EncoderDecoder = () => {
+const Base64EncoderDecoder: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -74,7 +71,7 @@ const Base64EncoderDecoder = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>Base64 Encoder / Decoder</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Text</CardHeader>

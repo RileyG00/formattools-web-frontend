@@ -12,13 +12,14 @@ import {
 	copyToClipboard,
 	formatAsArrayString,
 	getRandomCharacter,
-} from "@/components/utils/textUtils";
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const StringGenerator = () => {
+const StringGenerator: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -124,7 +125,7 @@ const StringGenerator = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>String Generator</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>

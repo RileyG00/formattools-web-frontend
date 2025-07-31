@@ -8,17 +8,14 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import xmlFormat from "xml-formatter";
-import {
-	copyToClipboard,
-	escapeXml,
-	unescapeXml,
-} from "@/components/utils/textUtils";
+import { copyToClipboard, escapeXml, unescapeXml } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
+import FeatureProps from "@/interfaces/featureProps";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlEscaper = () => {
+const XmlEscaper: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -94,7 +91,7 @@ const XmlEscaper = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>XML Escaper</FeatureHeader>
+			<FeatureHeader>{optionItem.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input XML</CardHeader>
