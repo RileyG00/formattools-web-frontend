@@ -1,4 +1,7 @@
+import KeyValue from "@/types/keyValuePair";
+
 const lineBreakRegex = /\r\n|\r|\n/;
+const lineBreakRegexGlobal = /\r\n|\r|\n/g;
 const lowercaseLetters: string[] = [
 	"a",
 	"b",
@@ -149,6 +152,9 @@ export const splitOnLineBreak = (input: string): string[] =>
 export const removeAllSpaces = (input: string): string =>
 	input.replace(/ /g, "");
 
+export const removeAllLineBreaks = (input: string): string =>
+	input.replace(lineBreakRegexGlobal, "");
+
 export const getRandomCharacter = (
 	isIncludeLower: boolean,
 	isIncludeUpper: boolean,
@@ -248,4 +254,29 @@ export const splitOnCommaOrTab = (source: string): string[] => {
 		.split(delimiter)
 		.map((s) => s.trim())
 		.filter(Boolean);
+};
+
+export const getQueryStringParams = (url: string): KeyValue[] => {
+	url = removeAllLineBreaks(removeAllSpaces(decodeURI(url)));
+	const urlParts: string[] = url.split("?");
+
+	if (urlParts.length < 2) return [];
+
+	const queryParamSegments: string[] = urlParts[1].split("&");
+
+	let response: KeyValue[] = [];
+
+	queryParamSegments.forEach((queryParamPart) => {
+		const queryParam: string[] = queryParamPart.split("=");
+
+		const key: string = queryParam[0];
+		const value: string = queryParam.length > 1 ? queryParam[1] : "";
+
+		response.push({
+			key: key,
+			value: value,
+		});
+	});
+
+	return response;
 };
