@@ -92,6 +92,7 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
+							placeholder={`select * from Data.dbo.Formatters with (nolock)`}
 						/>
 					</CardBody>
 				</Card>

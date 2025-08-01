@@ -94,6 +94,7 @@ const XmlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
+							placeholder={`<root><employeeId>1234</employeeId><name><first>Data</first><last>Formatters</last></name></root>`}
 						/>
 					</CardBody>
 				</Card>
