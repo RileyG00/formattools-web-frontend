@@ -154,7 +154,7 @@ const UrlEncoderDecoder: React.FC<FeatureProps> = ({ optionItem }) => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-				<Card className="w-[75%] max-h-[484px]">
+				<Card className="w-[75%] max-h-[484px] min-h-full">
 					<CardHeader>Output Query String Parameters</CardHeader>
 					<CardBody>
 						<Table
