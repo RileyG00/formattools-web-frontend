@@ -25,6 +25,8 @@ export const featureSubRoutes = {
 	formatter_sql: "sql-formatter",
 	formatter_tabularToTable: "tabular-to-table",
 	formatter_tabularToSqlInsert: "tabular-to-sql-insert",
+	formatter_string: "string-formatter",
+	formatter_number: "number-formatter",
 
 	// Escapers / Encoders
 	escaper_json: "json-escape",
@@ -83,6 +85,7 @@ export const siteConfig: {
 export const featureConfigs: FeatureOption[] = [
 	{
 		key: getFeatureOptionKey(featureRoutes.formatters),
+		pageTitle: "Formatters",
 		header: "Formatters",
 		subheader:
 			"The Formatters section of the application provides a suite of tools designed to make working with structured data faster, easier, and more reliable. Whether you're preparing code for debugging, beautifying output for readability, or converting results for use in other platforms like Jira, these formatters are built to save you time and reduce friction.",
@@ -93,6 +96,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_json,
 				),
+				pageTitle: "JSON Formatter",
 				name: "JSON Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -106,6 +110,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_xml,
 				),
+				pageTitle: "XML Formatter",
 				name: "XML Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -119,6 +124,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_html,
 				),
+				pageTitle: "HTML Formatter",
 				name: "HTML Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -132,6 +138,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_sql,
 				),
+				pageTitle: "SQL Formatter",
 				name: "SQL Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -145,6 +152,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_tabularToTable,
 				),
+				pageTitle: "Tabular to Table",
 				name: "Tabular To Table Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -158,6 +166,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.formatters,
 					featureSubRoutes.formatter_tabularToSqlInsert,
 				),
+				pageTitle: "Tabular to SQL",
 				name: "Tabular to SQL Insert Formatter",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.formatters,
@@ -166,10 +175,25 @@ export const featureConfigs: FeatureOption[] = [
 				description:
 					"Convert tabular columns and rows of data into a SQL-formatted insert statement for ease-of-use when copying data from a source and inserting it into a table structure.",
 			},
+			{
+				key: getFeatureOptionItemKey(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_string,
+				),
+				pageTitle: "String Formatter",
+				name: "String Formatter",
+				path: getFeatureRouteUniquePath(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_string,
+				),
+				description:
+					"Convert a string, or strings, into uppercase, lowercase, surround with quotes, or format the results as an array.",
+			},
 		],
 	},
 	{
 		key: getFeatureOptionKey(featureRoutes.escapers_encoders),
+		pageTitle: "Escapers and Encoders",
 		header: "Escapers and Encoders",
 		subheader:
 			"The Escapers & Encoders section equips you with one-click tools to make any text or binary payload safe for transport, storage, and display. Instantly escape reserved characters, encode or decode URLs, and convert data to and from Base64, keeping everything standards-compliant, secure, and error-free wherever it travels.",
@@ -180,6 +204,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.escapers_encoders,
 					featureSubRoutes.escaper_json,
 				),
+				pageTitle: "JSON Escape/Unescape",
 				name: "JSON Escape/Unescape",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.escapers_encoders,
@@ -193,6 +218,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.escapers_encoders,
 					featureSubRoutes.escaper_xml,
 				),
+				pageTitle: "XML Escape/Unescape",
 				name: "XML Escape/Unescape",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.escapers_encoders,
@@ -206,6 +232,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.escapers_encoders,
 					featureSubRoutes.encoder_url,
 				),
+				pageTitle: "URL Encoder/Decoder",
 				name: "URL Encoder/Decoder",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.escapers_encoders,
@@ -219,6 +246,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.escapers_encoders,
 					featureSubRoutes.encoder_base64,
 				),
+				pageTitle: "Base64 Encoder/Decoder",
 				name: "Base64 Encoder/Decoder",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.escapers_encoders,
@@ -231,6 +259,7 @@ export const featureConfigs: FeatureOption[] = [
 	},
 	{
 		key: getFeatureOptionKey(featureRoutes.ciphers),
+		pageTitle: "Ciphers",
 		header: "Ciphers",
 		subheader:
 			"Explore lightweight, reversible encryption tools that turn plain text into protected strings, and back again, in seconds. Perfect for quick obfuscation, secure sharing of config values, or hands-on learning about cryptographic concepts.",
@@ -241,6 +270,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.ciphers,
 					featureSubRoutes.cipher_griffinere,
 				),
+				pageTitle: "Griffinere Cipher",
 				name: "Griffinere",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.ciphers,
@@ -253,6 +283,7 @@ export const featureConfigs: FeatureOption[] = [
 	},
 	{
 		key: getFeatureOptionKey(featureRoutes.rngs),
+		pageTitle: "Random Number Generators",
 		header: "Random Number Generators",
 		subheader:
 			"Use the RNG tools when you need fair random outcomes. Roll virtual dice for a game, flip a coin to settle a decision, or generate numbers for testing and simulations. All fast and reliable.",
@@ -263,6 +294,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.rngs,
 					featureSubRoutes.rng_diceRoll,
 				),
+				pageTitle: "Dice Roll",
 				name: "Dice Roll",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.rngs,
@@ -276,6 +308,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.rngs,
 					featureSubRoutes.rng_coinToss,
 				),
+				pageTitle: "Coin Toss",
 				name: "Coin Toss",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.rngs,
@@ -289,6 +322,7 @@ export const featureConfigs: FeatureOption[] = [
 	{
 		key: getFeatureOptionKey(featureRoutes.generators),
 		header: "String and Number Generators",
+		pageTitle: "Generators",
 		subheader:
 			"Create random strings or numbers for placeholder content, unique IDs, or test data. Adjust length or range and copy the results instantly.",
 		path: featureRoutes.generators,
@@ -298,6 +332,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.generators,
 					featureSubRoutes.generator_string,
 				),
+				pageTitle: "String Generator",
 				name: "String Generator",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.generators,
@@ -311,6 +346,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.generators,
 					featureSubRoutes.generator_number,
 				),
+				pageTitle: "Number Generator",
 				name: "Number Generator",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.generators,
@@ -324,6 +360,7 @@ export const featureConfigs: FeatureOption[] = [
 					featureRoutes.generators,
 					featureSubRoutes.generator_lorem,
 				),
+				pageTitle: "Lorem Ipsum Generator",
 				name: "Lorem Ipsum Generator",
 				path: getFeatureRouteUniquePath(
 					featureRoutes.generators,

@@ -97,6 +97,7 @@ const HtmlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
+							placeholder={`<div><div><strong>employeeId:</strong>1234</div><div><strong>name:</strong><div><div><strong>first:</strong>Data</div><div><strong>last:</strong>Formatters</div></div></div></div>`}
 						/>
 					</CardBody>
 				</Card>

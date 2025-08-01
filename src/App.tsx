@@ -13,8 +13,6 @@ const App: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
-
-	//TODO: Update the component that gets returned for the featureOption type
 	return (
 		<Routes>
 			<Route element={<IndexPage />} path={navLinks.home} />

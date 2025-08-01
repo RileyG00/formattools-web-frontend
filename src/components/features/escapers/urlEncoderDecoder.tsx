@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableColumn,
+	TableRow,
+	TableCell,
+} from "@heroui/table";
 import { Textarea } from "@heroui/input";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/utils/textUtils";
+import { copyToClipboard, getQueryStringParams } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import FeatureProps from "@/interfaces/featureProps";
 
@@ -134,17 +142,57 @@ const UrlEncoderDecoder: React.FC<FeatureProps> = ({ optionItem }) => {
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Output URL</CardHeader>
-				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<div className="flex flex-row gap-4 h-full">
+				<Card className="w-full h-full">
+					<CardHeader>Output URL</CardHeader>
+					<CardBody>
+						<HighlightSyntax
+							showLineNumbers={true}
+							language="plaintext"
+						>
+							{output}
+						</HighlightSyntax>
+					</CardBody>
+				</Card>
+				<Card className="w-[75%] max-h-[484px]">
+					<CardHeader>Output Query String Parameters</CardHeader>
+					<CardBody>
+						<Table
+							aria-label="Table containing the query parameter values for the URL."
+							className="overflow-auto"
+						>
+							<TableHeader>
+								<TableColumn>Key</TableColumn>
+								<TableColumn>Value</TableColumn>
+							</TableHeader>
+							<TableBody items={getQueryStringParams(output)}>
+								{(queryParam) => {
+									return (
+										<TableRow
+											key={
+												queryParam.key +
+												queryParam.value
+											}
+											aria-label={`Key: ${queryParam.key}. Value: ${queryParam.value}`}
+										>
+											<TableCell
+												aria-label={`Key: ${queryParam.key}`}
+											>
+												{queryParam.key}
+											</TableCell>
+											<TableCell
+												aria-label={`Value: ${queryParam.value}`}
+											>
+												{queryParam.value}
+											</TableCell>
+										</TableRow>
+									);
+								}}
+							</TableBody>
+						</Table>
+					</CardBody>
+				</Card>
+			</div>
 		</div>
 	);
 };

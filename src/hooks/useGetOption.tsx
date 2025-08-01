@@ -1,4 +1,4 @@
-import OptionsDescriptions from "@/pages/optionsDescriptions";
+import OptionsDescriptions from "@/pages/featureOptionPreview";
 import {
 	FeatureOption,
 	FeatureOptionKey,
@@ -10,12 +10,11 @@ import {
 } from "@/utils/configUtils";
 import { ReactNode, useCallback } from "react";
 
-export const useGetOption = (routeRootPath: FeatureRoutePath) => {
-	const optionKey: FeatureOptionKey = getFeatureOptionKey(routeRootPath);
-
+export const useGetFeatureOptionByKey = (routeRootPath: FeatureRoutePath) => {
 	return useCallback((): ReactNode => {
-		const featureOption: FeatureOption = getFeatureOptionByKey(optionKey);
+		const optionKey: FeatureOptionKey = getFeatureOptionKey(routeRootPath);
+		const option: FeatureOption = getFeatureOptionByKey(optionKey);
 
-		return <OptionsDescriptions featureOption={featureOption} />;
+		return <OptionsDescriptions featureOption={option} />;
 	}, [routeRootPath]);
 };

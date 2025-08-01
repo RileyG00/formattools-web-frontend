@@ -17,7 +17,7 @@ const GradientBackgroundLayout: React.FC<GradientBackgroundLayoutProps> = ({
 				backgroundSize: "cover",
 				backgroundPosition: "center",
 			}}
-			className="flex flex-col min-w-screen min-h-screen justify-start items-center"
+			className="flex flex-col w-full min-h-screen justify-start items-center pb-[52px]"
 		>
 			<header className="w-full">
 				<Navbar />

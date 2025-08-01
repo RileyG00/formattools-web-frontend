@@ -87,6 +87,7 @@ const JsonFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
+							placeholder={`{"employeeId": 1234, "name": {"first": "Data", "last": "Formatters"}}`}
 						/>
 					</CardBody>
 				</Card>
