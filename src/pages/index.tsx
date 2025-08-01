@@ -3,6 +3,8 @@ import { button as buttonStyles } from "@heroui/theme";
 import { title, subtitle } from "@/components/primitives";
 import GradientBackgroundLayout from "@/layouts/gradientBackgroundLayout";
 import { featureConfigs } from "@/config/site";
+import { Helmet } from "react-helmet";
+import { getPageTitle } from "@/utils/envUtils";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -13,6 +15,9 @@ const IndexPage: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<GradientBackgroundLayout isIncludeSvg={true}>
+			<Helmet>
+				<title>{getPageTitle()}</title>
+			</Helmet>
 			<main className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
 				<div className="max-w-3xl text-center justify-center mt-20">
 					<span className={title({ size: "lg" })}>

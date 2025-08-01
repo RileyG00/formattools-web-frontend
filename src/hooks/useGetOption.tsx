@@ -1,4 +1,4 @@
-import OptionsDescriptions from "@/pages/optionsDescriptions";
+import OptionsDescriptions from "@/pages/featureOptionPreview";
 import {
 	FeatureOption,
 	FeatureOptionKey,

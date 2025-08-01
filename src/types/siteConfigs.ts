@@ -16,6 +16,7 @@ export type FeatureOptionItemKey =
 // Types associated with how the Site Config is structured
 export type FeatureOption = {
 	key: FeatureOptionKey;
+	pageTitle: string;
 	header: string;
 	subheader: string;
 	path: FeatureRoutePath;
@@ -24,6 +25,7 @@ export type FeatureOption = {
 
 export type FeatureOptionItem = {
 	key: FeatureOptionItemKey;
+	pageTitle: string;
 	name: string;
 	path: FeatureRouteUniquePath;
 	description: string;

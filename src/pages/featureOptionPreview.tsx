@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import FeatureHeader from "@/components/common/featureHeader";
 import FeatureSubHeader from "@/components/common/featureSubHeader";
 import { Spacer } from "@heroui/spacer";
@@ -12,6 +13,7 @@ import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Link } from "@heroui/link";
 import { FeatureOption } from "@/types/siteConfigs";
+import { getPageTitle } from "@/utils/envUtils";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -20,7 +22,7 @@ interface OptionsDescriptionsProps {
 	featureOption: FeatureOption;
 }
 
-const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
+const FeatureOptionPreview: React.FC<OptionsDescriptionsProps> = ({
 	featureOption,
 }) => {
 	//------------------------------------------------------------------------------------
@@ -94,6 +96,9 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="flex flex-col w-full">
+			<Helmet>
+				<title>{getPageTitle(featureOption.pageTitle)}</title>
+			</Helmet>
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
 			<Spacer y={4} />
@@ -130,4 +135,4 @@ const OptionsDescriptions: React.FC<OptionsDescriptionsProps> = ({
 	);
 };
 
-export default OptionsDescriptions;
+export default FeatureOptionPreview;
