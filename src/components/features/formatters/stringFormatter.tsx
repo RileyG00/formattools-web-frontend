@@ -13,6 +13,7 @@ import {
 	encloseTextInDoubleQuotes,
 	encloseTextInSingleQuotes,
 	formatAsArrayString,
+	removeAllSpaces,
 	splitOnLineBreak,
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
@@ -29,8 +30,14 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
 	const [casing, setCasing] = useState<
 		"preserve" | "uppercase" | "lowercase"
-	>("uppercase");
+	>("preserve");
 	const [quotes, setQuotes] = useState<"none" | "double" | "single">("none");
+	const [delimiter, setDelimiter] = useState<"tab" | "semicolon" | "comma">(
+		"comma",
+	);
+	const [isAddSpaceAfterDelimiter, setIsAddSpaceAfterDelimiter] =
+		useState<boolean>(true);
+
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -83,7 +90,17 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 					if (i === 0) {
 						response += str;
 					} else {
-						response += `, ${str}`;
+						const delim: string =
+							delimiter === "tab"
+								? "\t"
+								: delimiter === "semicolon"
+									? "; "
+									: ", ";
+						response += `${delim}${str}`;
+
+						if (!isAddSpaceAfterDelimiter) {
+							response = removeAllSpaces(response);
+						}
 					}
 				}
 			}
@@ -137,11 +154,11 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] h-full">
+				<Card className="w-[950px] h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<Select
-							aria-label="Options for how to format the JSON output."
+							aria-label="Options for how to format the string output."
 							label="Casing Options"
 							selectedKeys={[casing]}
 							onSelectionChange={(e) => {
@@ -169,13 +186,58 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 							<SelectItem key={"uppercase"}>Uppercase</SelectItem>
 							<SelectItem key={"lowercase"}>Lowercase</SelectItem>
 						</Select>
-						<Checkbox
-							color="secondary"
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-						>
-							Return results as array
-						</Checkbox>
+						<div className="flex flex-row w-full">
+							<div className="flex flex-col gap-4 w-full">
+								<Checkbox
+									color="secondary"
+									isSelected={isFormatAsArray}
+									onValueChange={setIsFormatAsArray}
+									className="w-full"
+								>
+									Return results as array
+								</Checkbox>
+								<Checkbox
+									color="secondary"
+									isSelected={isAddSpaceAfterDelimiter}
+									onValueChange={setIsAddSpaceAfterDelimiter}
+									className="w-full"
+								>
+									Add space after delimiter
+								</Checkbox>
+							</div>
+							<Select
+								aria-label="Options for how to format the JSON output."
+								label="Delimiter Options"
+								selectedKeys={[delimiter]}
+								className="w-full"
+								onSelectionChange={(e) => {
+									let delimiterMaster:
+										| "tab"
+										| "semicolon"
+										| "comma" = "comma";
+									const val: string = e.currentKey ?? "comma";
+
+									if (
+										["tab", "semicolon", "comma"].includes(
+											val,
+										)
+									) {
+										delimiterMaster =
+											val as typeof delimiterMaster;
+
+										setDelimiter(delimiterMaster);
+									}
+								}}
+								variant="bordered"
+								description="Has no effect if formatting as an array."
+							>
+								<SelectItem key={"tab"}>Tab</SelectItem>
+								<SelectItem key={"semicolon"}>
+									Semicolon
+								</SelectItem>
+								<SelectItem key={"comma"}>Comma</SelectItem>
+							</Select>
+						</div>
 						<RadioGroup
 							label="Apply Quotes"
 							orientation="horizontal"
