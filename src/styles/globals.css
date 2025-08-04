@@ -69,3 +69,13 @@
 	}
 }
 
+.ua-reset,
+.ua-reset * {
+	all: revert;
+}
+
+.ua-reset *::before,
+.ua-reset *::after {
+	all: revert;
+}
+
