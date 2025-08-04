@@ -27,6 +27,7 @@ export const featureSubRoutes = {
 	formatter_tabularToSqlInsert: "tabular-to-sql-insert",
 	formatter_string: "string-formatter",
 	formatter_number: "number-formatter",
+	formatter_markdown: "markdown-formatter",
 
 	// Escapers / Encoders
 	escaper_json: "json-escape",
@@ -188,6 +189,20 @@ export const featureConfigs: FeatureOption[] = [
 				),
 				description:
 					"Convert a string, or strings, into uppercase, lowercase, surround with quotes, or format the results as an array.",
+			},
+			{
+				key: getFeatureOptionItemKey(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_markdown,
+				),
+				pageTitle: "Markdown Formatter",
+				name: "Markdown Formatter",
+				path: getFeatureRouteUniquePath(
+					featureRoutes.formatters,
+					featureSubRoutes.formatter_markdown,
+				),
+				description:
+					"Automatically clean and standardize your Markdown—align headings, lists, code blocks, and links for neat, consistent documentation.",
 			},
 		],
 	},

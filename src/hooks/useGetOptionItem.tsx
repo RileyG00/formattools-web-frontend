@@ -5,6 +5,7 @@ import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder"
 import XmlEscaper from "@/components/features/escapers/xmlEscaper";
 import HtmlFormatter from "@/components/features/formatters/htmlFormatter";
 import JsonFormatter from "@/components/features/formatters/jsonFormatter";
+import MarkdownFormatter from "@/components/features/formatters/markdownFormatter";
 import SqlFormatter from "@/components/features/formatters/sqlFormatter";
 import SqlToJiraTableFormatter from "@/components/features/formatters/sqlToJiraTableFormatter";
 import StringFormatter from "@/components/features/formatters/stringFormatter";
@@ -87,6 +88,8 @@ export const useGetFeatureOptionItemByKey = (
 				return <XmlFormatter optionItem={optionItem} />;
 			} else if (routeSubPath === featureSubRoutes.formatter_string) {
 				return <StringFormatter optionItem={optionItem} />;
+			} else if (routeSubPath === featureSubRoutes.formatter_markdown) {
+				return <MarkdownFormatter optionItem={optionItem} />;
 			} else {
 				throw new Error("Invalid Feature Option Item path.");
 			}

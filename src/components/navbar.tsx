@@ -4,13 +4,13 @@ import {
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
-	NavbarMenuToggle,
 } from "@heroui/navbar";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/hooks/useThemeSwitch";
 import { GithubIcon } from "@/components/common/icons";
 import { Logo } from "@/components/common/icons";
+import { NavItem } from "@/types/siteConfigs";
 
 export const Navbar = () => {
 	return (
@@ -30,13 +30,18 @@ export const Navbar = () => {
 						</Link>
 					</NavbarBrand>
 				</li>
-				{siteConfig.navItems.map((item) => (
-					<NavbarItem key={item.href}>
-						<Link color="foreground" href={item.href}>
-							{item.label}
-						</Link>
-					</NavbarItem>
-				))}
+				{siteConfig.navItems.map((item: NavItem) => {
+					const newRoute: string =
+						item.href === "/" ? "/" : "/" + item.href;
+
+					return (
+						<NavbarItem key={item.href}>
+							<Link color="foreground" href={newRoute}>
+								{item.label}
+							</Link>
+						</NavbarItem>
+					);
+				})}
 			</NavbarContent>
 
 			<NavbarContent
@@ -52,24 +57,6 @@ export const Navbar = () => {
 						<GithubIcon className="text-default-500" />
 					</Link>
 					<ThemeSwitch />
-				</NavbarItem>
-			</NavbarContent>
-
-			<NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-				<NavbarItem>
-					<Link
-						isExternal
-						href={siteConfig.links.github}
-						aria-label="Navigate to RileyG00's GitHub page."
-						title="Navigate to RileyG00's GitHub page."
-					>
-						<GithubIcon
-							className="text-default-500"
-							id="githubIcon"
-						/>
-					</Link>
-					<ThemeSwitch />
-					<NavbarMenuToggle />
 				</NavbarItem>
 			</NavbarContent>
 		</HeroUINavbar>
