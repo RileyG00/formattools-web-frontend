@@ -7,6 +7,31 @@
 	</url>
 	<url>
 		<loc>
+			https://dataformatters.netlify.app/formatters
+		</loc>
+	</url>
+	<url>
+		<loc>
+			https://dataformatters.netlify.app/escapers
+		</loc>
+	</url>
+	<url>
+		<loc>
+			https://dataformatters.netlify.app/ciphers
+		</loc>
+	</url>
+	<url>
+		<loc>
+			https://dataformatters.netlify.app/random-numbers
+		</loc>
+	</url>
+	<url>
+		<loc>
+			https://dataformatters.netlify.app/generators
+		</loc>
+	</url>
+	<url>
+		<loc>
 			https://dataformatters.netlify.app/formatters/json-formatter
 		</loc>
 	</url>
