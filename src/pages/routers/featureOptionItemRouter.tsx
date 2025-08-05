@@ -14,7 +14,7 @@ import {
 	getFeatureOptionKey,
 } from "@/utils/configUtils";
 import { Helmet } from "react-helmet";
-import { getPageTitle } from "@/utils/envUtils";
+import { buildCanonical, getPageTitle } from "@/utils/envUtils";
 
 export const FeatureOptionItemRouter: React.FC = () => {
 	const { featureOption, featureOptionItem } = useParams();
@@ -45,6 +45,26 @@ export const FeatureOptionItemRouter: React.FC = () => {
 		<FeatureContainer>
 			<Helmet>
 				<title>{getPageTitle(featureOptionItems.pageTitle)}</title>
+				<meta
+					name="description"
+					content={featureOptionItems.description}
+				/>
+				<meta
+					property="og:description"
+					content={featureOptionItems.description}
+				/>
+				<link
+					rel="canonical"
+					href={buildCanonical(
+						`${featureRoutePath}/${featureRouteSubPath}`,
+					)}
+				/>
+				<meta
+					property="og:url"
+					content={buildCanonical(
+						`${featureRoutePath}/${featureRouteSubPath}`,
+					)}
+				/>
 			</Helmet>
 			{featureOptionItemView()}
 		</FeatureContainer>

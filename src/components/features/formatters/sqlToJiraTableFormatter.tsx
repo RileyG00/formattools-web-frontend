@@ -6,11 +6,15 @@ import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import {
+	ArrowTopRightOnSquareIcon,
+	DuplicateDocumentIcon,
+} from "@/components/common/icons";
 import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
 import { prettify } from "htmlfy";
 import FeatureProps from "@/interfaces/featureProps";
+import { Link } from "@heroui/link";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -88,6 +92,16 @@ const SqlToJiraTableFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
 			<FeatureHeader>{optionItem.name}</FeatureHeader>
+			<p>
+				Want to skip the website? Get the Google Chrome Extension:
+				<Link
+					isExternal
+					href={import.meta.env.VITE_ChromExtension_TabularToTable}
+				>
+					&nbsp; Extension Store&nbsp;
+					<ArrowTopRightOnSquareIcon size={16} />
+				</Link>
+			</p>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input Tabular Data</CardHeader>

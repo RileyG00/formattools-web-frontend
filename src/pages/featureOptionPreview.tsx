@@ -13,7 +13,7 @@ import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
 import { Link } from "@heroui/link";
 import { FeatureOption } from "@/types/siteConfigs";
-import { getPageTitle } from "@/utils/envUtils";
+import { buildCanonical, getPageTitle } from "@/utils/envUtils";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -98,6 +98,19 @@ const FeatureOptionPreview: React.FC<OptionsDescriptionsProps> = ({
 		<div className="flex flex-col w-full">
 			<Helmet>
 				<title>{getPageTitle(featureOption.pageTitle)}</title>
+				<meta name="description" content={featureOption.subheader} />
+				<meta
+					property="og:description"
+					content={featureOption.subheader}
+				/>
+				<link
+					rel="canonical"
+					href={buildCanonical(featureOption.path)}
+				/>
+				<meta
+					property="og:url"
+					content={buildCanonical(featureOption.path)}
+				/>
 			</Helmet>
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>

@@ -17,6 +17,14 @@ const IndexPage: React.FC = () => {
 		<GradientBackgroundLayout isIncludeSvg={true}>
 			<Helmet>
 				<title>{getPageTitle()}</title>
+				<meta
+					property="og:description"
+					content="Data Formatters is a free, browser-based toolbox with 15+ pro coding utilities. Format JSON, XML, and more, convert, test & debug anything in seconds. No installs, just ship faster."
+				/>
+				<meta
+					name="description"
+					content="Data Formatters is a free, browser-based toolbox with 15+ pro coding utilities. Format JSON, XML, and more, convert, test & debug anything in seconds. No installs, just ship faster."
+				/>
 			</Helmet>
 			<main className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
 				<div className="max-w-3xl text-center justify-center mt-20">
