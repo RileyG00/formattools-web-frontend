@@ -13,7 +13,6 @@ import {
 	encloseTextInDoubleQuotes,
 	encloseTextInSingleQuotes,
 	formatAsArrayString,
-	removeAllSpaces,
 	splitOnLineBreak,
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/common/featureHeader";
