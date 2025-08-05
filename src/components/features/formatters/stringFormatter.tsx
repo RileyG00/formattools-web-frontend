@@ -99,7 +99,7 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 						response += `${delim}${str}`;
 
 						if (!isAddSpaceAfterDelimiter) {
-							response = removeAllSpaces(response);
+							response = response.replace(/; /g, ";");
 						}
 					}
 				}
