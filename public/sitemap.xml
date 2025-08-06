@@ -1,123 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/
-		</loc>
+		<loc>https://dataformatters.netlify.app/</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/escapers
-		</loc>
+		<loc>https://dataformatters.netlify.app/escapers</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/ciphers
-		</loc>
+		<loc>https://dataformatters.netlify.app/ciphers</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/random-numbers
-		</loc>
+		<loc>https://dataformatters.netlify.app/random-numbers</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/generators
-		</loc>
+		<loc>https://dataformatters.netlify.app/generators</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/json-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/converter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/xml-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/json-formatter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/html-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/xml-formatter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/sql-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/html-formatter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/tabular-to-table
-		</loc>
-	</url>
-    <url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/tabular-to-sql-insert
-		</loc>
-	</url>
-    <url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/string-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/sql-formatter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/formatters/markdown-formatter
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/tabular-to-table</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/escapers/json-escape
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/tabular-to-sql-insert</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/escapers/xml-escape
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/string-formatter</loc>
+		<lastmod>2025-08-05T20:00:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/escapers/url-encoder
-		</loc>
+		<loc>https://dataformatters.netlify.app/formatters/markdown-formatter</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/escapers/base64-encoder-decoder
-		</loc>
+		<loc>https://dataformatters.netlify.app/escapers/json-escape</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/ciphers/griffinere
-		</loc>
+		<loc>https://dataformatters.netlify.app/escapers/xml-escape</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/random-numbers/dice-role
-		</loc>
+		<loc>https://dataformatters.netlify.app/escapers/url-encoder</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/random-numbers/coin-toss
-		</loc>
+		<loc>https://dataformatters.netlify.app/escapers/base64-encoder-decoder</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/generators/string-generator
-		</loc>
+		<loc>https://dataformatters.netlify.app/ciphers/griffinere</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/generators/number-generator
-		</loc>
+		<loc>https://dataformatters.netlify.app/random-numbers/dice-role</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
 	</url>
 	<url>
-		<loc>
-			https://dataformatters.netlify.app/generators/lorem-ipsum-generator
-		</loc>
+		<loc>https://dataformatters.netlify.app/random-numbers/coin-toss</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/string-generator</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/number-generator</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/generators/lorem-ipsum-generator</loc>
+		<lastmod>2025-08-04T16:45:00-07:00</lastmod>
+	</url>
+	<url>
+		<loc>https://dataformatters.netlify.app/converter/epoch-date-converter</loc>
+		<lastmod>2025-08-05T20:00:00-07:00</lastmod>
 	</url>
 </urlset>
