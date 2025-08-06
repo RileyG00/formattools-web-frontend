@@ -1,4 +1,5 @@
 import GriffinereCipher from "@/components/features/ciphers/griffinereCipher";
+import EpochDateConverter from "@/components/features/converters/epochDateConverter";
 import Base64EncoderDecoder from "@/components/features/escapers/base64EncoderDecoder";
 import JsonEscaper from "@/components/features/escapers/jsonEscaper";
 import UrlEncoderDecoder from "@/components/features/escapers/urlEncoderDecoder";
@@ -114,6 +115,12 @@ export const useGetFeatureOptionItemByKey = (
 				return <DiceRollRng optionItem={optionItem} />;
 			} else {
 				throw new Error("Invalid Feature Option Item path.");
+			}
+		}
+		// Converters
+		else if (routeRootPath === featureRoutes.converter) {
+			if (routeSubPath === featureSubRoutes.converter_epoch_date) {
+				return <EpochDateConverter optionItem={optionItem} />;
 			}
 		} else {
 			throw new Error("Invalid Feature Option path");

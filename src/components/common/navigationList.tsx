@@ -1,5 +1,6 @@
 import { featureConfigs } from "@/config/site";
 import { Listbox, ListboxSection, ListboxItem } from "@heroui/listbox";
+import { FeatureOptionItemStatusChip } from "./featureOptionItemStatus.Chip";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -9,9 +10,9 @@ const NavigationList = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<nav>
+		<nav className="min-w-fit">
 			<Listbox
-				className="w-fit"
+				className="min-w-fit"
 				aria-label="List of available formatters, obfuscators, and validators."
 				variant="flat"
 				items={featureConfigs}
@@ -31,11 +32,18 @@ const NavigationList = () => {
 									<ListboxItem
 										aria-label={item.name}
 										role="option"
-										title={item.name}
 										key={item.key}
 										href={`/${item.path}`}
 									>
-										{item.name}
+										<span className="flex flex-row items-center justify-start">
+											<span className="break-keep min-w-fit">
+												{item.name}
+											</span>
+											&nbsp;
+											<FeatureOptionItemStatusChip
+												status={item.status}
+											/>
+										</span>
 									</ListboxItem>
 								);
 							}}

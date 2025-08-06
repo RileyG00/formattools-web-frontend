@@ -29,7 +29,7 @@ export const getFeatureOptionByKey = (key: FeatureOptionKey): FeatureOption => {
 	);
 
 	if (!option) {
-		throw new Error("Invalid Feature Option Key.");
+		throw new Error(`Invalid Feature Option Key: ${key}`);
 	}
 
 	return option;
