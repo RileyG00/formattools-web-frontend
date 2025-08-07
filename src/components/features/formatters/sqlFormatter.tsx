@@ -11,6 +11,8 @@ import { copyToClipboard } from "@/utils/textUtils";
 import { format, KeywordCase } from "sql-formatter";
 import FeatureHeader from "@/components/common/featureHeader";
 import FeatureProps from "@/interfaces/featureProps";
+import SQLLanguage from "@/types/sqlLanguage";
+import { NumberInput } from "@heroui/number-input";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -21,6 +23,8 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	const [indentation, setIndentation] = useState<string>("tab");
 	const [keywordCasing, setKeywordCasing] = useState<string>("preserve");
+	const [language, setLanguage] = useState<SQLLanguage>("tsql");
+	const [linesBetweenQueries, setLinesBetweenQueries] = useState<number>(2);
 	const [identifierCasing, setIdentifierCasing] =
 		useState<string>("preserve");
 	const [error, setError] = useState<string | null>(null);
@@ -36,7 +40,7 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 
 		try {
 			const formatted: string = format(input, {
-				language: "sql",
+				language: language,
 				tabWidth: !isNaN(parseInt(indentation))
 					? parseInt(indentation)
 					: 1, // If not a NaN, it means the user is not using the tab option,
@@ -44,7 +48,7 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 				keywordCase: keywordCasing as unknown as KeywordCase,
 				functionCase: keywordCasing as unknown as KeywordCase,
 				identifierCase: identifierCasing as unknown as KeywordCase,
-				linesBetweenQueries: 2,
+				linesBetweenQueries: linesBetweenQueries,
 			});
 
 			setOutput(formatted);
@@ -99,19 +103,62 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 				<Card className="min-w-[450px] h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the SQL output."
-							label="SQL Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
-							variant="bordered"
-						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-						</Select>
+						<div className="flex flex-row gap-4">
+							<Select
+								aria-label="Options for how to format the SQL output."
+								label="SQL Output Indentation"
+								selectedKeys={[indentation]}
+								onSelectionChange={(e) =>
+									setIndentation(e.currentKey ?? "tab")
+								}
+								variant="bordered"
+							>
+								<SelectItem key={"2"}>2 spaces</SelectItem>
+								<SelectItem key={"4"}>4 spaces</SelectItem>
+								<SelectItem key={"tab"}>Tab</SelectItem>
+							</Select>
+							<Select
+								aria-label="Select the language that you are trying to format."
+								label="Language"
+								selectedKeys={[language]}
+								onSelectionChange={(e) =>
+									setLanguage(
+										(e.currentKey as SQLLanguage) ?? "tsql",
+									)
+								}
+								variant="bordered"
+							>
+								<SelectItem key={"bigquery"}>
+									BigQuery
+								</SelectItem>
+								<SelectItem key={"db2"}>DB2</SelectItem>
+								<SelectItem key={"db2i"}>DB2 i</SelectItem>
+								<SelectItem key={"duckdb"}>DuckDB</SelectItem>
+								<SelectItem key={"hive"}>Hive</SelectItem>
+								<SelectItem key={"mariadb"}>MariaDB</SelectItem>
+								<SelectItem key={"mysql"}>MySQL</SelectItem>
+								<SelectItem key={"n1ql"}>N1QL</SelectItem>
+								<SelectItem key={"plsql"}>PL/SQL</SelectItem>
+								<SelectItem key={"postgresql"}>
+									PostgreSQL
+								</SelectItem>
+								<SelectItem key={"redshift"}>
+									Redshift
+								</SelectItem>
+								<SelectItem key={"singlestoredb"}>
+									SingleStoreDB
+								</SelectItem>
+								<SelectItem key={"snowflake"}>
+									Snowflake
+								</SelectItem>
+								<SelectItem key={"spark"}>Spark</SelectItem>
+								<SelectItem key={"sql"}>SQL</SelectItem>
+								<SelectItem key={"sqlite"}>SQLite</SelectItem>
+								<SelectItem key={"tidb"}>TiDB</SelectItem>
+								<SelectItem key={"trino"}>Trino</SelectItem>
+								<SelectItem key={"tsql"}>T-SQL</SelectItem>
+							</Select>
+						</div>
 						<div className="flex flex-row gap-2">
 							<Select
 								aria-label="Options for how to set the keyword casing."
@@ -146,6 +193,15 @@ const SqlFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 								<SelectItem key={"lower"}>Lowercase</SelectItem>
 							</Select>
 						</div>
+						<NumberInput
+							hideStepper
+							variant="bordered"
+							label="Lines Between Queries"
+							value={linesBetweenQueries}
+							onValueChange={setLinesBetweenQueries}
+							minValue={1}
+							maxValue={10}
+						/>
 						<div className="flex flex-row gap-2 justify-end">
 							<Button
 								color="default"

@@ -158,7 +158,7 @@ export const featureConfigs: FeatureOption[] = [
 				),
 				description:
 					"Apply consistent casing, indentation, and line breaks to tangled SQL queries so you can quickly grasp logic, joins, and subqueries.",
-				status: null,
+				status: "Updated",
 			},
 			{
 				key: getFeatureOptionItemKey(
