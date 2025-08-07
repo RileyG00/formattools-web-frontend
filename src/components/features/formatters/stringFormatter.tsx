@@ -49,67 +49,51 @@ const StringFormatter: React.FC<FeatureProps> = ({ optionItem }) => {
 		if (error) setError(null);
 
 		try {
-			const strings: string[] = splitOnLineBreak(raw);
+			// 1️⃣ Normalize casing in one pass
+			const strings: string[] = splitOnLineBreak(raw).map((s: string) => {
+				if (casing === "uppercase") return s.toUpperCase();
+				if (casing === "lowercase") return s.toLowerCase();
+				return s; // preserve
+			});
 
-			let response: string = "";
+			let response: string;
+
 			if (isFormatAsArray) {
-				for (let i: number = 0; i < strings.length; i++) {
-					const str: string =
-						casing === "preserve"
-							? strings[i]
-							: casing === "uppercase"
-								? strings[i].toUpperCase()
-								: strings[i].toLowerCase();
-
-					const enclosedStr: string = encloseTextInDoubleQuotes(str);
-
-					if (i === 0) {
-						response += enclosedStr;
-					} else {
-						response += `, ${enclosedStr}`;
-					}
-				}
-
-				response = formatAsArrayString(response);
-				response = JSON.stringify(JSON.parse(response), null, "\t");
+				const body: string = strings
+					.map(encloseTextInDoubleQuotes)
+					.join(", ");
+				response = JSON.stringify(
+					JSON.parse(formatAsArrayString(body)),
+					null,
+					"\t",
+				);
 			} else {
-				for (let i: number = 0; i < strings.length; i++) {
-					let str: string =
-						casing === "preserve"
-							? strings[i]
-							: casing === "uppercase"
-								? strings[i].toUpperCase()
-								: strings[i].toLowerCase();
-					if (quotes === "single") {
-						str = encloseTextInSingleQuotes(str);
-					} else if (quotes === "double") {
-						str = encloseTextInDoubleQuotes(str);
-					}
+				const quoted: string[] = strings.map((s: string) => {
+					if (quotes === "single")
+						return encloseTextInSingleQuotes(s);
+					if (quotes === "double")
+						return encloseTextInDoubleQuotes(s);
+					return s;
+				});
 
-					if (i === 0) {
-						response += str;
-					} else {
-						const delim: string =
-							delimiter === "tab"
-								? "\t"
-								: delimiter === "semicolon"
-									? "; "
-									: ", ";
-						response += `${delim}${str}`;
+				const baseDelim: string =
+					delimiter === "tab"
+						? "\t"
+						: delimiter === "semicolon"
+							? ";"
+							: ",";
+				const delim: string =
+					baseDelim === "\t"
+						? baseDelim
+						: `${baseDelim}${isAddSpaceAfterDelimiter ? " " : ""}`;
 
-						if (!isAddSpaceAfterDelimiter) {
-							response = response.replace(/; /g, ";");
-						}
-					}
-				}
+				response = quoted.join(delim);
 			}
 
 			setOutput(response);
-		} catch (error) {
-			const err = error as unknown as Error;
-
+		} catch (err) {
 			setOutput("");
-			setError(err.message);
+			setError((err as Error).message);
 		}
 	};
 
