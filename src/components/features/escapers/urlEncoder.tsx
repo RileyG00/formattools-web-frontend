@@ -1,25 +1,30 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableColumn,
+	TableRow,
+	TableCell,
+} from "@heroui/table";
 import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import xmlFormat from "xml-formatter";
-import { copyToClipboard, escapeXml, unescapeXml } from "@/utils/textUtils";
+import { copyToClipboard, getQueryStringParams } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
-import { escapers_Xml } from "@/config/features";
+import { escapers_Url } from "@/config/features";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const XmlEscaper: React.FC = () => {
+const UrlEncoderDecoder: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
@@ -27,34 +32,17 @@ const XmlEscaper: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleFormat = (raw: string, isEscaping: boolean): void => {
+	const handleFormat = (raw: string, isEncoding: boolean): void => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
-
-		if (indentation === "compact") {
-			indentStyle = "";
-		} else if (indentation === "2") {
-			indentStyle = "  ";
-		} else if (indentation === "4") {
-			indentStyle = "    ";
-		}
-
 		try {
-			if (isEscaping) {
-				const escaped: string = escapeXml(raw);
-				setOutput(escaped);
+			if (isEncoding) {
+				const encodedUri: string = encodeURI(raw);
+				setOutput(encodedUri);
 			} else {
-				const unescaped: string = unescapeXml(raw);
-				const formatted: string = xmlFormat(unescaped, {
-					indentation: indentStyle,
-					lineSeparator: indentStyle === "" ? "" : "\r\n",
-					whiteSpaceAtEndOfSelfclosingTag: true,
-					forceSelfClosingEmptyTag: true,
-				});
-
-				setOutput(formatted);
+				const decodedUri: string = decodeURI(raw);
+				setOutput(decodedUri);
 			}
 		} catch (error) {
 			const err = error as unknown as Error;
@@ -91,10 +79,10 @@ const XmlEscaper: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{escapers_Xml.name}</FeatureHeader>
+			<FeatureHeader>{escapers_Url.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
-					<CardHeader>Input XML</CardHeader>
+					<CardHeader>Input URL</CardHeader>
 					<CardBody>
 						<Textarea
 							aria-label="Container for the raw text input"
@@ -106,20 +94,6 @@ const XmlEscaper: React.FC = () => {
 				<Card className="w-[450px] min-w-fit h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the XML output."
-							label="XML Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
-							variant="bordered"
-						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
-						</Select>
 						<div className="flex flex-row gap-2 justify-end w-fit">
 							<Button
 								color="default"
@@ -137,14 +111,14 @@ const XmlEscaper: React.FC = () => {
 								className="w-fit"
 								onPress={() => handleFormat(input, false)}
 							>
-								Unescape
+								Decode
 							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
 								onPress={() => handleFormat(input, true)}
 							>
-								Escape
+								Encode
 							</Button>
 							<Button
 								isIconOnly
@@ -168,16 +142,59 @@ const XmlEscaper: React.FC = () => {
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Output XML</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="xml">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<div className="flex flex-row gap-4 h-full">
+				<Card className="w-full h-full">
+					<CardHeader>Output URL</CardHeader>
+					<CardBody>
+						<HighlightSyntax
+							showLineNumbers={true}
+							language="plaintext"
+						>
+							{output}
+						</HighlightSyntax>
+					</CardBody>
+				</Card>
+				<Card className="w-[75%] max-h-[484px] min-h-full">
+					<CardHeader>Output Query String Parameters</CardHeader>
+					<CardBody>
+						<Table
+							aria-label="Table containing the query parameter values for the URL."
+							className="overflow-auto"
+						>
+							<TableHeader>
+								<TableColumn>Key</TableColumn>
+								<TableColumn>Value</TableColumn>
+							</TableHeader>
+							<TableBody items={getQueryStringParams(output)}>
+								{(queryParam) => {
+									return (
+										<TableRow
+											key={
+												queryParam.key +
+												queryParam.value
+											}
+											aria-label={`Key: ${queryParam.key}. Value: ${queryParam.value}`}
+										>
+											<TableCell
+												aria-label={`Key: ${queryParam.key}`}
+											>
+												{queryParam.key}
+											</TableCell>
+											<TableCell
+												aria-label={`Value: ${queryParam.value}`}
+											>
+												{queryParam.value}
+											</TableCell>
+										</TableRow>
+									);
+								}}
+							</TableBody>
+						</Table>
+					</CardBody>
+				</Card>
+			</div>
 		</div>
 	);
 };
 
-export default XmlEscaper;
+export default UrlEncoderDecoder;

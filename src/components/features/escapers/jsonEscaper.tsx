@@ -8,13 +8,13 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard, escapeJson, unescapeJson } from "@/utils/textUtils";
-import FeatureHeader from "@/components/common/featureHeader";
-import FeatureProps from "@/interfaces/featureProps";
+import FeatureHeader from "@/components/features/featureHeader";
+import { escapers_Json } from "@/config/features";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const JsonEscaper: React.FC<FeatureProps> = ({ optionItem }) => {
+const JsonEscaper: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ const JsonEscaper: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{optionItem.name}</FeatureHeader>
+			<FeatureHeader>{escapers_Json.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-full">
 					<CardHeader>Input JSON</CardHeader>

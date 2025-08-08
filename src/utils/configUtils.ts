@@ -1,4 +1,4 @@
-import { featureConfigs } from "@/config/site";
+import { featureConfigs } from "@/config/features";
 import {
 	FeatureOption,
 	FeatureOptionItem,

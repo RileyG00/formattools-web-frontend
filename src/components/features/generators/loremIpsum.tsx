@@ -1,67 +1,71 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Select, SelectItem } from "@heroui/select";
 import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
+import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
-import { rngs_DiceRoll } from "@/config/features";
+import { LoremIpsum } from "lorem-ipsum";
+import { generators_LoremIpsum } from "@/config/features";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const DiceRollRng: React.FC = () => {
+const LoremIpsumGenerator: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [numSides, setNumSides] = useState<string>("8");
-	const [numDice, setNumDice] = useState<number>(1);
-	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
+	const lorem = new LoremIpsum({
+		sentencesPerParagraph: {
+			max: 8,
+			min: 4,
+		},
+		wordsPerSentence: {
+			max: 16,
+			min: 4,
+		},
+	});
+
+	// Number and length of strings
+	const [numWords, setNumWords] = useState<number>(1);
+	const [numSentences, setNumSentences] = useState<number>(5);
+	const [numParagraphs, setNumParagraphs] = useState<number>(7);
+
+	// Outputs
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleRoll = (): void => {
+	const handleGenerate = (
+		type: "words" | "sentences" | "paragraphs",
+	): void => {
 		if (error) setError(null);
 
 		try {
-			if (numDice > 10_000) {
-				throw new Error("Maximum number of dice is 10,000");
+			if (numWords > 10_000) {
+				throw new Error("Maximum number of words is 10,000");
 			}
 
-			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
-				throw new Error(
-					"Please select a valid number of sides from the drop down.",
-				);
+			if (numSentences > 1_000) {
+				throw new Error("Maximum number of sentences is 1,000");
 			}
 
-			const min: number = 1;
-			const max: number = parseInt(numSides);
-
-			let response = "";
-
-			for (let i = 0; i < numDice; i++) {
-				const randomNumber: number =
-					Math.floor(Math.random() * (max - min + 1)) + min;
-
-				if (i === 0) {
-					response += String(randomNumber);
-				} else {
-					response += `, ${String(randomNumber)}`;
-				}
+			if (numParagraphs > 500) {
+				throw new Error("Maximum number of paragraphs is 500");
 			}
 
-			if (isFormatAsArray) {
-				response = formatAsArrayString(response);
-				const jsonObject: object = JSON.parse(response);
-				response = JSON.stringify(jsonObject, null, "\t");
+			let response: string = "";
+			if (type === "words") {
+				response = lorem.generateWords(numWords);
+			} else if (type === "sentences") {
+				response = lorem.generateSentences(numSentences);
+			} else if (type === "paragraphs") {
+				response = lorem.generateParagraphs(numParagraphs);
 			}
 
 			setOutput(response);
@@ -100,53 +104,63 @@ const DiceRollRng: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{rngs_DiceRoll.name}</FeatureHeader>
+			<FeatureHeader>{generators_LoremIpsum.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-[450px] h-full">
-					<CardHeader>Dice Specifications</CardHeader>
+				<Card className="w-fit h-full">
+					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
 						<div className="flex flex-row gap-4">
-							<Select
-								aria-label="Options for how many sides the dice will have when rolling."
-								label="Number of Sides to the Dice"
-								selectedKeys={[numSides]}
-								onSelectionChange={(e) =>
-									setNumSides(e.currentKey ?? "8")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"4"}>4-Sided Die</SelectItem>
-								<SelectItem key={"6"}>6-Sided Die</SelectItem>
-								<SelectItem key={"8"}>8-Sided Die</SelectItem>
-								<SelectItem key={"10"}>10-Sided Die</SelectItem>
-								<SelectItem key={"12"}>12-Sided Die</SelectItem>
-								<SelectItem key={"20"}>20-Sided Die</SelectItem>
-							</Select>
 							<NumberInput
-								value={numDice}
-								onValueChange={setNumDice}
-								label="Number of Dice to Roll"
+								value={numWords}
+								onValueChange={setNumWords}
+								label="Number of Words"
 								description="Any number between 1 and 10,000"
 								variant="bordered"
 								minValue={1}
 								maxValue={10_000}
 							/>
+							<NumberInput
+								value={numSentences}
+								onValueChange={setNumSentences}
+								label="Number of Sentences"
+								description="Any number between 1 and 1,000"
+								variant="bordered"
+								minValue={1}
+								maxValue={1_000}
+							/>
+							<NumberInput
+								value={numParagraphs}
+								onValueChange={setNumParagraphs}
+								label="Number of Paragraphs"
+								description="Any number between 1 and 500"
+								variant="bordered"
+								minValue={1}
+								maxValue={500}
+							/>
 						</div>
-						<Checkbox
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-							color="secondary"
-							aria-label="Controls whether the results should be returned as an array."
-						>
-							Return results as an array
-						</Checkbox>
 						<div className="flex flex-row gap-2 justify-end">
+							<Button
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleGenerate("words")}
+							>
+								Generate Words
+							</Button>
+							<Button
+								color="secondary"
+								variant="flat"
+								className="w-fit"
+								onPress={() => handleGenerate("sentences")}
+							>
+								Generate Sentences
+							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleRoll()}
+								onPress={() => handleGenerate("paragraphs")}
 							>
-								Roll
+								Generate Paragraphs
 							</Button>
 							<Button
 								isIconOnly
@@ -171,9 +185,12 @@ const DiceRollRng: React.FC = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Dice Roll</CardHeader>
+				<CardHeader>Output Strings</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="number">
+					<HighlightSyntax
+						showLineNumbers={true}
+						language="plaintext"
+					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -182,4 +199,4 @@ const DiceRollRng: React.FC = () => {
 	);
 };
 
-export default DiceRollRng;
+export default LoremIpsumGenerator;
