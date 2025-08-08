@@ -14,7 +14,7 @@ import { NavItem } from "@/types/siteConfigs";
 
 export const Navbar = () => {
 	return (
-		<HeroUINavbar maxWidth="xl" position="sticky">
+		<HeroUINavbar maxWidth="2xl" position="sticky">
 			<NavbarContent className="flex flex-row gap-8">
 				<li>
 					<NavbarBrand className="gap-3 max-w-fit">
@@ -25,7 +25,7 @@ export const Navbar = () => {
 						>
 							<Logo />
 							<p className="font-bold text-inherit">
-								Data Formatters
+								{import.meta.env.VITE_App_Name}
 							</p>
 						</Link>
 					</NavbarBrand>

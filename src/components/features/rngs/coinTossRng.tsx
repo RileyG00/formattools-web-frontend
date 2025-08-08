@@ -9,13 +9,13 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
-import FeatureHeader from "@/components/common/featureHeader";
-import FeatureProps from "@/interfaces/featureProps";
+import FeatureHeader from "@/components/features/featureHeader";
+import { rngs_CoinToss } from "@/config/features";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const CoinTossRng: React.FC<FeatureProps> = ({ optionItem }) => {
+const CoinTossRng: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ const CoinTossRng: React.FC<FeatureProps> = ({ optionItem }) => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{optionItem.name}</FeatureHeader>
+			<FeatureHeader>{rngs_CoinToss.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
 				<Card className="w-[650px] h-full">
 					<CardHeader>Coin Toss Specifications</CardHeader>

@@ -1,70 +1,60 @@
 import { useState } from "react";
 import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Select, SelectItem } from "@heroui/select";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
+import { DatePicker } from "@heroui/date-picker";
+import {
+	now,
+	getLocalTimeZone,
+	parseDate,
+	fromAbsolute,
+	DateFormatter,
+} from "@internationalized/date";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
+import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
-import { rngs_DiceRoll } from "@/config/features";
+import { NumberInput } from "@heroui/number-input";
+import { converters_EpochDate } from "@/config/features";
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-const DiceRollRng: React.FC = () => {
+const EpochDateConverter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [numSides, setNumSides] = useState<string>("8");
-	const [numDice, setNumDice] = useState<number>(1);
-	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
+	const [epoch, setEpoch] = useState<number>(0);
+	const [dateTime, setDateTime] = useState(now(getLocalTimeZone()));
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
-	const handleRoll = (): void => {
+	const handleFormat = (isConvertingEpoch: boolean): void => {
+		if (isConvertingEpoch && epoch < 0) return;
+		if (!isConvertingEpoch && !dateTime) return;
 		if (error) setError(null);
 
 		try {
-			if (numDice > 10_000) {
-				throw new Error("Maximum number of dice is 10,000");
+			if (!isConvertingEpoch) {
+				const epochMs = dateTime.toDate().getTime();
+				setOutput(String(epochMs));
+			} else {
+				const epochMs: number =
+					epoch < 99_999_999_999 ? epoch * 1000 : epoch;
+
+				const zdtLocal = fromAbsolute(epochMs, getLocalTimeZone());
+				const fmt = new DateFormatter("en-US", {
+					dateStyle: "medium",
+					timeStyle: "long",
+					timeZone: zdtLocal.timeZone, // ensure output uses this ZDT's zone
+				});
+
+				setOutput(fmt.format(zdtLocal.toDate()));
 			}
-
-			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
-				throw new Error(
-					"Please select a valid number of sides from the drop down.",
-				);
-			}
-
-			const min: number = 1;
-			const max: number = parseInt(numSides);
-
-			let response = "";
-
-			for (let i = 0; i < numDice; i++) {
-				const randomNumber: number =
-					Math.floor(Math.random() * (max - min + 1)) + min;
-
-				if (i === 0) {
-					response += String(randomNumber);
-				} else {
-					response += `, ${String(randomNumber)}`;
-				}
-			}
-
-			if (isFormatAsArray) {
-				response = formatAsArrayString(response);
-				const jsonObject: object = JSON.parse(response);
-				response = JSON.stringify(jsonObject, null, "\t");
-			}
-
-			setOutput(response);
 		} catch (error) {
 			const err = error as unknown as Error;
 
@@ -100,53 +90,55 @@ const DiceRollRng: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{rngs_DiceRoll.name}</FeatureHeader>
+			<FeatureHeader>{converters_EpochDate.name}</FeatureHeader>
 			<div className="flex flex-row gap-4">
-				<Card className="w-[450px] h-full">
-					<CardHeader>Dice Specifications</CardHeader>
+				<Card className="w-fit h-full">
+					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
-							<Select
-								aria-label="Options for how many sides the dice will have when rolling."
-								label="Number of Sides to the Dice"
-								selectedKeys={[numSides]}
-								onSelectionChange={(e) =>
-									setNumSides(e.currentKey ?? "8")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"4"}>4-Sided Die</SelectItem>
-								<SelectItem key={"6"}>6-Sided Die</SelectItem>
-								<SelectItem key={"8"}>8-Sided Die</SelectItem>
-								<SelectItem key={"10"}>10-Sided Die</SelectItem>
-								<SelectItem key={"12"}>12-Sided Die</SelectItem>
-								<SelectItem key={"20"}>20-Sided Die</SelectItem>
-							</Select>
+						<div className="w-fit flex flex-row gap-4">
 							<NumberInput
-								value={numDice}
-								onValueChange={setNumDice}
-								label="Number of Dice to Roll"
-								description="Any number between 1 and 10,000"
+								hideStepper
+								name="epoch"
+								label="Convert Epoch Timestamp to Date"
+								minValue={0}
+								placeholder="1754447470"
 								variant="bordered"
-								minValue={1}
-								maxValue={10_000}
+								value={epoch}
+								className="w-full min-w-[300px]"
+								onValueChange={setEpoch}
+							/>
+							<DatePicker
+								hideTimeZone
+								showMonthAndYearPickers
+								label="Event Date"
+								variant="bordered"
+								minValue={parseDate("1970-01-01")}
+								calendarProps={{ color: "secondary" }}
+								hourCycle={24}
+								value={dateTime}
+								className="w-full min-w-[300px]"
+								onChange={(value) => {
+									setDateTime(
+										value ?? now(getLocalTimeZone()),
+									);
+								}}
+								granularity="second"
 							/>
 						</div>
-						<Checkbox
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-							color="secondary"
-							aria-label="Controls whether the results should be returned as an array."
-						>
-							Return results as an array
-						</Checkbox>
-						<div className="flex flex-row gap-2 justify-end">
+						<div className="flex flex-row gap-2 items-end justify-end">
+							<Button
+								color="default"
+								className="w-fit"
+								onPress={() => handleFormat(true)}
+							>
+								Convert Epoch to Date Time
+							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
-								onPress={() => handleRoll()}
+								onPress={() => handleFormat(false)}
 							>
-								Roll
+								Convert Date Time to Epoch (ms)
 							</Button>
 							<Button
 								isIconOnly
@@ -171,9 +163,9 @@ const DiceRollRng: React.FC = () => {
 				</Card>
 			</div>
 			<Card className="w-full h-full">
-				<CardHeader>Output Dice Roll</CardHeader>
+				<CardHeader>Output</CardHeader>
 				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="number">
+					<HighlightSyntax showLineNumbers={true} language="json">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
@@ -182,4 +174,4 @@ const DiceRollRng: React.FC = () => {
 	);
 };
 
-export default DiceRollRng;
+export default EpochDateConverter;
