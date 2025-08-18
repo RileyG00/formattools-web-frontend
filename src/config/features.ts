@@ -121,7 +121,7 @@ export const formatters_Sql: FeatureOptionItem = {
 	),
 	description:
 		"Apply consistent casing, indentation, and line breaks to tangled SQL queries so you can quickly grasp logic, joins, and subqueries.",
-	status: "Updated",
+	status: null,
 };
 
 export const formatters_TabularToTable: FeatureOptionItem = {
@@ -169,7 +169,7 @@ export const formatters_String: FeatureOptionItem = {
 	),
 	description:
 		"Convert a string, or strings, into uppercase, lowercase, surround with quotes, format the results as an array, or choose an optional delimiter.",
-	status: "Updated",
+	status: null,
 };
 
 export const formatters_Markdown: FeatureOptionItem = {
@@ -271,7 +271,7 @@ export const converters_EpochDate: FeatureOptionItem = {
 	),
 	description:
 		"Converts an epoch/unix timestamp into a human readable date. It also lets you do the inverse, i.e. converts a human readable date into an epoch/unix timestamp.",
-	status: "New",
+	status: null,
 };
 
 //----------------------------------------------------------------------------------------
