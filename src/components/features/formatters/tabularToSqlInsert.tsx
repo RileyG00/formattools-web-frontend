@@ -7,8 +7,9 @@ import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
-	copyAsRichHtmlTable,
+	copyToClipboard,
 	encloseTextInSingleQuotes,
+	escapeAllSingleQuotes,
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { format } from "sql-formatter";
@@ -54,7 +55,9 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 			return;
 		}
 
-		const MAX_ROWS_PER_INSERT = 1000;
+		// This is a SQL limitation.
+		// Each insert statement can only insert 1,000 rows at a time, so break the insert statments up
+		const MAX_ROWS_PER_INSERT = 1_000;
 
 		/**
 		 * Helper to translate a chunk of rows into the VALUES segment.
@@ -67,7 +70,9 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 							// Quote the value if the SQL data type requires it (i.e not a string)
 							return isNumber(value)
 								? parseInt(value)
-								: encloseTextInSingleQuotes(value);
+								: encloseTextInSingleQuotes(
+										escapeAllSingleQuotes(value),
+									);
 						})
 						.join(", "),
 				)
@@ -112,7 +117,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	//Handle Copying the Text to the Clipboard
 	//------------------------------------------------------------------------------------
 	const handleCopyOutput = (): void => {
-		copyAsRichHtmlTable(output);
+		copyToClipboard(output);
 
 		addToast({
 			color: "success",
