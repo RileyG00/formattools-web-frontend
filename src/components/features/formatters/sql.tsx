@@ -13,6 +13,9 @@ import FeatureHeader from "@/components/features/featureHeader";
 import SQLLanguage from "@/types/sqlLanguage";
 import { NumberInput } from "@heroui/number-input";
 import { formatters_Sql } from "@/config/features";
+import { useDisclosure } from "@heroui/modal";
+import FullScreenButton from "@/components/common/fullScreenButton";
+import FullScreen from "@/components/features/fullScreen.Modal";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -30,6 +33,7 @@ const SqlFormatter: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
+	const fullScreenDisclosure = useDisclosure();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -86,172 +90,208 @@ const SqlFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input SQL</CardHeader>
+		<>
+			<div className="h-[800px] container flex flex-col w-full gap-4">
+				<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
+				<div className="flex flex-row gap-4">
+					<Card className="w-full">
+						<CardHeader>Input SQL</CardHeader>
+						<CardBody>
+							<Textarea
+								aria-label="Container for the raw text input"
+								value={input}
+								onValueChange={setInput}
+								placeholder={`select * from Data.dbo.Formatters with (nolock)`}
+							/>
+						</CardBody>
+					</Card>
+					<Card className="min-w-[450px] h-full">
+						<CardHeader>Formatting Specifications</CardHeader>
+						<CardBody className="flex flex-gap gap-4">
+							<div className="flex flex-row gap-4">
+								<Select
+									aria-label="Options for how to format the SQL output."
+									label="SQL Output Indentation"
+									selectedKeys={[indentation]}
+									onSelectionChange={(e) =>
+										setIndentation(e.currentKey ?? "tab")
+									}
+									variant="bordered"
+								>
+									<SelectItem key={"2"}>2 spaces</SelectItem>
+									<SelectItem key={"4"}>4 spaces</SelectItem>
+									<SelectItem key={"tab"}>Tab</SelectItem>
+								</Select>
+								<Select
+									aria-label="Select the language that you are trying to format."
+									label="Language"
+									selectedKeys={[language]}
+									onSelectionChange={(e) =>
+										setLanguage(
+											(e.currentKey as SQLLanguage) ??
+												"tsql",
+										)
+									}
+									variant="bordered"
+								>
+									<SelectItem key={"bigquery"}>
+										BigQuery
+									</SelectItem>
+									<SelectItem key={"db2"}>DB2</SelectItem>
+									<SelectItem key={"db2i"}>DB2 i</SelectItem>
+									<SelectItem key={"duckdb"}>
+										DuckDB
+									</SelectItem>
+									<SelectItem key={"hive"}>Hive</SelectItem>
+									<SelectItem key={"mariadb"}>
+										MariaDB
+									</SelectItem>
+									<SelectItem key={"mysql"}>MySQL</SelectItem>
+									<SelectItem key={"n1ql"}>N1QL</SelectItem>
+									<SelectItem key={"plsql"}>
+										PL/SQL
+									</SelectItem>
+									<SelectItem key={"postgresql"}>
+										PostgreSQL
+									</SelectItem>
+									<SelectItem key={"redshift"}>
+										Redshift
+									</SelectItem>
+									<SelectItem key={"singlestoredb"}>
+										SingleStoreDB
+									</SelectItem>
+									<SelectItem key={"snowflake"}>
+										Snowflake
+									</SelectItem>
+									<SelectItem key={"spark"}>Spark</SelectItem>
+									<SelectItem key={"sql"}>SQL</SelectItem>
+									<SelectItem key={"sqlite"}>
+										SQLite
+									</SelectItem>
+									<SelectItem key={"tidb"}>TiDB</SelectItem>
+									<SelectItem key={"trino"}>Trino</SelectItem>
+									<SelectItem key={"tsql"}>T-SQL</SelectItem>
+								</Select>
+							</div>
+							<div className="flex flex-row gap-2">
+								<Select
+									aria-label="Options for how to set the keyword casing."
+									label="Keyword Casing"
+									selectedKeys={[keywordCasing]}
+									onSelectionChange={(e) =>
+										setKeywordCasing(
+											e.currentKey ?? "preserve",
+										)
+									}
+									variant="bordered"
+								>
+									<SelectItem key={"preserve"}>
+										Preserve
+									</SelectItem>
+									<SelectItem key={"upper"}>
+										Uppercase
+									</SelectItem>
+									<SelectItem key={"lower"}>
+										Lowercase
+									</SelectItem>
+								</Select>
+								<Select
+									aria-label="Options for how to set the identifier casing."
+									label="Identifier Casing"
+									selectedKeys={[identifierCasing]}
+									onSelectionChange={(e) =>
+										setIdentifierCasing(
+											e.currentKey ?? "preserve",
+										)
+									}
+									variant="bordered"
+								>
+									<SelectItem key={"preserve"}>
+										Preserve
+									</SelectItem>
+									<SelectItem key={"upper"}>
+										Uppercase
+									</SelectItem>
+									<SelectItem key={"lower"}>
+										Lowercase
+									</SelectItem>
+								</Select>
+							</div>
+							<NumberInput
+								hideStepper
+								variant="bordered"
+								label="Lines Between Queries"
+								value={linesBetweenQueries}
+								onValueChange={setLinesBetweenQueries}
+								minValue={1}
+								maxValue={10}
+							/>
+							<div className="flex flex-row gap-2 justify-end">
+								<Button
+									color="default"
+									className="w-fit"
+									onPress={() => {
+										setInput("");
+										setOutput("");
+										setError(null);
+									}}
+								>
+									Clear Input
+								</Button>
+								<Button
+									color="primary"
+									className="w-fit"
+									onPress={() => handleFormat(input)}
+								>
+									Format SQL
+								</Button>
+								<Button
+									isIconOnly
+									isDisabled={!output}
+									title="Copy output"
+									startContent={
+										<DuplicateDocumentIcon size={18} />
+									}
+									color="secondary"
+									onPress={handleCopyOutput}
+								/>
+							</div>
+							{error && (
+								<Alert
+									color="danger"
+									title="Invalid Input"
+									className="max-h-fit"
+									description={error}
+								/>
+							)}
+						</CardBody>
+					</Card>
+				</div>
+				<Card className="w-full h-full">
+					<CardHeader className="flex flex-row w-full items-start justify-between">
+						<span>Output SQL</span>
+						<FullScreenButton
+							onPress={fullScreenDisclosure.onOpenChange}
+						/>
+					</CardHeader>
 					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-							placeholder={`select * from Data.dbo.Formatters with (nolock)`}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="min-w-[450px] h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<div className="flex flex-row gap-4">
-							<Select
-								aria-label="Options for how to format the SQL output."
-								label="SQL Output Indentation"
-								selectedKeys={[indentation]}
-								onSelectionChange={(e) =>
-									setIndentation(e.currentKey ?? "tab")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"2"}>2 spaces</SelectItem>
-								<SelectItem key={"4"}>4 spaces</SelectItem>
-								<SelectItem key={"tab"}>Tab</SelectItem>
-							</Select>
-							<Select
-								aria-label="Select the language that you are trying to format."
-								label="Language"
-								selectedKeys={[language]}
-								onSelectionChange={(e) =>
-									setLanguage(
-										(e.currentKey as SQLLanguage) ?? "tsql",
-									)
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"bigquery"}>
-									BigQuery
-								</SelectItem>
-								<SelectItem key={"db2"}>DB2</SelectItem>
-								<SelectItem key={"db2i"}>DB2 i</SelectItem>
-								<SelectItem key={"duckdb"}>DuckDB</SelectItem>
-								<SelectItem key={"hive"}>Hive</SelectItem>
-								<SelectItem key={"mariadb"}>MariaDB</SelectItem>
-								<SelectItem key={"mysql"}>MySQL</SelectItem>
-								<SelectItem key={"n1ql"}>N1QL</SelectItem>
-								<SelectItem key={"plsql"}>PL/SQL</SelectItem>
-								<SelectItem key={"postgresql"}>
-									PostgreSQL
-								</SelectItem>
-								<SelectItem key={"redshift"}>
-									Redshift
-								</SelectItem>
-								<SelectItem key={"singlestoredb"}>
-									SingleStoreDB
-								</SelectItem>
-								<SelectItem key={"snowflake"}>
-									Snowflake
-								</SelectItem>
-								<SelectItem key={"spark"}>Spark</SelectItem>
-								<SelectItem key={"sql"}>SQL</SelectItem>
-								<SelectItem key={"sqlite"}>SQLite</SelectItem>
-								<SelectItem key={"tidb"}>TiDB</SelectItem>
-								<SelectItem key={"trino"}>Trino</SelectItem>
-								<SelectItem key={"tsql"}>T-SQL</SelectItem>
-							</Select>
-						</div>
-						<div className="flex flex-row gap-2">
-							<Select
-								aria-label="Options for how to set the keyword casing."
-								label="Keyword Casing"
-								selectedKeys={[keywordCasing]}
-								onSelectionChange={(e) =>
-									setKeywordCasing(e.currentKey ?? "preserve")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"preserve"}>
-									Preserve
-								</SelectItem>
-								<SelectItem key={"upper"}>Uppercase</SelectItem>
-								<SelectItem key={"lower"}>Lowercase</SelectItem>
-							</Select>
-							<Select
-								aria-label="Options for how to set the identifier casing."
-								label="Identifier Casing"
-								selectedKeys={[identifierCasing]}
-								onSelectionChange={(e) =>
-									setIdentifierCasing(
-										e.currentKey ?? "preserve",
-									)
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"preserve"}>
-									Preserve
-								</SelectItem>
-								<SelectItem key={"upper"}>Uppercase</SelectItem>
-								<SelectItem key={"lower"}>Lowercase</SelectItem>
-							</Select>
-						</div>
-						<NumberInput
-							hideStepper
-							variant="bordered"
-							label="Lines Between Queries"
-							value={linesBetweenQueries}
-							onValueChange={setLinesBetweenQueries}
-							minValue={1}
-							maxValue={10}
-						/>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="default"
-								className="w-fit"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(input)}
-							>
-								Format SQL
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
+						<HighlightSyntax showLineNumbers={true} language="sql">
+							{output}
+						</HighlightSyntax>
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Output SQL</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="sql">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
-		</div>
+			<FullScreen
+				isOpen={fullScreenDisclosure.isOpen}
+				onOpenChange={fullScreenDisclosure.onOpenChange}
+				onClose={fullScreenDisclosure.onClose}
+				onCopy={handleCopyOutput}
+			>
+				<HighlightSyntax showLineNumbers={true} language="sql">
+					{output}
+				</HighlightSyntax>
+			</FullScreen>
+		</>
 	);
 };
 

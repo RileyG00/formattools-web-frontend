@@ -15,6 +15,9 @@ import FeatureHeader from "@/components/features/featureHeader";
 import { format } from "sql-formatter";
 import { isNumber } from "@/utils/numberUtils";
 import { formatters_TabularToSql } from "@/config/features";
+import { useDisclosure } from "@heroui/modal";
+import FullScreenButton from "@/components/common/fullScreenButton";
+import FullScreen from "@/components/features/fullScreen.Modal";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -27,6 +30,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
+	const fullScreenDisclosure = useDisclosure();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -59,9 +63,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 		// Each insert statement can only insert 1,000 rows at a time, so break the insert statments up
 		const MAX_ROWS_PER_INSERT = 1_000;
 
-		/**
-		 * Helper to translate a chunk of rows into the VALUES segment.
-		 */
+		// Helper to translate a chunk of rows into the VALUES segment.
 		const buildValuesSegment = (chunk: string[][]): string =>
 			chunk
 				.map((row) =>
@@ -130,83 +132,100 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input Tabular Data</CardHeader>
+		<>
+			<div className="h-[800px] container flex flex-col w-full gap-4">
+				<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
+				<div className="flex flex-row gap-4">
+					<Card className="w-full">
+						<CardHeader>Input Tabular Data</CardHeader>
+						<CardBody>
+							<Textarea
+								aria-label="Container for the raw text input"
+								value={input}
+								onValueChange={setInput}
+								spellCheck="false"
+							/>
+						</CardBody>
+					</Card>
+					<Card className="w-[550px] h-full">
+						<CardHeader>Insert Specifications</CardHeader>
+						<CardBody className="flex flex-gap gap-4">
+							<Input
+								name="table"
+								label="Insert Into"
+								variant="bordered"
+								placeholder="database.schema.table"
+								value={table}
+								onValueChange={setTable}
+								spellCheck="false"
+								description="Enter the database, schema, and table you want to insert data into."
+							/>
+							<div className="flex flex-row gap-2 justify-end">
+								<Button
+									color="default"
+									className="w-fit"
+									onPress={() => {
+										setInput("");
+										setOutput("");
+										setError(null);
+									}}
+								>
+									Clear Input
+								</Button>
+								<Button
+									color="primary"
+									className="w-fit"
+									onPress={() => handleFormat(input)}
+								>
+									Format to Table
+								</Button>
+								<Button
+									isIconOnly
+									isDisabled={!output}
+									title="Copy output"
+									startContent={
+										<DuplicateDocumentIcon size={18} />
+									}
+									color="secondary"
+									onPress={handleCopyOutput}
+								/>
+							</div>
+							{error && (
+								<Alert
+									color="danger"
+									title="Invalid Input"
+									className="max-h-fit"
+									description={error}
+								/>
+							)}
+						</CardBody>
+					</Card>
+				</div>
+				<Card className="w-full h-full">
+					<CardHeader className="flex flex-row w-full items-start justify-between">
+						<span>Insert Statement</span>
+						<FullScreenButton
+							onPress={fullScreenDisclosure.onOpenChange}
+						/>
+					</CardHeader>
 					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-							spellCheck="false"
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[550px] h-full">
-					<CardHeader>Insert Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<Input
-							name="table"
-							label="Insert Into"
-							variant="bordered"
-							placeholder="database.schema.table"
-							value={table}
-							onValueChange={setTable}
-							spellCheck="false"
-							description="Enter the database, schema, and table you want to insert data into."
-						/>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="default"
-								className="w-fit"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(input)}
-							>
-								Format to Table
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
+						<HighlightSyntax showLineNumbers={true} language="sql">
+							{output}
+						</HighlightSyntax>
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Insert Statement</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="sql">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
-		</div>
+			<FullScreen
+				isOpen={fullScreenDisclosure.isOpen}
+				onOpenChange={fullScreenDisclosure.onOpenChange}
+				onClose={fullScreenDisclosure.onClose}
+				onCopy={handleCopyOutput}
+			>
+				<HighlightSyntax showLineNumbers={true} language="sql">
+					{output}
+				</HighlightSyntax>
+			</FullScreen>
+		</>
 	);
 };
 

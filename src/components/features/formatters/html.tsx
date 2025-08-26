@@ -11,6 +11,9 @@ import { copyToClipboard } from "@/utils/textUtils";
 import { minify, prettify } from "htmlfy";
 import FeatureHeader from "@/components/features/featureHeader";
 import { formatters_Html } from "@/config/features";
+import { useDisclosure } from "@heroui/modal";
+import FullScreenButton from "@/components/common/fullScreenButton";
+import FullScreen from "@/components/features/fullScreen.Modal";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -23,6 +26,7 @@ const HtmlFormatter: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
+	const fullScreenDisclosure = useDisclosure();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -87,87 +91,104 @@ const HtmlFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{formatters_Html.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input HTML</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-							placeholder={`<div><div><strong>employeeId:</strong>1234</div><div><strong>name:</strong><div><div><strong>first:</strong>Data</div><div><strong>last:</strong>Formatters</div></div></div></div>`}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[450px] h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<Select
-							aria-label="Options for how to format the JSON output."
-							label="HTML Output Indentation"
-							selectedKeys={[indentation]}
-							onSelectionChange={(e) =>
-								setIndentation(e.currentKey ?? "tab")
-							}
-							variant="bordered"
-						>
-							<SelectItem key={"2"}>2 spaces</SelectItem>
-							<SelectItem key={"4"}>4 spaces</SelectItem>
-							<SelectItem key={"tab"}>Tab</SelectItem>
-							<SelectItem key={"compact"}>Compact</SelectItem>
-						</Select>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="default"
-								className="w-fit"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(input)}
-							>
-								Format HTML
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
+		<>
+			<div className="h-[800px] container flex flex-col w-full gap-4">
+				<FeatureHeader>{formatters_Html.name}</FeatureHeader>
+				<div className="flex flex-row gap-4">
+					<Card className="w-full">
+						<CardHeader>Input HTML</CardHeader>
+						<CardBody>
+							<Textarea
+								aria-label="Container for the raw text input"
+								value={input}
+								onValueChange={setInput}
+								placeholder={`<div><div><strong>employeeId:</strong>1234</div><div><strong>name:</strong><div><div><strong>first:</strong>Data</div><div><strong>last:</strong>Formatters</div></div></div></div>`}
+							/>
+						</CardBody>
+					</Card>
+					<Card className="w-[450px] h-full">
+						<CardHeader>Formatting Specifications</CardHeader>
+						<CardBody className="flex flex-gap gap-4">
+							<Select
+								aria-label="Options for how to format the JSON output."
+								label="HTML Output Indentation"
+								selectedKeys={[indentation]}
+								onSelectionChange={(e) =>
+									setIndentation(e.currentKey ?? "tab")
 								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
+								variant="bordered"
+							>
+								<SelectItem key={"2"}>2 spaces</SelectItem>
+								<SelectItem key={"4"}>4 spaces</SelectItem>
+								<SelectItem key={"tab"}>Tab</SelectItem>
+								<SelectItem key={"compact"}>Compact</SelectItem>
+							</Select>
+							<div className="flex flex-row gap-2 justify-end">
+								<Button
+									color="default"
+									className="w-fit"
+									onPress={() => {
+										setInput("");
+										setOutput("");
+										setError(null);
+									}}
+								>
+									Clear Input
+								</Button>
+								<Button
+									color="primary"
+									className="w-fit"
+									onPress={() => handleFormat(input)}
+								>
+									Format HTML
+								</Button>
+								<Button
+									isIconOnly
+									isDisabled={!output}
+									title="Copy output"
+									startContent={
+										<DuplicateDocumentIcon size={18} />
+									}
+									color="secondary"
+									onPress={handleCopyOutput}
+								/>
+							</div>
+							{error && (
+								<Alert
+									color="danger"
+									title="Invalid Input"
+									className="max-h-fit"
+									description={error}
+								/>
+							)}
+						</CardBody>
+					</Card>
+				</div>
+				<Card className="w-full h-full">
+					<CardHeader className="flex flex-row w-full items-start justify-between">
+						<span>Output HMTL</span>
+						<FullScreenButton
+							onPress={fullScreenDisclosure.onOpenChange}
+						/>
+					</CardHeader>
+					<CardBody>
+						<HighlightSyntax showLineNumbers={true} language="html">
+							{output}
+						</HighlightSyntax>
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Output HTML</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="html">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
-		</div>
+			<FullScreen
+				isOpen={fullScreenDisclosure.isOpen}
+				onOpenChange={fullScreenDisclosure.onOpenChange}
+				onClose={fullScreenDisclosure.onClose}
+				onCopy={handleCopyOutput}
+			>
+				<HighlightSyntax showLineNumbers={true} language="html">
+					{output}
+				</HighlightSyntax>
+			</FullScreen>
+		</>
 	);
 };
 
