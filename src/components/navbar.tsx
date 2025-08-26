@@ -1,21 +1,28 @@
+import { FC, useState } from "react";
 import { Link } from "@heroui/link";
 import {
 	Navbar as HeroUINavbar,
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
+	NavbarMenuToggle,
+	NavbarMenu,
+	NavbarMenuItem,
 } from "@heroui/navbar";
-
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/hooks/useThemeSwitch";
 import { GithubIcon } from "@/components/common/icons";
 import { Logo } from "@/components/common/icons";
-import { NavItem } from "@/types/siteConfigs";
+import { FeatureOption } from "@/types/siteConfigs";
+import { featureConfigs } from "@/config/features";
+import NavDropdownFeatureItem from "./navDropdownFeatureItem";
 
-export const Navbar = () => {
+export const Navbar: FC = () => {
+	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
 	return (
 		<HeroUINavbar maxWidth="2xl" position="sticky">
-			<NavbarContent className="flex flex-row gap-8">
+			<NavbarContent>
 				<li>
 					<NavbarBrand className="gap-3 max-w-fit">
 						<Link
@@ -30,25 +37,23 @@ export const Navbar = () => {
 						</Link>
 					</NavbarBrand>
 				</li>
-				{siteConfig.navItems.map((item: NavItem) => {
-					const newRoute: string =
-						item.href === "/" ? "/" : "/" + item.href;
-
+			</NavbarContent>
+			<NavbarContent className="hidden xl:flex flex-row gap-8">
+				{featureConfigs.map((item: FeatureOption) => {
 					return (
-						<NavbarItem key={item.href}>
-							<Link color="foreground" href={newRoute}>
-								{item.label}
-							</Link>
+						<NavbarItem key={item.path}>
+							<NavDropdownFeatureItem item={item} />
 						</NavbarItem>
 					);
 				})}
 			</NavbarContent>
 
-			<NavbarContent
-				className="hidden sm:flex basis-1/5 sm:basis-full"
-				justify="end"
-			>
-				<NavbarItem className="hidden sm:flex gap-2">
+			<NavbarContent justify="end">
+				<NavbarMenuToggle
+					aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+					className="xl:hidden"
+				/>
+				<NavbarItem className="flex flex-row gap-2">
 					<Link
 						isExternal
 						href={siteConfig.links.github}
@@ -59,6 +64,16 @@ export const Navbar = () => {
 					<ThemeSwitch />
 				</NavbarItem>
 			</NavbarContent>
+
+			<NavbarMenu>
+				{featureConfigs.map((item: FeatureOption) => {
+					return (
+						<NavbarMenuItem key={item.path}>
+							<NavDropdownFeatureItem item={item} />
+						</NavbarMenuItem>
+					);
+				})}
+			</NavbarMenu>
 		</HeroUINavbar>
 	);
 };
