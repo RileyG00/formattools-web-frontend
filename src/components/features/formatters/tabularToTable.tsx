@@ -15,6 +15,9 @@ import FeatureHeader from "@/components/features/featureHeader";
 import { prettify } from "htmlfy";
 import { Link } from "@heroui/link";
 import { formatters_TabularToTable } from "@/config/features";
+import { useDisclosure } from "@heroui/modal";
+import FullScreenButton from "@/components/common/fullScreenButton";
+import FullScreen from "@/components/features/fullScreen.Modal";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -28,6 +31,7 @@ const TabularToTableFormatter: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
+	const fullScreenDisclosure = useDisclosure();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -90,101 +94,120 @@ const TabularToTableFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
-			<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
-			<p>
-				Want to skip the website? Get the Google Chrome Extension:
-				<Link
-					isExternal
-					href={import.meta.env.VITE_ChromExtension_TabularToTable}
-				>
-					&nbsp; Extension Store&nbsp;
-					<ArrowTopRightOnSquareIcon size={16} />
-				</Link>
-			</p>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
-					<CardHeader>Input Tabular Data</CardHeader>
-					<CardBody>
-						<Textarea
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
-						/>
-					</CardBody>
-				</Card>
-				<Card className="w-[550px] h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<Checkbox
-							color="secondary"
-							isSelected={hasHeaderRow}
-							onValueChange={setHasHeaderRow}
-						>
-							Table includes header row
-						</Checkbox>
-						<Checkbox
-							color="secondary"
-							isSelected={isPropercaseHeader}
-							onValueChange={setIsPropercaseHeader}
-						>
-							Set header row to Proper Case
-						</Checkbox>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="default"
-								className="w-fit"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(input)}
-							>
-								Format to Table
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
+		<>
+			<div className="h-[800px] container flex flex-col w-full gap-4">
+				<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
+				<p>
+					Want to skip the website? Get the Google Chrome Extension:
+					<Link
+						isExternal
+						href={
+							import.meta.env.VITE_ChromExtension_TabularToTable
+						}
+					>
+						&nbsp; Extension Store&nbsp;
+						<ArrowTopRightOnSquareIcon size={16} />
+					</Link>
+				</p>
+				<div className="flex flex-row gap-4">
+					<Card className="w-full">
+						<CardHeader>Input Tabular Data</CardHeader>
+						<CardBody>
+							<Textarea
+								aria-label="Container for the raw text input"
+								value={input}
+								onValueChange={setInput}
+							/>
+						</CardBody>
+					</Card>
+					<Card className="w-[550px] h-full">
+						<CardHeader>Formatting Specifications</CardHeader>
+						<CardBody className="flex flex-gap gap-4">
+							<Checkbox
 								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						<Alert
-							color="secondary"
-							title="Note"
-							description="For the copy and paste to work in Jira (or MS Teams), you need to use the 'copy' button above."
-						/>
-						{error && (
+								isSelected={hasHeaderRow}
+								onValueChange={setHasHeaderRow}
+							>
+								Table includes header row
+							</Checkbox>
+							<Checkbox
+								color="secondary"
+								isSelected={isPropercaseHeader}
+								onValueChange={setIsPropercaseHeader}
+							>
+								Set header row to Proper Case
+							</Checkbox>
+							<div className="flex flex-row gap-2 justify-end">
+								<Button
+									color="default"
+									className="w-fit"
+									onPress={() => {
+										setInput("");
+										setOutput("");
+										setError(null);
+									}}
+								>
+									Clear Input
+								</Button>
+								<Button
+									color="primary"
+									className="w-fit"
+									onPress={() => handleFormat(input)}
+								>
+									Format to Table
+								</Button>
+								<Button
+									isIconOnly
+									isDisabled={!output}
+									title="Copy output"
+									startContent={
+										<DuplicateDocumentIcon size={18} />
+									}
+									color="secondary"
+									onPress={handleCopyOutput}
+								/>
+							</div>
 							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
+								color="secondary"
+								title="Note"
+								description="For the copy and paste to work in Jira (or MS Teams), you need to use the 'copy' button above."
 							/>
-						)}
+							{error && (
+								<Alert
+									color="danger"
+									title="Invalid Input"
+									className="max-h-fit"
+									description={error}
+								/>
+							)}
+						</CardBody>
+					</Card>
+				</div>
+				<Card className="w-full h-full">
+					<CardHeader className="flex flex-row w-full items-start justify-between">
+						<span>Output Format</span>
+						<FullScreenButton
+							onPress={fullScreenDisclosure.onOpenChange}
+						/>
+					</CardHeader>
+					<CardBody>
+						<HighlightSyntax showLineNumbers={true} language="html">
+							{output}
+						</HighlightSyntax>
 					</CardBody>
 				</Card>
 			</div>
-			<Card className="w-full h-full">
-				<CardHeader>Output Format</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="html">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
-		</div>
+			<FullScreen
+				isOpen={fullScreenDisclosure.isOpen}
+				onOpenChange={fullScreenDisclosure.onOpenChange}
+				onClose={fullScreenDisclosure.onClose}
+				onCopy={handleCopyOutput}
+			>
+				<HighlightSyntax showLineNumbers={true} language="html">
+					{output}
+				</HighlightSyntax>
+			</FullScreen>
+		</>
 	);
 };
 

@@ -6,10 +6,7 @@ import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import {
-	ArrowsPointingOutIcon,
-	DuplicateDocumentIcon,
-} from "@/components/common/icons";
+import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { formatters_Json } from "@/config/features";
@@ -158,7 +155,7 @@ const JsonFormatter: React.FC = () => {
 					</Card>
 				</div>
 				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full justify-between">
+					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output JSON</span>
 						<FullScreenButton
 							onPress={fullScreenDisclosure.onOpenChange}

@@ -8,7 +8,7 @@ interface FullScreenProps {
 	isOpen: boolean;
 	onOpenChange: () => void;
 	onClose: () => void;
-	onCopy: () => void;
+	onCopy?: () => void;
 }
 
 const FullScreen: FC<FullScreenProps> = ({
