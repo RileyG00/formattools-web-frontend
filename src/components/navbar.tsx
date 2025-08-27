@@ -18,8 +18,6 @@ import { featureConfigs } from "@/config/features";
 import NavDropdownFeatureItem from "./navDropdownFeatureItem";
 
 export const Navbar: FC = () => {
-	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
 	return (
 		<HeroUINavbar maxWidth="2xl" position="sticky">
 			<NavbarContent>
@@ -50,7 +48,7 @@ export const Navbar: FC = () => {
 
 			<NavbarContent justify="end">
 				<NavbarMenuToggle
-					aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+					aria-label="Toggle the state of the navigation menu"
 					className="xl:hidden"
 				/>
 				<NavbarItem className="flex flex-row gap-2">
