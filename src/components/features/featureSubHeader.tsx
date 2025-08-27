@@ -12,6 +12,7 @@ const FeatureSubHeader: React.FC<FeatureSubHeaderProps> = ({ children }) => {
 	return (
 		<h2
 			className={subtitle({
+				size: "xs",
 				className: "max-w-3/3 md:max-w-2/3",
 			})}
 		>

@@ -9,7 +9,7 @@ interface FeatureHeaderProps {
 }
 
 const FeatureHeader: React.FC<FeatureHeaderProps> = ({ children }) => {
-	return <h1 className={title({ size: "xs", color: "pink" })}>{children}</h1>;
+	return <h1 className={title({ size: "sm", color: "pink" })}>{children}</h1>;
 };
 
 export default FeatureHeader;
