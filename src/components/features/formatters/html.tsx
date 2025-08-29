@@ -14,6 +14,8 @@ import { formatters_Html } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreen from "@/components/features/fullScreen.Modal";
+import InputSpecsContainer from "../inputSpecsContainer";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -92,13 +94,20 @@ const HtmlFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_Html.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input HTML</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
@@ -106,7 +115,7 @@ const HtmlFormatter: React.FC = () => {
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[450px] h-full">
+					<Card className="min-w-fit h-full">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Select
@@ -163,8 +172,8 @@ const HtmlFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
-				<Card className="w-full h-full">
+				</InputSpecsContainer>
+				<Card className="h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output HMTL</span>
 						<FullScreenButton
@@ -177,7 +186,7 @@ const HtmlFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}

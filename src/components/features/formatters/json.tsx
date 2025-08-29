@@ -14,6 +14,7 @@ import { useDisclosure } from "@heroui/modal";
 import FullScreen from "@/components/features/fullScreen.Modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -85,7 +86,7 @@ const JsonFormatter: React.FC = () => {
 		<>
 			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_Json.name}</FeatureHeader>
-				<div className="flex flex-col md:flex-row gap-4">
+				<InputSpecsContainer>
 					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input JSON</CardHeader>
 						<CardBody>
@@ -161,7 +162,7 @@ const JsonFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output JSON</span>
