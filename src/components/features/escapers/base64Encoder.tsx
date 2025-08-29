@@ -9,6 +9,8 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard, decodeBase64, encodeBase64 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { escapers_Base64 } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -70,20 +72,27 @@ const Base64EncoderDecoder: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{escapers_Base64.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
+			<InputSpecsContainer>
+				<Card className="w-full min-h-[200px]">
 					<CardHeader>Input Text</CardHeader>
 					<CardBody>
 						<Textarea
+							disableAnimation
+							classNames={{
+								base: "!h-full",
+								inputWrapper: "!h-full",
+								innerWrapper: "!h-full",
+								input: "!h-full",
+							}}
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] min-w-fit h-full">
+				<Card className="min-w-fit h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<div className="flex flex-row gap-2 justify-end w-fit">
@@ -133,7 +142,7 @@ const Base64EncoderDecoder: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Text</CardHeader>
 				<CardBody>
@@ -145,7 +154,7 @@ const Base64EncoderDecoder: React.FC = () => {
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
