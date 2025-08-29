@@ -14,6 +14,8 @@ import { formatters_Xml } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreen from "@/components/features/fullScreen.Modal";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -89,21 +91,28 @@ const XmlFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_Xml.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input XML</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 								placeholder={`<root><employeeId>1234</employeeId><name><first>Data</first><last>Formatters</last></name></root>`}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[450px] h-full">
+					<Card className="min-w-fit h-full">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Select
@@ -123,7 +132,7 @@ const XmlFormatter: React.FC = () => {
 							<div className="flex flex-row gap-2 justify-end">
 								<Button
 									color="default"
-									className="w-fit"
+									className="min-w-fit"
 									onPress={() => {
 										setInput("");
 										setOutput("");
@@ -134,7 +143,7 @@ const XmlFormatter: React.FC = () => {
 								</Button>
 								<Button
 									color="primary"
-									className="w-fit"
+									className="min-w-fit"
 									onPress={() => handleFormat(input)}
 								>
 									Format XML
@@ -160,7 +169,7 @@ const XmlFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output XML</span>
@@ -174,7 +183,7 @@ const XmlFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}

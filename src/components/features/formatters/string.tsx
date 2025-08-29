@@ -137,6 +137,7 @@ const StringFormatter: React.FC = () => {
 						<CardHeader>Input String(s)</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
 								aria-label="Container for the raw text input"
 								value={input}
 								placeholder={"How\nNow\nBrown\nCow"}
@@ -150,7 +151,7 @@ const StringFormatter: React.FC = () => {
 							/>
 						</CardBody>
 					</Card>
-					<Card className="min-w-fit">
+					<Card className="min-w-fit h-fit">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-col gap-4">
 							<Select

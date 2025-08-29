@@ -113,6 +113,7 @@ const TabularToTableFormatter: React.FC = () => {
 						<CardHeader>Input Tabular Data</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
