@@ -18,6 +18,8 @@ import { formatters_TabularToSql } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreen from "@/components/features/fullScreen.Modal";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -100,7 +102,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 		// Push the result to the UI; if something goes wrong surface the error
 		try {
 			const formatted: string = format(finalStatement, {
-				language: "sql",
+				language: "tsql",
 				useTabs: true,
 				keywordCase: "preserve",
 				functionCase: "preserve",
@@ -133,21 +135,28 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input Tabular Data</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
 								spellCheck="false"
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[550px] h-full">
+					<Card className="w-fit h-full">
 						<CardHeader>Insert Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Input
@@ -158,7 +167,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 								value={table}
 								onValueChange={setTable}
 								spellCheck="false"
-								description="Enter the database, schema, and table you want to insert data into."
+								description="You can also specify the column names to insert into. E.g.: database.schema.table (ColumnA, ColumnB)"
 							/>
 							<div className="flex flex-row gap-2 justify-end">
 								<Button
@@ -200,7 +209,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Insert Statement</span>
@@ -214,7 +223,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}
