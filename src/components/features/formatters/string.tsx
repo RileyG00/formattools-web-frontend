@@ -21,6 +21,8 @@ import { formatters_String } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreen from "@/components/features/fullScreen.Modal";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -38,7 +40,7 @@ const StringFormatter: React.FC = () => {
 		"comma",
 	);
 	const [isAddSpaceAfterDelimiter, setIsAddSpaceAfterDelimiter] =
-		useState<boolean>(true);
+		useState<boolean>(false);
 
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
@@ -128,9 +130,9 @@ const StringFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_String.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
+				<InputSpecsContainer>
 					<Card className="w-full">
 						<CardHeader>Input String(s)</CardHeader>
 						<CardBody>
@@ -139,12 +141,18 @@ const StringFormatter: React.FC = () => {
 								value={input}
 								placeholder={"How\nNow\nBrown\nCow"}
 								onValueChange={setInput}
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[950px] h-full">
+					<Card className="min-w-fit">
 						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
+						<CardBody className="flex flex-col gap-4">
 							<Select
 								aria-label="Options for how to format the string output."
 								label="Casing Options"
@@ -181,13 +189,13 @@ const StringFormatter: React.FC = () => {
 									Lowercase
 								</SelectItem>
 							</Select>
-							<div className="flex flex-row w-full">
+							<div className="flex flex-col flex-col-reverse md:flex-row w-full min-w-fit gap-4">
 								<div className="flex flex-col gap-4 w-full">
 									<Checkbox
 										color="secondary"
 										isSelected={isFormatAsArray}
 										onValueChange={setIsFormatAsArray}
-										className="w-full"
+										className="text-nowrap"
 									>
 										Return results as array
 									</Checkbox>
@@ -197,7 +205,7 @@ const StringFormatter: React.FC = () => {
 										onValueChange={
 											setIsAddSpaceAfterDelimiter
 										}
-										className="w-full"
+										className="text-nowrap"
 									>
 										Add space after delimiter
 									</Checkbox>
@@ -206,7 +214,7 @@ const StringFormatter: React.FC = () => {
 									aria-label="Options for how to format the JSON output."
 									label="Delimiter Options"
 									selectedKeys={[delimiter]}
-									className="w-full"
+									className="min-w-[225px]"
 									onSelectionChange={(e) => {
 										let delimiterMaster:
 											| "tab"
@@ -292,7 +300,7 @@ const StringFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output String(s)</span>
@@ -309,7 +317,7 @@ const StringFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}

@@ -16,6 +16,8 @@ import { formatters_Sql } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreen from "@/components/features/fullScreen.Modal";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -91,32 +93,40 @@ const SqlFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
+				<InputSpecsContainer>
 					<Card className="w-full">
 						<CardHeader>Input SQL</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
 								placeholder={`select * from Data.dbo.Formatters with (nolock)`}
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="min-w-[450px] h-full">
+					<Card className="min-w-fit">
 						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
+						<CardBody className="flex flex-gap gap-4 min-w-fit">
 							<div className="flex flex-row gap-4">
 								<Select
 									aria-label="Options for how to format the SQL output."
-									label="SQL Output Indentation"
+									label="Indentation"
 									selectedKeys={[indentation]}
 									onSelectionChange={(e) =>
 										setIndentation(e.currentKey ?? "tab")
 									}
 									variant="bordered"
+									className="min-w-1/2"
 								>
 									<SelectItem key={"2"}>2 spaces</SelectItem>
 									<SelectItem key={"4"}>4 spaces</SelectItem>
@@ -133,6 +143,7 @@ const SqlFormatter: React.FC = () => {
 										)
 									}
 									variant="bordered"
+									className="min-w-fit"
 								>
 									<SelectItem key={"bigquery"}>
 										BigQuery
@@ -173,7 +184,7 @@ const SqlFormatter: React.FC = () => {
 									<SelectItem key={"tsql"}>T-SQL</SelectItem>
 								</Select>
 							</div>
-							<div className="flex flex-row gap-2">
+							<div className="flex flex-row gap-4 min-w-fit w-full">
 								<Select
 									aria-label="Options for how to set the keyword casing."
 									label="Keyword Casing"
@@ -183,6 +194,7 @@ const SqlFormatter: React.FC = () => {
 											e.currentKey ?? "preserve",
 										)
 									}
+									className="min-w-1/2"
 									variant="bordered"
 								>
 									<SelectItem key={"preserve"}>
@@ -205,6 +217,7 @@ const SqlFormatter: React.FC = () => {
 										)
 									}
 									variant="bordered"
+									className="w-full"
 								>
 									<SelectItem key={"preserve"}>
 										Preserve
@@ -225,6 +238,7 @@ const SqlFormatter: React.FC = () => {
 								onValueChange={setLinesBetweenQueries}
 								minValue={1}
 								maxValue={10}
+								description="You must use semicolons to break queries up for this feature to apply."
 							/>
 							<div className="flex flex-row gap-2 justify-end">
 								<Button
@@ -266,7 +280,7 @@ const SqlFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output SQL</span>
@@ -280,7 +294,7 @@ const SqlFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}
