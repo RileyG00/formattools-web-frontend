@@ -5,19 +5,14 @@ import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import {
-	ArrowTopRightOnSquareIcon,
-	DuplicateDocumentIcon,
-} from "@/components/common/icons";
+import { ArrowTopRightOnSquareIcon } from "@/components/common/icons";
 import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { prettify } from "htmlfy";
 import { Link } from "@heroui/link";
 import { formatters_TabularToTable } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
-import FullScreen from "@/components/features/fullScreen.Modal";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -30,8 +25,6 @@ const TabularToTableFormatter: React.FC = () => {
 	const [isPropercaseHeader, setIsPropercaseHeader] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
-	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -44,6 +37,12 @@ const TabularToTableFormatter: React.FC = () => {
 			// Extract all rows in the supplied data.
 			let rows: string[] = raw.split("\n");
 			if (rows.length === 0) return;
+
+			if (rows.length === 1 && hasHeaderRow) {
+				setError(
+					`Input must include a header and at least one row if the 'Table includes header row' option is selected.`,
+				);
+			}
 
 			// If the header row is in the tabular data, extract it and then remove it from the 'rows' array.
 			let headerRow: string[] = [];
@@ -68,11 +67,10 @@ const TabularToTableFormatter: React.FC = () => {
 			formatted = prettify(formatted, { tab_size: 4 });
 			formatted = formatted.replace(/ {4}/g, "\t");
 
-			setOutput(formatted);
+			handleCopyOutput(formatted);
 		} catch (error) {
 			const err = error as unknown as Error;
 
-			setOutput("");
 			setError(err.message);
 		}
 	};
@@ -80,13 +78,13 @@ const TabularToTableFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Handle Copying the Text to the Clipboard
 	//------------------------------------------------------------------------------------
-	const handleCopyOutput = (): void => {
-		copyAsRichHtmlTable(output);
+	const handleCopyOutput = (formatted: string): void => {
+		copyAsRichHtmlTable(formatted);
 
 		addToast({
 			color: "success",
 			title: "Success",
-			description: "Successfully copied text to clipboard.",
+			description: "Successfully copied formatted table to clipboard.",
 		});
 	};
 
@@ -95,10 +93,11 @@ const TabularToTableFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
 				<p>
-					Want to skip the website? Get the Google Chrome Extension:
+					Want to skip the website? Get the Google Chrome Extension
+					for formatting in Jira:
 					<Link
 						isExternal
 						href={
@@ -109,18 +108,24 @@ const TabularToTableFormatter: React.FC = () => {
 						<ArrowTopRightOnSquareIcon size={16} />
 					</Link>
 				</p>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer isDismissFlexGrow isDissmisColReversal>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input Tabular Data</CardHeader>
 						<CardBody>
 							<Textarea
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[550px] h-full">
+					<Card className="min-w-fit h-fit">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Checkbox
@@ -143,7 +148,6 @@ const TabularToTableFormatter: React.FC = () => {
 									className="w-fit"
 									onPress={() => {
 										setInput("");
-										setOutput("");
 										setError(null);
 									}}
 								>
@@ -154,24 +158,9 @@ const TabularToTableFormatter: React.FC = () => {
 									className="w-fit"
 									onPress={() => handleFormat(input)}
 								>
-									Format to Table
+									Format &amp; Copy to Clipboard
 								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
 							</div>
-							<Alert
-								color="secondary"
-								title="Note"
-								description="For the copy and paste to work in Jira (or MS Teams), you need to use the 'copy' button above."
-							/>
 							{error && (
 								<Alert
 									color="danger"
@@ -182,31 +171,8 @@ const TabularToTableFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Output Format</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
-						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="html">
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</div>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
-				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax showLineNumbers={true} language="html">
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
+				</InputSpecsContainer>
+			</FeatureOptionItemContainerLayout>
 		</>
 	);
 };
