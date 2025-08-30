@@ -11,7 +11,6 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import {
 	copyToClipboard,
 	formatAsArrayString,
-	removeAllLineBreaks,
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
