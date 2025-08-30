@@ -11,6 +11,7 @@ import {
 	copyToClipboard,
 	formatAsArrayString,
 	getRandomCharacter,
+	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { generators_String } from "@/config/features";
@@ -74,12 +75,15 @@ const StringGenerator: React.FC = () => {
 				if (i === 0) {
 					response += `"${currentString}"`;
 				} else {
-					response += `${isFormatAsArray ? "," : "\r\n"}"${currentString}"`;
+					response += `\r\n"${currentString}"`;
 				}
 			}
 
 			if (isFormatAsArray) {
+				response = replaceAllLineBreaksWithComma(response);
 				response = formatAsArrayString(response);
+				const jsonObject: object = JSON.parse(response);
+				response = JSON.stringify(jsonObject, null, "\t");
 			} else {
 				// If the user does not want an array, remove the prefix and suffix double quotes and just return the string by itself
 				response = response.replace(/"/g, "");
