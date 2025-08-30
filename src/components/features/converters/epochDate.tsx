@@ -17,6 +17,8 @@ import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { NumberInput } from "@heroui/number-input";
 import { converters_EpochDate } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -89,34 +91,34 @@ const EpochDateConverter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{converters_EpochDate.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-fit h-full">
+			<InputSpecsContainer>
+				<Card className="w-full md:w-fit h-full">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="w-fit flex flex-row gap-4">
+						<div className="w-fit flex flex-col md:flex-row gap-4 w-full">
 							<NumberInput
 								hideStepper
 								name="epoch"
-								label="Convert Epoch Timestamp to Date"
+								label="Epoch Timestamp"
 								minValue={0}
 								placeholder="1754447470"
 								variant="bordered"
 								value={epoch}
-								className="w-full min-w-[300px]"
+								className="w-full min-w-[250px]"
 								onValueChange={setEpoch}
 							/>
 							<DatePicker
 								hideTimeZone
 								showMonthAndYearPickers
-								label="Event Date"
+								label="Date Time"
 								variant="bordered"
 								minValue={parseDate("1970-01-01")}
 								calendarProps={{ color: "secondary" }}
 								hourCycle={24}
 								value={dateTime}
-								className="w-full min-w-[300px]"
+								className="w-full min-w-[250px]"
 								onChange={(value) => {
 									setDateTime(
 										value ?? now(getLocalTimeZone()),
@@ -131,14 +133,14 @@ const EpochDateConverter: React.FC = () => {
 								className="w-fit"
 								onPress={() => handleFormat(true)}
 							>
-								Convert Epoch to Date Time
+								To Date Time
 							</Button>
 							<Button
 								color="primary"
 								className="w-fit"
 								onPress={() => handleFormat(false)}
 							>
-								Convert Date Time to Epoch (ms)
+								To Epoch (ms)
 							</Button>
 							<Button
 								isIconOnly
@@ -161,7 +163,7 @@ const EpochDateConverter: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output</CardHeader>
 				<CardBody>
@@ -170,7 +172,7 @@ const EpochDateConverter: React.FC = () => {
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
