@@ -86,7 +86,7 @@ const FeatureOptionPreview: React.FC<OptionsDescriptionsProps> = ({
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
 			<Spacer y={4} />
-			<ul className="w-full h-fit grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
+			<ul className="w-full h-fit grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
 				{featureOption.items.map((option, index) => {
 					return (
 						<li key={option.path}>
