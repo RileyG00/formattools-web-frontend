@@ -10,6 +10,8 @@ import { copyToClipboard } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { LoremIpsum } from "lorem-ipsum";
 import { generators_LoremIpsum } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -103,13 +105,13 @@ const LoremIpsumGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_LoremIpsum.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-fit h-full">
+			<InputSpecsContainer>
+				<Card className="w-full md:w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-col md:flex-row gap-4">
 							<NumberInput
 								value={numWords}
 								onValueChange={setNumWords}
@@ -138,7 +140,7 @@ const LoremIpsumGenerator: React.FC = () => {
 								maxValue={500}
 							/>
 						</div>
-						<div className="flex flex-row gap-2 justify-end">
+						<div className="flex flex-col md:flex-row gap-2 justify-end items-end">
 							<Button
 								color="secondary"
 								variant="flat"
@@ -155,23 +157,25 @@ const LoremIpsumGenerator: React.FC = () => {
 							>
 								Generate Sentences
 							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleGenerate("paragraphs")}
-							>
-								Generate Paragraphs
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
+							<div className="flex flex-row gap-2">
+								<Button
+									color="primary"
+									className="w-fit"
+									onPress={() => handleGenerate("paragraphs")}
+								>
+									Generate Paragraphs
+								</Button>
+								<Button
+									isIconOnly
+									isDisabled={!output}
+									title="Copy output"
+									startContent={
+										<DuplicateDocumentIcon size={18} />
+									}
+									color="secondary"
+									onPress={handleCopyOutput}
+								/>
+							</div>
 						</div>
 						{error && (
 							<Alert
@@ -183,19 +187,19 @@ const LoremIpsumGenerator: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Strings</CardHeader>
 				<CardBody>
 					<HighlightSyntax
-						showLineNumbers={true}
+						showLineNumbers={false}
 						language="plaintext"
 					>
 						{output}
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
