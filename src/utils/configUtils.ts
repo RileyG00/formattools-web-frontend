@@ -9,6 +9,9 @@ import {
 	FeatureOptionItemKey,
 } from "@/types/siteConfigs";
 
+export const getFeatureRoutePath = (path: FeatureRoutePath | "/"): string =>
+	path === "/" ? "/" : "/" + path;
+
 export const getFeatureOptionKey = (
 	routeRootKey: FeatureRoutePath,
 ): FeatureOptionKey => `key:${routeRootKey}`;

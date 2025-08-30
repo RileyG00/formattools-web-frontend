@@ -56,11 +56,12 @@ export const title = tv({
 			foreground: "dark:from-[#FFFFFF] dark:to-[#4B4B4B]",
 		},
 		size: {
-			xs: "text-3xl",
-			sm: "text-4xl",
-			md: "text-5xl",
-			lg: "text-6xl",
+			xs: "text-1xl md:text-2xl",
+			sm: "text-2xl md:text-3xl",
+			md: "text-3xl md:text-4xl",
+			lg: "text-4xl md:text-6xl",
 		},
+
 		fullWidth: {
 			true: "w-full block",
 		},
@@ -85,16 +86,16 @@ export const title = tv({
 });
 
 export const subtitle = tv({
-	base: "w-full md:w-1/2 my-2 text-default-600 block max-w-full",
+	base: "w-full md:w-1/2 my-2 text-default-600 block max-w-full text-balance",
 	variants: {
 		fullWidth: {
 			true: "!w-full",
 		},
 		size: {
-			xs: "text-1xl",
-			sm: "text-2xl",
-			md: "text-3xl",
-			lg: "text-4xl",
+			xs: "text-md md:text-lg",
+			sm: "text-xl md:text-1xl",
+			md: "text-1xl md:text-2xl",
+			lg: "text-2xl md:text-3xl",
 		},
 	},
 	defaultVariants: {

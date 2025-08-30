@@ -152,6 +152,9 @@ export const splitOnLineBreak = (input: string): string[] =>
 export const removeAllSpaces = (input: string): string =>
 	input.replace(/ /g, "");
 
+export const replaceAllLineBreaksWithComma = (input: string): string =>
+	input.replace(lineBreakRegexGlobal, ",");
+
 export const escapeAllSingleQuotes = (input: string): string =>
 	input.replace(/'/g, "''");
 
@@ -260,7 +263,7 @@ export const splitOnCommaOrTab = (source: string): string[] => {
 };
 
 export const getQueryStringParams = (url: string): KeyValue[] => {
-	url = removeAllLineBreaks(removeAllSpaces(decodeURI(url)));
+	url = removeAllLineBreaks(decodeURI(url));
 	const urlParts: string[] = url.split("?");
 
 	if (urlParts.length < 2) return [];

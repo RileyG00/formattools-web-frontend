@@ -421,8 +421,8 @@ export const featureConfigs: FeatureOption[] = [
 	},
 	{
 		key: getFeatureOptionKey(featureRoutes.ciphers),
-		pageTitle: "Ciphers",
-		header: "Ciphers",
+		pageTitle: "Text Ciphers",
+		header: "Text Ciphers",
 		subheader:
 			"Explore lightweight, reversible encryption tools that turn plain text into protected strings, and back again, in seconds. Perfect for quick obfuscation, secure sharing of config values, or hands-on learning about cryptographic concepts.",
 		path: featureRoutes.ciphers,

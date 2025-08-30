@@ -20,15 +20,19 @@ SyntaxHighlighter.registerLanguage("sql", sql);
 //Create Component
 //----------------------------------------------------------------------------------------
 interface HighlightSyntaxProps {
-	language: "plaintext" | "number" | "xml" | "html" | "css" | "json" | "sql";
+	language?: "plaintext" | "number" | "xml" | "html" | "css" | "json" | "sql";
 	children: string;
-	showLineNumbers: boolean;
+	showLineNumbers?: boolean;
+	wrapLongLines?: boolean;
+	wrapLines?: boolean;
 }
 
 const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
-	language,
+	language = "plaintext",
 	children,
-	showLineNumbers,
+	showLineNumbers = false,
+	wrapLongLines = true,
+	wrapLines = false,
 }) => {
 	//------------------------------------------------------------------------------------
 	//Return
@@ -36,7 +40,12 @@ const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 	return (
 		<SyntaxHighlighter
 			showLineNumbers={showLineNumbers}
-			customStyle={{ background: "none" }}
+			wrapLongLines={wrapLongLines}
+			wrapLines={wrapLines}
+			customStyle={{
+				background: "none",
+				wordBreak: "break-all",
+			}}
 			language={language}
 			style={atomOneDark}
 		>

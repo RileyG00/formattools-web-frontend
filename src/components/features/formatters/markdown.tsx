@@ -5,6 +5,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import FeatureHeader from "@/components/features/featureHeader";
 import { formatters_Markdown } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -19,13 +20,13 @@ const MarkdownFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] max-h-[800px] flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{formatters_Markdown.name}</FeatureHeader>
 
 			{/* allow children to shrink inside this flex row */}
-			<div className="flex flex-row gap-4 h-full min-h-0">
+			<div className="flex flex-col md:flex-row gap-4 flex-grow h-full min-h-0">
 				{/* INPUT CARD */}
-				<Card className="w-full h-full  flex flex-col overflow-hidden">
+				<Card className="w-full h-full overflow-hidden">
 					<CardHeader>Input Markdown</CardHeader>
 					<CardBody>
 						<Textarea
@@ -44,7 +45,7 @@ const MarkdownFormatter: React.FC = () => {
 				</Card>
 
 				{/* PREVIEW CARD */}
-				<Card className="w-full h-full flex flex-col">
+				<Card className="w-full h-full">
 					<CardHeader>Markdown Preview</CardHeader>
 					<CardBody>
 						<div className="ua-reset">
@@ -99,7 +100,7 @@ const MarkdownFormatter: React.FC = () => {
 					</CardBody>
 				</Card>
 			</div>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

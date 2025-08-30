@@ -7,10 +7,16 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
+import {
+	copyToClipboard,
+	formatAsArrayString,
+	replaceAllLineBreaksWithComma,
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { getRandomInt } from "@/utils/numberUtils";
 import { generators_Number } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -36,9 +42,9 @@ const NumberGenerator: React.FC = () => {
 		if (error) setError(null);
 
 		try {
-			if (minNumber < 1 || maxNumber > 1_000_000) {
+			if (minNumber < 1 || maxNumber > 999_000) {
 				throw new Error(
-					"Minimum number cannot be lower than 1 or higher than 1,000,000",
+					"Minimum number cannot be lower than 1 or higher than 999,000",
 				);
 			}
 
@@ -68,12 +74,15 @@ const NumberGenerator: React.FC = () => {
 				if (i === 0) {
 					response += randomNumber;
 				} else {
-					response += `, ${randomNumber}`;
+					response += `\r\n${randomNumber}`;
 				}
 			}
 
 			if (isFormatAsArray) {
+				response = replaceAllLineBreaksWithComma(response);
 				response = formatAsArrayString(response);
+				const jsonObject: object = JSON.parse(response);
+				response = JSON.stringify(jsonObject, null, "\t");
 			}
 
 			setOutput(response);
@@ -111,21 +120,21 @@ const NumberGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_Number.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-fit h-full">
+			<InputSpecsContainer>
+				<Card className="w-full md:w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-col md:flex-row gap-4">
 							<NumberInput
 								value={minNumber}
 								onValueChange={setMinNumber}
 								label="Minimum Number"
-								description="Any number between 1 and 1,000,000"
+								description="Any number between 1 and 999,000"
 								variant="bordered"
 								minValue={1}
-								maxValue={1_000_000}
+								maxValue={999_000}
 							/>
 							<NumberInput
 								value={maxNumber}
@@ -186,7 +195,7 @@ const NumberGenerator: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Strings</CardHeader>
 				<CardBody>
@@ -195,7 +204,7 @@ const NumberGenerator: React.FC = () => {
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

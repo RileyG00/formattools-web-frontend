@@ -13,6 +13,8 @@ import { formatters_Json } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreen from "@/components/features/fullScreen.Modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -82,13 +84,20 @@ const JsonFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{formatters_Json.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input JSON</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAutosize
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
@@ -96,7 +105,7 @@ const JsonFormatter: React.FC = () => {
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[450px] h-full">
+					<Card className="min-w-fit h-full">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Select
@@ -116,7 +125,7 @@ const JsonFormatter: React.FC = () => {
 							<div className="flex flex-row gap-2 justify-end">
 								<Button
 									color="default"
-									className="w-fit"
+									className="min-w-fit"
 									onPress={() => {
 										setInput("");
 										setOutput("");
@@ -127,7 +136,7 @@ const JsonFormatter: React.FC = () => {
 								</Button>
 								<Button
 									color="primary"
-									className="w-fit"
+									className="min-w-fit"
 									onPress={() => handleFormat(input)}
 								>
 									Format JSON
@@ -153,7 +162,7 @@ const JsonFormatter: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output JSON</span>
@@ -167,7 +176,7 @@ const JsonFormatter: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}

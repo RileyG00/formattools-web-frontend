@@ -17,6 +17,8 @@ import { DuplicateDocumentIcon } from "@/components/common/icons";
 import { copyToClipboard, getQueryStringParams } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { escapers_Url } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -78,20 +80,27 @@ const UrlEncoderDecoder: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout disobeyMinHeightOnMobile>
 			<FeatureHeader>{escapers_Url.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
+			<InputSpecsContainer>
+				<Card className="w-full min-h-fit">
 					<CardHeader>Input URL</CardHeader>
 					<CardBody>
 						<Textarea
+							disableAnimation
+							classNames={{
+								base: "!h-full",
+								inputWrapper: "!h-full",
+								innerWrapper: "!h-full",
+								input: "!h-full",
+							}}
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[450px] min-w-fit h-full">
+				<Card className="min-w-fit">
 					<CardHeader>Formatting Specifications</CardHeader>
 					<CardBody className="flex flex-gap gap-4">
 						<div className="flex flex-row gap-2 justify-end w-fit">
@@ -141,59 +150,46 @@ const UrlEncoderDecoder: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
-			<div className="flex flex-row gap-4 h-full">
-				<Card className="w-full h-full">
-					<CardHeader>Output URL</CardHeader>
-					<CardBody>
-						<HighlightSyntax
-							showLineNumbers={true}
-							language="plaintext"
-						>
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-				<Card className="w-[75%] max-h-[484px] min-h-full">
-					<CardHeader>Output Query String Parameters</CardHeader>
-					<CardBody>
-						<Table
-							aria-label="Table containing the query parameter values for the URL."
-							className="overflow-auto"
-						>
-							<TableHeader>
-								<TableColumn>Key</TableColumn>
-								<TableColumn>Value</TableColumn>
-							</TableHeader>
-							<TableBody items={getQueryStringParams(output)}>
-								{(queryParam) => {
-									return (
-										<TableRow
-											key={
-												queryParam.key +
-												queryParam.value
-											}
-											aria-label={`Key: ${queryParam.key}. Value: ${queryParam.value}`}
+			</InputSpecsContainer>
+			<Card className="h-full">
+				<CardHeader>Output Query String Parameters</CardHeader>
+				<CardBody>
+					<div>
+						<HighlightSyntax>{output}</HighlightSyntax>
+					</div>
+					<Table
+						aria-label="Table containing the query parameter values for the URL."
+						className="min-h-[1px]"
+					>
+						<TableHeader>
+							<TableColumn>Key</TableColumn>
+							<TableColumn>Value</TableColumn>
+						</TableHeader>
+						<TableBody items={getQueryStringParams(output)}>
+							{(queryParam) => {
+								return (
+									<TableRow
+										key={queryParam.key + queryParam.value}
+										aria-label={`Key: ${queryParam.key}. Value: ${queryParam.value}`}
+									>
+										<TableCell
+											aria-label={`Key: ${queryParam.key}`}
 										>
-											<TableCell
-												aria-label={`Key: ${queryParam.key}`}
-											>
-												{queryParam.key}
-											</TableCell>
-											<TableCell
-												aria-label={`Value: ${queryParam.value}`}
-											>
-												{queryParam.value}
-											</TableCell>
-										</TableRow>
-									);
-								}}
-							</TableBody>
-						</Table>
-					</CardBody>
-				</Card>
-			</div>
-		</div>
+											{queryParam.key}
+										</TableCell>
+										<TableCell
+											aria-label={`Value: ${queryParam.value}`}
+										>
+											{queryParam.value}
+										</TableCell>
+									</TableRow>
+								);
+							}}
+						</TableBody>
+					</Table>
+				</CardBody>
+			</Card>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

@@ -14,6 +14,8 @@ import { escapers_Xml } from "@/config/features";
 import { useDisclosure } from "@heroui/modal";
 import FullScreen from "@/components/features/fullScreen.Modal";
 import FullScreenButton from "@/components/common/fullScreenButton";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -95,20 +97,27 @@ const XmlEscaper: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	return (
 		<>
-			<div className="h-[800px] container flex flex-col w-full gap-4">
+			<FeatureOptionItemContainerLayout>
 				<FeatureHeader>{escapers_Xml.name}</FeatureHeader>
-				<div className="flex flex-row gap-4">
-					<Card className="w-full">
+				<InputSpecsContainer>
+					<Card className="w-full min-h-[200px]">
 						<CardHeader>Input XML</CardHeader>
 						<CardBody>
 							<Textarea
+								disableAnimation
+								classNames={{
+									base: "!h-full",
+									inputWrapper: "!h-full",
+									innerWrapper: "!h-full",
+									input: "!h-full",
+								}}
 								aria-label="Container for the raw text input"
 								value={input}
 								onValueChange={setInput}
 							/>
 						</CardBody>
 					</Card>
-					<Card className="w-[450px] min-w-fit h-full">
+					<Card className="min-w-fit h-full">
 						<CardHeader>Formatting Specifications</CardHeader>
 						<CardBody className="flex flex-gap gap-4">
 							<Select
@@ -172,7 +181,7 @@ const XmlEscaper: React.FC = () => {
 							)}
 						</CardBody>
 					</Card>
-				</div>
+				</InputSpecsContainer>
 				<Card className="w-full h-full">
 					<CardHeader className="flex flex-row w-full items-start justify-between">
 						<span>Output XML</span>
@@ -186,7 +195,7 @@ const XmlEscaper: React.FC = () => {
 						</HighlightSyntax>
 					</CardBody>
 				</Card>
-			</div>
+			</FeatureOptionItemContainerLayout>
 			<FullScreen
 				isOpen={fullScreenDisclosure.isOpen}
 				onOpenChange={fullScreenDisclosure.onOpenChange}

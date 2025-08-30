@@ -8,9 +8,15 @@ import { Alert } from "@heroui/alert";
 import { Button } from "@heroui/button";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
 import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, formatAsArrayString } from "@/utils/textUtils";
+import {
+	copyToClipboard,
+	formatAsArrayString,
+	replaceAllLineBreaksWithComma,
+} from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { rngs_CoinToss } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -50,12 +56,15 @@ const CoinTossRng: React.FC = () => {
 				if (i === 0) {
 					response += `"${result}"`;
 				} else {
-					response += `, "${result}"`;
+					response += `\r\n"${result}"`;
 				}
 			}
 
 			if (isFormatAsArray) {
+				response = replaceAllLineBreaksWithComma(response);
 				response = formatAsArrayString(response);
+				const jsonObject: object = JSON.parse(response);
+				response = JSON.stringify(jsonObject, null, "\t");
 			}
 
 			setOutput(response);
@@ -93,13 +102,13 @@ const CoinTossRng: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{rngs_CoinToss.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-[650px] h-full">
+			<InputSpecsContainer>
+				<Card className="w-full md:w-fit h-full">
 					<CardHeader>Coin Toss Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-col md:flex-row gap-4">
 							<NumberInput
 								value={numTosses}
 								onValueChange={setNumTosses}
@@ -159,19 +168,16 @@ const CoinTossRng: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Coin Toss</CardHeader>
 				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
+					<HighlightSyntax showLineNumbers={true} language="json">
 						{output}
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

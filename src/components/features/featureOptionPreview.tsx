@@ -86,18 +86,20 @@ const FeatureOptionPreview: React.FC<OptionsDescriptionsProps> = ({
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
 			<Spacer y={4} />
-			<ul className="w-full h-fit grid grid-cols-3 gap-4">
+			<ul className="w-full h-fit grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] gap-4">
 				{featureOption.items.map((option, index) => {
 					return (
 						<li key={option.path}>
 							<Card
 								isHoverable
-								className="h-[225px] border-1 border-secondary-100/25"
+								className="h-full border-1 border-secondary-100/25"
 								title={option.name}
 							>
 								<CardHeader className="flex flex-row gap-3">
 									{getIcon(index)}
-									<h3>{option.name}</h3>
+									<h3>
+										<strong>{option.name}</strong>
+									</h3>
 								</CardHeader>
 								<CardBody>{option.description}</CardBody>
 								<CardFooter className="flex flex-row justify-end">

@@ -39,7 +39,7 @@ const IndexPage: React.FC = () => {
 					<span className={title({ size: "lg" })}>
 						Entitely Free. Always Online.
 					</span>
-					<div className={subtitle({ size: "sm", class: "mt-4" })}>
+					<div className={subtitle({ size: "xs", class: "mt-4" })}>
 						Formatters, Obfuscators, Validators, all included in one
 						tool. 15+ pro-grade coding tools. Format faster,
 						ad-free, right from your browser.

@@ -11,6 +11,8 @@ import { copyToClipboard } from "@/utils/textUtils";
 import { Griffinere } from "substitution-ciphers";
 import FeatureHeader from "@/components/features/featureHeader";
 import { ciphers_Griffinere } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -94,23 +96,30 @@ const GriffinereCipher: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{ciphers_Griffinere.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-full">
+			<InputSpecsContainer>
+				<Card className="w-full min-h-[200px]">
 					<CardHeader>Input Text</CardHeader>
 					<CardBody>
 						<Textarea
+							disableAutosize
+							classNames={{
+								base: "!h-full",
+								inputWrapper: "!h-full",
+								innerWrapper: "!h-full",
+								input: "!h-full",
+							}}
 							aria-label="Container for the raw text input"
 							value={input}
 							onValueChange={setInput}
 						/>
 					</CardBody>
 				</Card>
-				<Card className="w-[1000px] min-w-fit h-full">
+				<Card className="min-w-fit h-full">
 					<CardHeader>Cipher Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<div className="flex flex-row gap-4">
+					<CardBody className="flex gap-4 w-full">
+						<div className="flex flex-col md:flex-row gap-4 w-full">
 							<Input
 								type="text"
 								variant="bordered"
@@ -118,7 +127,7 @@ const GriffinereCipher: React.FC = () => {
 								onValueChange={setKey}
 								name="key"
 								label="Cipher Key"
-								description="Each character must be included in the Alphabet."
+								className="w-full md:w-[250px]"
 							/>
 							<NumberInput
 								type="number"
@@ -129,7 +138,7 @@ const GriffinereCipher: React.FC = () => {
 								minValue={1}
 								maxValue={16384}
 								label="Minimum Output Length"
-								description="Set to 1 for no minimum length."
+								className="w-full md:w-[250px]"
 							/>
 						</div>
 						<Input
@@ -139,7 +148,6 @@ const GriffinereCipher: React.FC = () => {
 							onValueChange={setAlphabet}
 							name="alphabet"
 							label="Cipher Alphabet"
-							description="Each character must be unique."
 						/>
 						<div className="flex flex-row gap-2 justify-end w-full">
 							<Button
@@ -188,7 +196,7 @@ const GriffinereCipher: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Text</CardHeader>
 				<CardBody>
@@ -200,7 +208,7 @@ const GriffinereCipher: React.FC = () => {
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
