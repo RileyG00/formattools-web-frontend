@@ -14,6 +14,8 @@ import {
 } from "@/utils/textUtils";
 import FeatureHeader from "@/components/features/featureHeader";
 import { generators_String } from "@/config/features";
+import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import InputSpecsContainer from "../inputSpecsContainer";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -48,8 +50,8 @@ const StringGenerator: React.FC = () => {
 				throw new Error("Maximum number of strings is 1,000");
 			}
 
-			if (stringLength > 1_000) {
-				throw new Error("Maximum number of strings is 1,000");
+			if (stringLength > 256) {
+				throw new Error("Maximum length of strings is 1,000");
 			}
 
 			let response = "";
@@ -118,13 +120,13 @@ const StringGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="h-[800px] container flex flex-col w-full gap-4">
+		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_String.name}</FeatureHeader>
-			<div className="flex flex-row gap-4">
-				<Card className="w-fit min-w-[650px] h-full">
+			<InputSpecsContainer>
+				<Card className="w-full md:w-fit h-full">
 					<CardHeader>String Specifications</CardHeader>
 					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-col md:flex-row gap-4">
 							<NumberInput
 								value={numStrings}
 								onValueChange={setNumStrings}
@@ -138,13 +140,13 @@ const StringGenerator: React.FC = () => {
 								value={stringLength}
 								onValueChange={setStringLength}
 								label="String Length"
-								description="Any number between 1 and 1,000"
+								description="Any number between 1 and 256"
 								variant="bordered"
 								minValue={1}
-								maxValue={1_000}
+								maxValue={256}
 							/>
 						</div>
-						<div className="flex flex-row gap-8">
+						<div className="flex flex-col md:flex-row gap-4 md:gap-8">
 							<div className="flex flex-col gap-4">
 								<Checkbox
 									isSelected={isFormatAsArray}
@@ -160,7 +162,7 @@ const StringGenerator: React.FC = () => {
 									color="secondary"
 									aria-label="Controls whether the results should include lowercase characters."
 								>
-									Include lowercase characters
+									Lowercase characters
 								</Checkbox>
 								<Checkbox
 									isSelected={isIncludeUppercase}
@@ -168,7 +170,7 @@ const StringGenerator: React.FC = () => {
 									color="secondary"
 									aria-label="Controls whether the results should include uppercase characters."
 								>
-									Include uppercase characters
+									Uppercase characters
 								</Checkbox>
 							</div>
 							<div className="flex flex-col gap-4">
@@ -178,7 +180,7 @@ const StringGenerator: React.FC = () => {
 									color="secondary"
 									aria-label="Controls whether the results should include special characters."
 								>
-									Include special characters
+									Special characters
 								</Checkbox>
 								<Checkbox
 									isSelected={isIncludeDigits}
@@ -186,7 +188,7 @@ const StringGenerator: React.FC = () => {
 									color="secondary"
 									aria-label="Controls whether the results should include digits."
 								>
-									Include numbers
+									Numbers
 								</Checkbox>
 							</div>
 						</div>
@@ -219,7 +221,7 @@ const StringGenerator: React.FC = () => {
 						)}
 					</CardBody>
 				</Card>
-			</div>
+			</InputSpecsContainer>
 			<Card className="w-full h-full">
 				<CardHeader>Output Strings</CardHeader>
 				<CardBody>
@@ -231,7 +233,7 @@ const StringGenerator: React.FC = () => {
 					</HighlightSyntax>
 				</CardBody>
 			</Card>
-		</div>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
