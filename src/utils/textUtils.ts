@@ -152,6 +152,9 @@ export const splitOnLineBreak = (input: string): string[] =>
 export const removeAllSpaces = (input: string): string =>
 	input.replace(/ /g, "");
 
+export const replaceAllLineBreaksWithComma = (input: string): string =>
+	input.replace(lineBreakRegexGlobal, ",");
+
 export const escapeAllSingleQuotes = (input: string): string =>
 	input.replace(/'/g, "''");
 
