@@ -45,6 +45,7 @@ const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 			customStyle={{
 				background: "none",
 				wordBreak: "break-all",
+				overflowX: "auto",
 			}}
 			language={language}
 			style={atomOneDark}

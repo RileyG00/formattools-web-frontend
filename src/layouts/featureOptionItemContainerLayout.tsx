@@ -10,7 +10,7 @@ const FeatureOptionItemContainerLayout: FC<
 > = ({ disobeyMinHeightOnMobile = false, children }) => {
 	return (
 		<div
-			className={`${disobeyMinHeightOnMobile ? "md:h-[800px]" : "h-[800px]"}  flex flex-col w-full gap-4`}
+			className={`${disobeyMinHeightOnMobile ? "md:h-[800px]" : "h-[800px]"} min-w-0 flex flex-col flex-grow gap-4`}
 		>
 			{children}
 		</div>
