@@ -10,9 +10,9 @@ const NavigationList = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<nav className="hidden xl:flex min-w-fit">
+		<nav className="hidden xl:flex min-w-fit max-h-[800px]">
 			<Listbox
-				className="min-w-fit"
+				className="min-w-fit h-full overflow-y-auto"
 				aria-label="List of available formatters, obfuscators, and validators."
 				variant="flat"
 				items={featureConfigs}
