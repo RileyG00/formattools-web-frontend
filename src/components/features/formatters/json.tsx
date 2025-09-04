@@ -171,7 +171,11 @@ const JsonFormatter: React.FC = () => {
 						/>
 					</CardHeader>
 					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="json">
+						<HighlightSyntax
+							showLineNumbers={true}
+							language="json"
+							wrapLongLines={false}
+						>
 							{output}
 						</HighlightSyntax>
 					</CardBody>
@@ -183,7 +187,11 @@ const JsonFormatter: React.FC = () => {
 				onClose={fullScreenDisclosure.onClose}
 				onCopy={handleCopyOutput}
 			>
-				<HighlightSyntax showLineNumbers={true} language="json">
+				<HighlightSyntax
+					showLineNumbers={true}
+					language="json"
+					wrapLongLines={false}
+				>
 					{output}
 				</HighlightSyntax>
 			</FullScreen>
