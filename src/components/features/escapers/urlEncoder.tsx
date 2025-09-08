@@ -43,7 +43,7 @@ const UrlEncoderDecoder: React.FC = () => {
 				const encodedUri: string = encodeURI(raw);
 				setOutput(encodedUri);
 			} else {
-				const decodedUri: string = decodeURI(raw);
+				const decodedUri: string = decodeURIComponent(raw);
 				setOutput(decodedUri);
 			}
 		} catch (error) {
