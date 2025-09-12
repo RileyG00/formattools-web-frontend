@@ -181,7 +181,12 @@ const HtmlFormatter: React.FC = () => {
 						/>
 					</CardHeader>
 					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="html">
+						<HighlightSyntax
+							showLineNumbers={true}
+							language="html"
+							wrapLongLines={false}
+							wrapLines={false}
+						>
 							{output}
 						</HighlightSyntax>
 					</CardBody>
@@ -193,7 +198,12 @@ const HtmlFormatter: React.FC = () => {
 				onClose={fullScreenDisclosure.onClose}
 				onCopy={handleCopyOutput}
 			>
-				<HighlightSyntax showLineNumbers={true} language="html">
+				<HighlightSyntax
+					showLineNumbers={true}
+					language="html"
+					wrapLongLines={false}
+					wrapLines={false}
+				>
 					{output}
 				</HighlightSyntax>
 			</FullScreen>

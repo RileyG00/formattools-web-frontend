@@ -153,13 +153,13 @@ const UrlEncoderDecoder: React.FC = () => {
 			</InputSpecsContainer>
 			<Card className="h-full">
 				<CardHeader>Output Query String Parameters</CardHeader>
-				<CardBody>
-					<div>
+				<CardBody className="flex flex-col gap-4">
+					<div className="flex-grow min-h-[16px] max-h-[72px] overflow-y-auto">
 						<HighlightSyntax>{output}</HighlightSyntax>
 					</div>
 					<Table
 						aria-label="Table containing the query parameter values for the URL."
-						className="min-h-[1px]"
+						className="min-h-[1px] h-full"
 					>
 						<TableHeader>
 							<TableColumn>Key</TableColumn>
