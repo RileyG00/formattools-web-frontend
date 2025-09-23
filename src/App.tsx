@@ -19,6 +19,7 @@ import EscapersEncodersXmlPage from "./pages/escapersEncoders/escapersEncodersXm
 import EscapersEncodersUrlPage from "./pages/escapersEncoders/escapersEncodersUrlPage";
 import EscapersEncodersBase64Page from "./pages/escapersEncoders/escapersEncodersBase64Page";
 import ConverterEpochDatePage from "./pages/converters/converterEpochDatePage";
+import ConverterTabularToCsvPage from "./pages/converters/converterTabularToCsvPage";
 import RNGDiceRollPage from "./pages/rngs/rngsDiceRolePage";
 import RNGCoinTossPage from "./pages/rngs/rngsCoinTossPage";
 import GeneratorStringPage from "./pages/generators/generatorStringPage";
@@ -159,6 +160,13 @@ const App: React.FC = () => {
 				path={getFeatureRouteUniquePath(
 					featureRoutes.converter,
 					featureSubRoutes.converter_epoch_date,
+				)}
+			/>
+			<Route
+				element={<ConverterTabularToCsvPage />}
+				path={getFeatureRouteUniquePath(
+					featureRoutes.converter,
+					featureSubRoutes.converter_tabular_to_csv,
 				)}
 			/>
 
