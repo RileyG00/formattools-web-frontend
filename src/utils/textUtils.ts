@@ -1,5 +1,6 @@
 import KeyValue from "@/types/keyValuePair";
 
+const lineBreakText = "\r\n";
 const lineBreakRegex = /\r\n|\r|\n/;
 const lineBreakRegexGlobal = /\r\n|\r|\n/g;
 const lowercaseLetters: string[] = [
@@ -146,9 +147,6 @@ export const encloseTextInSingleQuotes = (input: string): string =>
 export const encloseTextInDoubleQuotes = (input: string): string =>
 	`"${input}"`;
 
-export const splitOnLineBreak = (input: string): string[] =>
-	input.split(lineBreakRegex);
-
 export const removeAllSpaces = (input: string): string =>
 	input.replace(/ /g, "");
 
@@ -254,8 +252,21 @@ export const copyAsRichHtmlTable = async (html: string): Promise<void> => {
 	await navigator.clipboard.write([clipboardItem]);
 };
 
+export const addLineBreak = (input: string): string => input + lineBreakText;
+
+export const splitOnLineBreak = (input: string): string[] =>
+	input.split(lineBreakRegex);
+
 export const splitOnCommaOrTab = (source: string): string[] => {
 	const delimiter: string = source.includes(",") ? "," : "\t";
+	return source
+		.split(delimiter)
+		.map((s) => s.trim())
+		.filter(Boolean);
+};
+
+export const splitOnTab = (source: string): string[] => {
+	const delimiter: string = "\t";
 	return source
 		.split(delimiter)
 		.map((s) => s.trim())

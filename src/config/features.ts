@@ -55,6 +55,7 @@ export const featureSubRoutes = {
 
 	// Conveters
 	converter_epoch_date: "epoch-date-converter",
+	converter_tabular_to_csv: "tabular-to-csv",
 } as const;
 
 //----------------------------------------------------------------------------------------
@@ -274,6 +275,22 @@ export const converters_EpochDate: FeatureOptionItem = {
 	status: null,
 };
 
+export const converters_TabularToCsv: FeatureOptionItem = {
+	key: getFeatureOptionItemKey(
+		featureRoutes.converter,
+		featureSubRoutes.converter_tabular_to_csv,
+	),
+	pageTitle: "Tabular to CSV",
+	name: "Tabular to CSV",
+	path: getFeatureRouteUniquePath(
+		featureRoutes.converter,
+		featureSubRoutes.converter_tabular_to_csv,
+	),
+	description:
+		"Converts a tabular data file to a comma-separated-value (CSV) output.",
+	status: null,
+};
+
 //----------------------------------------------------------------------------------------
 //Ciphers
 //----------------------------------------------------------------------------------------
@@ -417,7 +434,7 @@ export const featureConfigs: FeatureOption[] = [
 		subheader:
 			"Various lightweight converter options that allow you to transform one format, such as JSON, XML, and Epoch into another format.",
 		path: featureRoutes.converter,
-		items: [converters_EpochDate],
+		items: [converters_EpochDate, converters_TabularToCsv],
 	},
 	{
 		key: getFeatureOptionKey(featureRoutes.ciphers),
