@@ -178,7 +178,11 @@ const XmlFormatter: React.FC = () => {
 						/>
 					</CardHeader>
 					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="xml">
+						<HighlightSyntax
+							showLineNumbers={true}
+							language="xml"
+							wrapLongLines={false}
+						>
 							{output}
 						</HighlightSyntax>
 					</CardBody>
@@ -190,7 +194,11 @@ const XmlFormatter: React.FC = () => {
 				onClose={fullScreenDisclosure.onClose}
 				onCopy={handleCopyOutput}
 			>
-				<HighlightSyntax showLineNumbers={true} language="xml">
+				<HighlightSyntax
+					showLineNumbers={true}
+					language="xml"
+					wrapLongLines={false}
+				>
 					{output}
 				</HighlightSyntax>
 			</FullScreen>
