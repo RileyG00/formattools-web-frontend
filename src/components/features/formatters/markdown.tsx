@@ -5,8 +5,8 @@ import { Typography } from "@heroui/react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { formatters_Markdown } from "@/config/features";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import FeatureHeader from "../featureHeader";
+import ToolPage from "../toolPage";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 
@@ -23,15 +23,9 @@ const MarkdownFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_Markdown.name}</FeatureHeader>
-
-			{/* allow children to shrink inside this flex row */}
-			<div className="flex h-full min-h-0 grow flex-col gap-4 md:flex-row">
-				<ToolCard
-					title="Input Markdown"
-					className="h-full w-full overflow-hidden"
-				>
+		<ToolPage item={formatters_Markdown}>
+			<ToolPanels>
+				<ToolCard title="Input Markdown" className={toolPanelClassName}>
 					<CodeInput
 						value={input}
 						onChange={setInput}
@@ -40,18 +34,17 @@ const MarkdownFormatter: React.FC = () => {
 						}
 					/>
 				</ToolCard>
-
 				<ToolCard
 					title="Markdown Preview"
-					className="h-full w-full"
+					className={toolPanelClassName}
 					contentClassName="overflow-y-auto"
 				>
 					<Typography.Prose>
 						<Markdown remarkPlugins={[remarkGfm]}>{input}</Markdown>
 					</Typography.Prose>
 				</ToolCard>
-			</div>
-		</FeatureOptionItemContainerLayout>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

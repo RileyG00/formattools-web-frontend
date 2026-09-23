@@ -10,14 +10,12 @@ import {
 } from "@/utils/textUtils";
 import { isNumber } from "@/utils/numberUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -121,36 +119,11 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Input Tabular Data"
-					className="min-h-[200px] w-full"
-				>
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Insert Specifications"
-					className="h-full md:max-w-md"
-				>
-					<TextField
-						fullWidth
-						name="table"
-						value={table}
-						onChange={setTable}
-					>
-						<Label>Insert Into</Label>
-						<Input
-							placeholder="database.schema.table"
-							spellCheck={false}
-						/>
-						<Description>
-							You can also specify the column names to insert
-							into. E.g.: database.schema.table (ColumnA, ColumnB)
-						</Description>
-					</TextField>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={formatters_TabularToSql}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -162,24 +135,47 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 							Clear Input
 						</Button>
 						<Button onPress={() => handleFormat(input)}>
-							Format to Table
+							Build Insert
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<TextField
+					name="table"
+					value={table}
+					onChange={setTable}
+					className="w-full sm:w-96"
+				>
+					<Label>Insert Into</Label>
+					<Input
+						placeholder="database.schema.table"
+						spellCheck={false}
+					/>
+					<Description>
+						Optionally list columns, e.g. database.schema.table
+						(ColumnA, ColumnB)
+					</Description>
+				</TextField>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard
+					title="Input Tabular Data"
+					className={toolPanelClassName}
+				>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder="Paste rows copied from a spreadsheet or query result"
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Insert Statement"
-				language="sql"
-				output={output}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Insert Statement"
+					language="sql"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

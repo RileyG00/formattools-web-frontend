@@ -5,13 +5,9 @@ import { Button } from "@heroui/react";
 import { LoremIpsum } from "lorem-ipsum";
 import { generators_LoremIpsum } from "@/config/features";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 
 const lorem = new LoremIpsum({
@@ -87,40 +83,11 @@ const LoremIpsumGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{generators_LoremIpsum.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="String Specifications"
-					className="h-full w-full md:w-fit"
-				>
-					<div className="flex flex-col gap-4 md:flex-row">
-						<NumberOption
-							label="Number of Words"
-							description="Any number between 1 and 10,000"
-							value={numWords}
-							onChange={setNumWords}
-							minValue={1}
-							maxValue={10_000}
-						/>
-						<NumberOption
-							label="Number of Sentences"
-							description="Any number between 1 and 1,000"
-							value={numSentences}
-							onChange={setNumSentences}
-							minValue={1}
-							maxValue={1_000}
-						/>
-						<NumberOption
-							label="Number of Paragraphs"
-							description="Any number between 1 and 500"
-							value={numParagraphs}
-							onChange={setNumParagraphs}
-							minValue={1}
-							maxValue={500}
-						/>
-					</div>
-					<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
+		<ToolPage item={generators_LoremIpsum}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="secondary"
 							onPress={() => handleGenerate("words")}
@@ -133,27 +100,44 @@ const LoremIpsumGenerator: React.FC = () => {
 						>
 							Generate Sentences
 						</Button>
-						<div className="flex flex-row gap-2">
-							<Button
-								onPress={() => handleGenerate("paragraphs")}
-							>
-								Generate Paragraphs
-							</Button>
-							<CopyButton
-								isDisabled={!output}
-								onPress={handleCopyOutput}
-							/>
-						</div>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
+						<Button onPress={() => handleGenerate("paragraphs")}>
+							Generate Paragraphs
+						</Button>
+					</>
+				}
+			>
+				<NumberOption
+					label="Number of Words"
+					description="Between 1 and 10,000"
+					value={numWords}
+					onChange={setNumWords}
+					minValue={1}
+					maxValue={10_000}
+				/>
+				<NumberOption
+					label="Number of Sentences"
+					description="Between 1 and 1,000"
+					value={numSentences}
+					onChange={setNumSentences}
+					minValue={1}
+					maxValue={1_000}
+				/>
+				<NumberOption
+					label="Number of Paragraphs"
+					description="Between 1 and 500"
+					value={numParagraphs}
+					onChange={setNumParagraphs}
+					minValue={1}
+					maxValue={500}
+				/>
+			</ToolOptions>
 			<CodeOutputCard
-				title="Output Strings"
+				title="Output Text"
 				output={output}
 				showLineNumbers={false}
+				onCopy={handleCopyOutput}
 			/>
-		</FeatureOptionItemContainerLayout>
+		</ToolPage>
 	);
 };
 

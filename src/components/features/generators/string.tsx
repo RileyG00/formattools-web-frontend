@@ -9,13 +9,9 @@ import {
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 import CheckboxOption from "../checkboxOption";
 
@@ -104,85 +100,69 @@ const StringGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{generators_String.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="String Specifications"
-					className="h-full w-full md:w-fit"
-				>
-					<div className="flex flex-col gap-4 md:flex-row">
-						<NumberOption
-							label="Number of Strings to Return"
-							description="Any number between 1 and 1,000"
-							value={numStrings}
-							onChange={setNumStrings}
-							minValue={1}
-							maxValue={1_000}
-						/>
-						<NumberOption
-							label="String Length"
-							description="Any number between 1 and 256"
-							value={stringLength}
-							onChange={setStringLength}
-							minValue={1}
-							maxValue={256}
-						/>
-					</div>
-					<div className="flex flex-col gap-4 md:flex-row md:gap-8">
-						<div className="flex flex-col gap-4">
-							<CheckboxOption
-								isSelected={isFormatAsArray}
-								onChange={setIsFormatAsArray}
-							>
-								Return results as an array
-							</CheckboxOption>
-							<CheckboxOption
-								isSelected={isIncludeLowercase}
-								onChange={setIsIncludeLowercase}
-							>
-								Lowercase characters
-							</CheckboxOption>
-							<CheckboxOption
-								isSelected={isIncludeUppercase}
-								onChange={setIsIncludeUppercase}
-							>
-								Uppercase characters
-							</CheckboxOption>
-						</div>
-						<div className="flex flex-col gap-4">
-							<CheckboxOption
-								isSelected={isIncludeSpecial}
-								onChange={setIsIncludeSpecial}
-							>
-								Special characters
-							</CheckboxOption>
-							<CheckboxOption
-								isSelected={isIncludeDigits}
-								onChange={setIsIncludeDigits}
-							>
-								Numbers
-							</CheckboxOption>
-						</div>
-					</div>
-					<div className="flex flex-row justify-end gap-2">
-						<Button onPress={() => handleGenerate()}>
-							Generate
-						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
+		<ToolPage item={generators_String}>
+			<ToolOptions
+				error={error}
+				actions={
+					<Button onPress={() => handleGenerate()}>Generate</Button>
+				}
+			>
+				<NumberOption
+					label="Number of Strings"
+					description="Between 1 and 1,000"
+					value={numStrings}
+					onChange={setNumStrings}
+					minValue={1}
+					maxValue={1_000}
+				/>
+				<NumberOption
+					label="String Length"
+					description="Between 1 and 256"
+					value={stringLength}
+					onChange={setStringLength}
+					minValue={1}
+					maxValue={256}
+				/>
+				<div className="grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2">
+					<CheckboxOption
+						isSelected={isIncludeLowercase}
+						onChange={setIsIncludeLowercase}
+					>
+						Lowercase characters
+					</CheckboxOption>
+					<CheckboxOption
+						isSelected={isIncludeUppercase}
+						onChange={setIsIncludeUppercase}
+					>
+						Uppercase characters
+					</CheckboxOption>
+					<CheckboxOption
+						isSelected={isIncludeDigits}
+						onChange={setIsIncludeDigits}
+					>
+						Numbers
+					</CheckboxOption>
+					<CheckboxOption
+						isSelected={isIncludeSpecial}
+						onChange={setIsIncludeSpecial}
+					>
+						Special characters
+					</CheckboxOption>
+					<CheckboxOption
+						isSelected={isFormatAsArray}
+						onChange={setIsFormatAsArray}
+					>
+						Return results as an array
+					</CheckboxOption>
+				</div>
+			</ToolOptions>
 			<CodeOutputCard
 				title="Output Strings"
 				language={isFormatAsArray ? "json" : "plaintext"}
 				output={output}
+				onCopy={handleCopyOutput}
 			/>
-		</FeatureOptionItemContainerLayout>
+		</ToolPage>
 	);
 };
 

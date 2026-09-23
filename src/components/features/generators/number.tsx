@@ -9,13 +9,9 @@ import {
 } from "@/utils/textUtils";
 import { getRandomInt } from "@/utils/numberUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 import CheckboxOption from "../checkboxOption";
 
@@ -102,64 +98,55 @@ const NumberGenerator: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{generators_Number.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Number Specifications"
-					className="h-full w-full md:w-fit"
-				>
-					<div className="flex flex-col gap-4 md:flex-row">
-						<NumberOption
-							label="Minimum Number"
-							description="Any number between 1 and 999,000"
-							value={minNumber}
-							onChange={setMinNumber}
-							minValue={1}
-							maxValue={999_000}
-						/>
-						<NumberOption
-							label="Maximum Number"
-							description="Any number between 1 and 1,000,000"
-							value={maxNumber}
-							onChange={setMaxNumber}
-							minValue={1}
-							maxValue={1_000_000}
-						/>
-						<NumberOption
-							label="Numbers to Generate"
-							description="Any number between 1 and 10,000"
-							value={numbersToGenerate}
-							onChange={setNumbersToGenerate}
-							minValue={1}
-							maxValue={10_000}
-							className="min-w-fit"
-						/>
-					</div>
+		<ToolPage item={generators_Number}>
+			<ToolOptions
+				error={error}
+				actions={
+					<Button onPress={() => handleGenerateNumbers()}>
+						Generate
+					</Button>
+				}
+			>
+				<NumberOption
+					label="Minimum Number"
+					description="Between 1 and 999,000"
+					value={minNumber}
+					onChange={setMinNumber}
+					minValue={1}
+					maxValue={999_000}
+				/>
+				<NumberOption
+					label="Maximum Number"
+					description="Between 1 and 1,000,000"
+					value={maxNumber}
+					onChange={setMaxNumber}
+					minValue={1}
+					maxValue={1_000_000}
+				/>
+				<NumberOption
+					label="Numbers to Generate"
+					description="Between 1 and 10,000"
+					value={numbersToGenerate}
+					onChange={setNumbersToGenerate}
+					minValue={1}
+					maxValue={10_000}
+				/>
+				<div className="pt-1">
 					<CheckboxOption
 						isSelected={isFormatAsArray}
 						onChange={setIsFormatAsArray}
 					>
 						Return results as an array
 					</CheckboxOption>
-					<div className="flex flex-row justify-end gap-2">
-						<Button onPress={() => handleGenerateNumbers()}>
-							Generate
-						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
+				</div>
+			</ToolOptions>
 			<CodeOutputCard
 				title="Output Numbers"
 				language="number"
 				output={output}
+				onCopy={handleCopyOutput}
 			/>
-		</FeatureOptionItemContainerLayout>
+		</ToolPage>
 	);
 };
 

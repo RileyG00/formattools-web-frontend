@@ -6,12 +6,11 @@ import { prettify } from "htmlfy";
 import { formatters_TabularToTable } from "@/config/features";
 import { env } from "@/config/env";
 import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
-import ErrorAlert from "../errorAlert";
 import CheckboxOption from "../checkboxOption";
 
 //----------------------------------------------------------------------------------------
@@ -95,46 +94,30 @@ const TabularToTableFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
-			{env.chromeExtensionTabularToTable && (
-				<p>
-					Want to skip the website? Get the Google Chrome Extension
-					for formatting in Jira:{" "}
-					<Link
-						href={env.chromeExtensionTabularToTable}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Extension Store
-						<Link.Icon />
-					</Link>
-				</p>
-			)}
-			<InputSpecsContainer isDismissFlexGrow isDismissColReversal>
-				<ToolCard
-					title="Input Tabular Data"
-					className="min-h-[200px] w-full"
-				>
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-fit min-w-fit"
-				>
-					<CheckboxOption
-						isSelected={hasHeaderRow}
-						onChange={setHasHeaderRow}
-					>
-						Table includes header row
-					</CheckboxOption>
-					<CheckboxOption
-						isSelected={isPropercaseHeader}
-						onChange={setIsPropercaseHeader}
-					>
-						Set header row to Proper Case
-					</CheckboxOption>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage
+			item={formatters_TabularToTable}
+			headerExtra={
+				env.chromeExtensionTabularToTable && (
+					<p className="text-sm text-muted">
+						Want to skip the website? Get the Google Chrome
+						extension for formatting in Jira:{" "}
+						<Link
+							href={env.chromeExtensionTabularToTable}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-sm"
+						>
+							Extension Store
+							<Link.Icon />
+						</Link>
+					</p>
+				)
+			}
+		>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -147,11 +130,35 @@ const TabularToTableFormatter: React.FC = () => {
 						<Button onPress={() => handleFormat(input)}>
 							Format &amp; Copy to Clipboard
 						</Button>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<CheckboxOption
+					isSelected={hasHeaderRow}
+					onChange={setHasHeaderRow}
+				>
+					Table includes header row
+				</CheckboxOption>
+				<CheckboxOption
+					isSelected={isPropercaseHeader}
+					onChange={setIsPropercaseHeader}
+				>
+					Set header row to Proper Case
+				</CheckboxOption>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard
+					title="Input Tabular Data"
+					className={toolPanelClassName}
+				>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder="Paste rows copied from a SQL result set or spreadsheet"
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-		</FeatureOptionItemContainerLayout>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

@@ -47,7 +47,7 @@ const FeatureOptionPreview: React.FC<FeatureOptionPreviewProps> = ({
 		<div className="flex w-full min-w-0 flex-col">
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
-			<ul className="mt-4 grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-4">
+			<ul className="mt-8 grid h-fit w-full grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-6">
 				{featureOption.items.map((option) => (
 					<li key={option.path}>
 						<Card className="h-full">

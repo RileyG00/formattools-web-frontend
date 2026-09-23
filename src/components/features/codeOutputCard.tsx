@@ -4,9 +4,11 @@ import { ReactNode, useState } from "react";
 import HighlightSyntax, {
 	HighlightLanguage,
 } from "@/components/common/syntaxHighlighter";
+import CopyButton from "@/components/common/copyButton";
 import FullScreenButton from "@/components/common/fullScreenButton";
 import FullScreenModal from "./fullScreenModal";
 import ToolCard from "./toolCard";
+import { toolPanelClassName } from "./toolPanels";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -18,13 +20,14 @@ interface CodeOutputCardProps {
 	showLineNumbers?: boolean;
 	wrapLongLines?: boolean;
 	wrapLines?: boolean;
-	// When provided, the card offers a full screen view with a copy button.
+	// Shows a copy button in the header (and in the full screen view).
 	onCopy?: () => void;
 	allowFullScreen?: boolean;
+	className?: string;
 	children?: ReactNode;
 }
 
-// Syntax-highlighted, read-only output panel shown beneath each tool.
+// Syntax-highlighted, read-only output panel for a tool.
 const CodeOutputCard: React.FC<CodeOutputCardProps> = ({
 	title,
 	output,
@@ -33,7 +36,8 @@ const CodeOutputCard: React.FC<CodeOutputCardProps> = ({
 	wrapLongLines,
 	wrapLines,
 	onCopy,
-	allowFullScreen = false,
+	allowFullScreen = true,
+	className = toolPanelClassName,
 	children,
 }) => {
 	const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -53,17 +57,27 @@ const CodeOutputCard: React.FC<CodeOutputCardProps> = ({
 		<>
 			<ToolCard
 				title={title}
-				className="h-full min-h-[240px] flex-1"
+				className={className}
 				headerAction={
-					allowFullScreen && (
-						<FullScreenButton
-							onPress={() => setIsFullScreen(true)}
-						/>
-					)
+					<div className="flex flex-row gap-2">
+						{onCopy && (
+							<CopyButton
+								size="sm"
+								isDisabled={!output}
+								onPress={onCopy}
+							/>
+						)}
+						{allowFullScreen && (
+							<FullScreenButton
+								isDisabled={!output}
+								onPress={() => setIsFullScreen(true)}
+							/>
+						)}
+					</div>
 				}
 			>
 				{children}
-				<div className="min-h-0 flex-1 overflow-auto rounded-xl bg-code p-4 text-sm">
+				<div className="min-h-0 flex-1 overflow-auto rounded-xl bg-code p-4 text-sm leading-relaxed">
 					{highlighted}
 				</div>
 			</ToolCard>

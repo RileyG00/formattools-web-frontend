@@ -33,9 +33,11 @@ const FullScreenModal: React.FC<FullScreenModalProps> = ({
 					<Modal.Body className="bg-code rounded-xl p-4">
 						{children}
 					</Modal.Body>
-					<Modal.Footer>
-						<CopyButton onPress={onCopy} />
-					</Modal.Footer>
+					{onCopy && (
+						<Modal.Footer>
+							<CopyButton onPress={onCopy} />
+						</Modal.Footer>
+					)}
 				</Modal.Dialog>
 			</Modal.Container>
 		</Modal.Backdrop>

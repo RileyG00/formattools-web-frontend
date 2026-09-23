@@ -24,7 +24,7 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
 			disableTransitionOnChange
 		>
 			<RouterProvider navigate={router.push}>
-				<Toast.Provider placement="top end" />
+				<Toast.Provider placement="top" />
 				{children}
 			</RouterProvider>
 		</ThemeProvider>

@@ -8,13 +8,9 @@ import {
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 import CheckboxOption from "../checkboxOption";
 
@@ -84,61 +80,51 @@ const CoinTossRng: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{rngs_CoinToss.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Coin Toss Specifications"
-					className="h-full w-full md:w-fit"
+		<ToolPage item={rngs_CoinToss}>
+			<ToolOptions
+				error={error}
+				actions={<Button onPress={() => handleToss()}>Toss</Button>}
+			>
+				<NumberOption
+					label="Number of Tosses"
+					description="Between 1 and 100,000"
+					value={numTosses}
+					onChange={setNumTosses}
+					minValue={1}
+					maxValue={100_000}
+				/>
+				<TextField
+					value={headSideIdentifier}
+					onChange={setHeadSideIdentifier}
+					className="w-full sm:w-40"
 				>
-					<div className="flex flex-col gap-4 md:flex-row">
-						<NumberOption
-							label="Number of Tosses"
-							description="Any number between 1 and 100,000"
-							value={numTosses}
-							onChange={setNumTosses}
-							minValue={1}
-							maxValue={100_000}
-						/>
-						<TextField
-							fullWidth
-							value={tailsSideIdentifier}
-							onChange={setTailSideIdentifier}
-						>
-							<Label>Identifier for Tails Side</Label>
-							<Input />
-						</TextField>
-						<TextField
-							fullWidth
-							value={headSideIdentifier}
-							onChange={setHeadSideIdentifier}
-						>
-							<Label>Identifier for Heads Side</Label>
-							<Input />
-						</TextField>
-					</div>
+					<Label>Heads Label</Label>
+					<Input />
+				</TextField>
+				<TextField
+					value={tailsSideIdentifier}
+					onChange={setTailSideIdentifier}
+					className="w-full sm:w-40"
+				>
+					<Label>Tails Label</Label>
+					<Input />
+				</TextField>
+				<div className="pt-1">
 					<CheckboxOption
 						isSelected={isFormatAsArray}
 						onChange={setIsFormatAsArray}
 					>
 						Return results as an array
 					</CheckboxOption>
-					<div className="flex flex-row justify-end gap-2">
-						<Button onPress={() => handleToss()}>Toss</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
+				</div>
+			</ToolOptions>
 			<CodeOutputCard
 				title="Output Coin Toss"
 				language="json"
 				output={output}
+				onCopy={handleCopyOutput}
 			/>
-		</FeatureOptionItemContainerLayout>
+		</ToolPage>
 	);
 };
 

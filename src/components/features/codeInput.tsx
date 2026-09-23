@@ -32,7 +32,7 @@ const CodeInput: React.FC<CodeInputProps> = ({
 				variant="secondary"
 				placeholder={placeholder}
 				spellCheck={spellCheck}
-				className="h-full min-h-[120px] flex-1 resize-none font-mono text-sm"
+				className="h-full min-h-[120px] flex-1 resize-none font-mono text-sm leading-relaxed"
 			/>
 		</TextField>
 	);

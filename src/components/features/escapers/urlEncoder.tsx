@@ -5,14 +5,13 @@ import { Button, Table } from "@heroui/react";
 import { escapers_Url } from "@/config/features";
 import { getQueryStringParams } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
 import CopyButton from "@/components/common/copyButton";
 import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
-import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -68,17 +67,11 @@ const UrlEncoderDecoder: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout disobeyMinHeightOnMobile>
-			<FeatureHeader>{escapers_Url.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input URL" className="min-h-fit w-full">
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="min-w-fit"
-				>
-					<div className="flex w-fit flex-row justify-end gap-2">
+		<ToolPage item={escapers_Url}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -98,49 +91,64 @@ const UrlEncoderDecoder: React.FC = () => {
 						<Button onPress={() => handleFormat(input, true)}>
 							Encode
 						</Button>
+					</>
+				}
+			/>
+			<ToolPanels>
+				<ToolCard title="Input URL" className={toolPanelClassName}>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder="https://example.com/search?q=hello%20world&lang=en"
+					/>
+				</ToolCard>
+				<ToolCard
+					title="Output"
+					className={toolPanelClassName}
+					headerAction={
 						<CopyButton
+							size="sm"
 							isDisabled={!output}
 							onPress={handleCopyOutput}
 						/>
+					}
+				>
+					<div className="max-h-40 shrink-0 overflow-y-auto rounded-xl bg-code p-4 text-sm leading-relaxed">
+						<HighlightSyntax>{output}</HighlightSyntax>
 					</div>
-					<ErrorAlert error={error} />
+					<Table className="min-h-0 flex-1">
+						<Table.ScrollContainer>
+							<Table.Content aria-label="Query string parameters in the URL.">
+								<Table.Header>
+									<Table.Column isRowHeader>Key</Table.Column>
+									<Table.Column>Value</Table.Column>
+								</Table.Header>
+								<Table.Body
+									items={queryParams}
+									renderEmptyState={() => (
+										<div className="py-8 text-center text-sm text-muted">
+											No query string parameters to
+											display.
+										</div>
+									)}
+								>
+									{(queryParam) => (
+										<Table.Row id={queryParam.id}>
+											<Table.Cell>
+												{queryParam.key}
+											</Table.Cell>
+											<Table.Cell>
+												{queryParam.value}
+											</Table.Cell>
+										</Table.Row>
+									)}
+								</Table.Body>
+							</Table.Content>
+						</Table.ScrollContainer>
+					</Table>
 				</ToolCard>
-			</InputSpecsContainer>
-			<ToolCard title="Output Query String Parameters" className="h-full">
-				<div className="max-h-[96px] min-h-[16px] shrink-0 overflow-y-auto rounded-xl bg-code p-3 text-sm">
-					<HighlightSyntax>{output}</HighlightSyntax>
-				</div>
-				<Table className="min-h-0 flex-1">
-					<Table.ScrollContainer>
-						<Table.Content aria-label="Table containing the query parameter values for the URL.">
-							<Table.Header>
-								<Table.Column isRowHeader>Key</Table.Column>
-								<Table.Column>Value</Table.Column>
-							</Table.Header>
-							<Table.Body
-								items={queryParams}
-								renderEmptyState={() => (
-									<div className="py-6 text-center text-sm text-muted">
-										No query string parameters to display.
-									</div>
-								)}
-							>
-								{(queryParam) => (
-									<Table.Row id={queryParam.id}>
-										<Table.Cell>
-											{queryParam.key}
-										</Table.Cell>
-										<Table.Cell>
-											{queryParam.value}
-										</Table.Cell>
-									</Table.Row>
-								)}
-							</Table.Body>
-						</Table.Content>
-					</Table.ScrollContainer>
-				</Table>
-			</ToolCard>
-		</FeatureOptionItemContainerLayout>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

@@ -8,19 +8,25 @@ import { DuplicateDocumentIcon } from "./icons";
 //----------------------------------------------------------------------------------------
 interface CopyButtonProps {
 	isDisabled?: boolean;
+	size?: "sm" | "md";
 	onPress?: () => void;
 }
 
-const CopyButton: React.FC<CopyButtonProps> = ({ isDisabled, onPress }) => {
+const CopyButton: React.FC<CopyButtonProps> = ({
+	isDisabled,
+	size = "md",
+	onPress,
+}) => {
 	return (
 		<Button
 			isIconOnly
-			variant="secondary"
+			size={size}
+			variant="outline"
 			aria-label="Copy output"
 			isDisabled={isDisabled}
 			onPress={onPress}
 		>
-			<DuplicateDocumentIcon size={18} />
+			<DuplicateDocumentIcon size={size === "sm" ? 16 : 18} />
 		</Button>
 	);
 };

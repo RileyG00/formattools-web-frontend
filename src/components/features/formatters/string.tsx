@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Description, Label, Radio, RadioGroup } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { formatters_String } from "@/config/features";
 import {
 	encloseTextInDoubleQuotes,
@@ -10,23 +10,27 @@ import {
 	splitOnLineBreak,
 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import CheckboxOption from "../checkboxOption";
 import OptionSelect, { SelectOption } from "../optionSelect";
 
 //----------------------------------------------------------------------------------------
 //Options
 //----------------------------------------------------------------------------------------
+type OutputFormat = "list" | "array";
 type Casing = "preserve" | "uppercase" | "lowercase";
 type Quotes = "none" | "double" | "single";
 type Delimiter = "tab" | "semicolon" | "comma";
+
+const outputFormatOptions: readonly SelectOption<OutputFormat>[] = [
+	{ id: "list", label: "Delimited list" },
+	{ id: "array", label: "JSON array" },
+];
 
 const casingOptions: readonly SelectOption<Casing>[] = [
 	{ id: "preserve", label: "Preserve" },
@@ -53,7 +57,8 @@ const StringFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
+	const [outputFormat, setOutputFormat] = useState<OutputFormat>("list");
+	const isFormatAsArray: boolean = outputFormat === "array";
 	const [casing, setCasing] = useState<Casing>("preserve");
 	const [quotes, setQuotes] = useState<Quotes>("none");
 	const [delimiter, setDelimiter] = useState<Delimiter>("comma");
@@ -127,74 +132,11 @@ const StringFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_String.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Input String(s)"
-					className="min-h-[200px] w-full"
-				>
-					<CodeInput
-						value={input}
-						onChange={setInput}
-						placeholder={"How\nNow\nBrown\nCow"}
-					/>
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-fit min-w-fit"
-				>
-					<OptionSelect
-						label="Casing Options"
-						options={casingOptions}
-						value={casing}
-						onChange={setCasing}
-					/>
-					<div className="flex w-full min-w-fit flex-col-reverse gap-4 md:flex-row">
-						<div className="flex w-full flex-col gap-4">
-							<CheckboxOption
-								isSelected={isFormatAsArray}
-								onChange={setIsFormatAsArray}
-							>
-								Return results as array
-							</CheckboxOption>
-							<CheckboxOption
-								isSelected={isAddSpaceAfterDelimiter}
-								onChange={setIsAddSpaceAfterDelimiter}
-							>
-								Add space after delimiter
-							</CheckboxOption>
-						</div>
-						<OptionSelect
-							label="Delimiter Options"
-							options={delimiterOptions}
-							value={delimiter}
-							onChange={setDelimiter}
-							className="min-w-[225px]"
-							description="Has no effect if formatting as an array."
-						/>
-					</div>
-					<RadioGroup
-						orientation="horizontal"
-						value={quotes}
-						onChange={(value) => setQuotes(value as Quotes)}
-					>
-						<Label>Apply Quotes</Label>
-						<Description>
-							Has no effect if formatting as an array.
-						</Description>
-						{quoteOptions.map((option) => (
-							<Radio key={option.id} value={option.id}>
-								<Radio.Content>
-									<Radio.Control>
-										<Radio.Indicator />
-									</Radio.Control>
-									{option.label}
-								</Radio.Content>
-							</Radio>
-						))}
-					</RadioGroup>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={formatters_String}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -208,24 +150,68 @@ const StringFormatter: React.FC = () => {
 						<Button onPress={() => handleFormat(input)}>
 							Format String
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<OptionSelect
+					label="Output Format"
+					options={outputFormatOptions}
+					value={outputFormat}
+					onChange={setOutputFormat}
+				/>
+				<OptionSelect
+					label="Casing"
+					options={casingOptions}
+					value={casing}
+					onChange={setCasing}
+				/>
+				{/* Arrays are always double-quoted and comma separated, so these only apply to lists. */}
+				<OptionSelect
+					label="Delimiter"
+					options={delimiterOptions}
+					value={delimiter}
+					onChange={setDelimiter}
+					isDisabled={isFormatAsArray}
+				/>
+				<OptionSelect
+					label="Quotes"
+					options={quoteOptions}
+					value={quotes}
+					onChange={setQuotes}
+					isDisabled={isFormatAsArray}
+				/>
+				{/* Bottom-aligned and as tall as a select trigger, so it lines up with the dropdowns. */}
+				<div className="flex h-9 items-center self-end">
+					<CheckboxOption
+						isSelected={isAddSpaceAfterDelimiter}
+						onChange={setIsAddSpaceAfterDelimiter}
+						isDisabled={isFormatAsArray || delimiter === "tab"}
+					>
+						Add space after delimiter
+					</CheckboxOption>
+				</div>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard
+					title="Input String(s)"
+					className={toolPanelClassName}
+				>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={"How\nNow\nBrown\nCow"}
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Output String(s)"
-				language="json"
-				output={output}
-				wrapLongLines={false}
-				wrapLines={true}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output String(s)"
+					language="json"
+					output={output}
+					wrapLongLines={false}
+					wrapLines={true}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

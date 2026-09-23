@@ -5,14 +5,12 @@ import { Button, Input, Label, TextField } from "@heroui/react";
 import { Griffinere } from "substitution-ciphers";
 import { ciphers_Griffinere } from "@/config/features";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 
 //----------------------------------------------------------------------------------------
@@ -71,45 +69,11 @@ const GriffinereCipher: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{ciphers_Griffinere.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input Text" className="min-h-[200px] w-full">
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Cipher Specifications"
-					className="h-full min-w-fit"
-				>
-					<div className="flex w-full flex-col gap-4 md:flex-row">
-						<TextField
-							name="key"
-							value={key}
-							onChange={setKey}
-							className="w-full md:w-[250px]"
-						>
-							<Label>Cipher Key</Label>
-							<Input spellCheck={false} />
-						</TextField>
-						<NumberOption
-							label="Minimum Output Length"
-							value={minLength}
-							onChange={setMinLength}
-							minValue={1}
-							maxValue={16384}
-							className="w-full md:w-[250px]"
-						/>
-					</div>
-					<TextField
-						fullWidth
-						name="alphabet"
-						value={alphabet}
-						onChange={setAlphabet}
-					>
-						<Label>Cipher Alphabet</Label>
-						<Input spellCheck={false} />
-					</TextField>
-					<div className="flex w-full flex-row justify-end gap-2">
+		<ToolPage item={ciphers_Griffinere}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -129,16 +93,46 @@ const GriffinereCipher: React.FC = () => {
 						<Button onPress={() => handleFormat(input, true)}>
 							Encode
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<TextField
+					name="key"
+					value={key}
+					onChange={setKey}
+					className="w-full sm:w-80"
+				>
+					<Label>Cipher Key</Label>
+					<Input spellCheck={false} className="font-mono" />
+				</TextField>
+				<TextField
+					name="alphabet"
+					value={alphabet}
+					onChange={setAlphabet}
+					className="w-full sm:w-[28rem]"
+				>
+					<Label>Cipher Alphabet</Label>
+					<Input spellCheck={false} className="font-mono" />
+				</TextField>
+				<NumberOption
+					label="Minimum Output Length"
+					value={minLength}
+					onChange={setMinLength}
+					minValue={1}
+					maxValue={16384}
+				/>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard title="Input Text" className={toolPanelClassName}>
+					<CodeInput value={input} onChange={setInput} />
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard title="Output Text" output={output} />
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output Text"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

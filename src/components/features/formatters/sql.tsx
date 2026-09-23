@@ -6,14 +6,12 @@ import { format, KeywordCase } from "sql-formatter";
 import { formatters_Sql } from "@/config/features";
 import SQLLanguage from "@/types/sqlLanguage";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 import OptionSelect, { SelectOption } from "../optionSelect";
 
@@ -110,62 +108,11 @@ const SqlFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input SQL" className="min-h-[200px] w-full">
-					<CodeInput
-						value={input}
-						onChange={setInput}
-						placeholder={`select * from Data.dbo.Formatters with (nolock)`}
-					/>
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="min-w-fit"
-				>
-					<div className="flex flex-row gap-4">
-						<OptionSelect
-							label="Indentation"
-							options={indentationOptions}
-							value={indentation}
-							onChange={setIndentation}
-							className="min-w-40"
-						/>
-						<OptionSelect
-							label="Language"
-							options={languageOptions}
-							value={language}
-							onChange={setLanguage}
-							className="min-w-40"
-						/>
-					</div>
-					<div className="flex flex-row gap-4">
-						<OptionSelect
-							label="Keyword Casing"
-							options={casingOptions}
-							value={keywordCasing}
-							onChange={setKeywordCasing}
-							className="min-w-40"
-						/>
-						<OptionSelect
-							label="Identifier Casing"
-							options={casingOptions}
-							value={identifierCasing}
-							onChange={setIdentifierCasing}
-							className="min-w-40"
-						/>
-					</div>
-					<NumberOption
-						hideStepper
-						label="Lines Between Queries"
-						value={linesBetweenQueries}
-						onChange={setLinesBetweenQueries}
-						minValue={1}
-						maxValue={10}
-						description="You must use semicolons to break queries up for this feature to apply."
-					/>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={formatters_Sql}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -179,22 +126,58 @@ const SqlFormatter: React.FC = () => {
 						<Button onPress={() => handleFormat(input)}>
 							Format SQL
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<OptionSelect
+					label="Language"
+					options={languageOptions}
+					value={language}
+					onChange={setLanguage}
+				/>
+				<OptionSelect
+					label="Indentation"
+					options={indentationOptions}
+					value={indentation}
+					onChange={setIndentation}
+				/>
+				<OptionSelect
+					label="Keyword Casing"
+					options={casingOptions}
+					value={keywordCasing}
+					onChange={setKeywordCasing}
+				/>
+				<OptionSelect
+					label="Identifier Casing"
+					options={casingOptions}
+					value={identifierCasing}
+					onChange={setIdentifierCasing}
+				/>
+				<NumberOption
+					label="Lines Between Queries"
+					value={linesBetweenQueries}
+					onChange={setLinesBetweenQueries}
+					minValue={1}
+					maxValue={10}
+					description="Separate queries with semicolons."
+				/>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard title="Input SQL" className={toolPanelClassName}>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`select * from Data.dbo.Formatters with (nolock)`}
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Output SQL"
-				language="sql"
-				output={output}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output SQL"
+					language="sql"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

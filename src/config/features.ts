@@ -56,7 +56,7 @@ export const featureSubRoutes = {
 	// Generators
 	generator_string: "string-generator",
 	generator_number: "number-generator",
-	generator_lorem: "lorem-ipsom-generator",
+	generator_lorem: "lorem-ipsum-generator",
 
 	// Conveters
 	converter_epoch_date: "epoch-date-converter",

@@ -5,14 +5,12 @@ import { Button } from "@heroui/react";
 import { escapers_Base64 } from "@/config/features";
 import { decodeBase64, encodeBase64 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -53,17 +51,11 @@ const Base64EncoderDecoder: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{escapers_Base64.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input Text" className="min-h-[200px] w-full">
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full min-w-fit"
-				>
-					<div className="flex w-fit flex-row justify-end gap-2">
+		<ToolPage item={escapers_Base64}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -83,16 +75,20 @@ const Base64EncoderDecoder: React.FC = () => {
 						<Button onPress={() => handleFormat(input, true)}>
 							Encode
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			/>
+			<ToolPanels>
+				<ToolCard title="Input Text" className={toolPanelClassName}>
+					<CodeInput value={input} onChange={setInput} />
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard title="Output Text" output={output} />
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output Text"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

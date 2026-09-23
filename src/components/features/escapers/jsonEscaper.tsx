@@ -5,14 +5,12 @@ import { Button } from "@heroui/react";
 import { escapers_Json } from "@/config/features";
 import { escapeJson, unescapeJson } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import OptionSelect, {
 	IndentationOption,
 	indentationOptions,
@@ -76,27 +74,11 @@ const JsonEscaper: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{escapers_Json.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input JSON" className="min-h-[200px] w-full">
-					<CodeInput
-						value={input}
-						onChange={setInput}
-						placeholder={`{"employeeId": 1234, "name": {"first": "Data", "last": "Formatters"}}`}
-					/>
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full min-w-fit"
-				>
-					<OptionSelect
-						label="JSON Output Indentation"
-						options={indentationOptions}
-						value={indentation}
-						onChange={setIndentation}
-					/>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={escapers_Json}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -116,22 +98,32 @@ const JsonEscaper: React.FC = () => {
 						<Button onPress={() => handleFormat(input, true)}>
 							Escape
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<OptionSelect
+					label="Unescaped Indentation"
+					options={indentationOptions}
+					value={indentation}
+					onChange={setIndentation}
+				/>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard title="Input JSON" className={toolPanelClassName}>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`{"employeeId": 1234, "name": {"first": "Data", "last": "Formatters"}}`}
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Output JSON"
-				language="json"
-				output={output}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output JSON"
+					language="json"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

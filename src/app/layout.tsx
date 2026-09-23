@@ -68,7 +68,7 @@ gtag("config", "${env.gaMeasurementId}");`}
 					</>
 				)}
 				<Providers>
-					<div className="bg-app-gradient flex min-h-screen w-full flex-col items-center justify-start pb-[52px]">
+					<div className="bg-app-gradient flex min-h-screen w-full flex-col items-center justify-start">
 						<Navbar />
 						{children}
 					</div>

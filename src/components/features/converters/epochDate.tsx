@@ -19,13 +19,9 @@ import {
 } from "@internationalized/date";
 import { converters_EpochDate } from "@/config/features";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 
 //----------------------------------------------------------------------------------------
@@ -89,89 +85,13 @@ const EpochDateConverter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{converters_EpochDate.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full w-full md:w-fit"
-				>
-					<div className="flex w-full flex-col gap-4 md:flex-row">
-						<NumberOption
-							hideStepper
-							useGrouping={false}
-							label="Epoch Timestamp"
-							minValue={0}
-							placeholder="1754447470"
-							value={epoch}
-							onChange={setEpoch}
-							className="min-w-[250px]"
-						/>
-						<DatePicker
-							hideTimeZone
-							className="w-full min-w-[250px]"
-							granularity="second"
-							hourCycle={24}
-							minValue={parseDate("1970-01-01")}
-							value={dateTime}
-							onChange={(value) => {
-								if (value)
-									setSelectedDateTime(value as ZonedDateTime);
-							}}
-						>
-							<Label>Date Time</Label>
-							<DateField.Group fullWidth>
-								<DateField.Input>
-									{(segment) => (
-										<DateField.Segment segment={segment} />
-									)}
-								</DateField.Input>
-								<DateField.Suffix>
-									<DatePicker.Trigger>
-										<DatePicker.TriggerIndicator />
-									</DatePicker.Trigger>
-								</DateField.Suffix>
-							</DateField.Group>
-							<DatePicker.Popover>
-								<Calendar aria-label="Date to convert">
-									<Calendar.Header>
-										<Calendar.YearPickerTrigger>
-											<Calendar.YearPickerTriggerHeading />
-											<Calendar.YearPickerTriggerIndicator />
-										</Calendar.YearPickerTrigger>
-										<Calendar.NavButton slot="previous" />
-										<Calendar.NavButton slot="next" />
-									</Calendar.Header>
-									<Calendar.Grid>
-										<Calendar.GridHeader>
-											{(day) => (
-												<Calendar.HeaderCell>
-													{day}
-												</Calendar.HeaderCell>
-											)}
-										</Calendar.GridHeader>
-										<Calendar.GridBody>
-											{(date) => (
-												<Calendar.Cell date={date} />
-											)}
-										</Calendar.GridBody>
-									</Calendar.Grid>
-									<Calendar.YearPickerGrid>
-										<Calendar.YearPickerGridBody>
-											{({ year }) => (
-												<Calendar.YearPickerCell
-													year={year}
-												/>
-											)}
-										</Calendar.YearPickerGridBody>
-									</Calendar.YearPickerGrid>
-								</Calendar>
-							</DatePicker.Popover>
-						</DatePicker>
-					</div>
-					<div className="flex flex-row items-end justify-end gap-2">
+		<ToolPage item={converters_EpochDate}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
-							variant="tertiary"
+							variant="secondary"
 							onPress={() => handleFormat(true)}
 						>
 							To Date Time
@@ -179,16 +99,87 @@ const EpochDateConverter: React.FC = () => {
 						<Button onPress={() => handleFormat(false)}>
 							To Epoch (ms)
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard title="Output" language="json" output={output} />
-		</FeatureOptionItemContainerLayout>
+					</>
+				}
+			>
+				<NumberOption
+					hideStepper
+					useGrouping={false}
+					label="Epoch Timestamp"
+					minValue={0}
+					placeholder="1754447470"
+					value={epoch}
+					onChange={setEpoch}
+					className="w-full sm:w-64"
+				/>
+				<DatePicker
+					hideTimeZone
+					className="w-full sm:w-72"
+					granularity="second"
+					hourCycle={24}
+					minValue={parseDate("1970-01-01")}
+					value={dateTime}
+					onChange={(value) => {
+						if (value) setSelectedDateTime(value as ZonedDateTime);
+					}}
+				>
+					<Label>Date Time</Label>
+					<DateField.Group fullWidth>
+						<DateField.Input>
+							{(segment) => (
+								<DateField.Segment segment={segment} />
+							)}
+						</DateField.Input>
+						<DateField.Suffix>
+							<DatePicker.Trigger>
+								<DatePicker.TriggerIndicator />
+							</DatePicker.Trigger>
+						</DateField.Suffix>
+					</DateField.Group>
+					<DatePicker.Popover>
+						<Calendar aria-label="Date to convert">
+							<Calendar.Header>
+								<Calendar.YearPickerTrigger>
+									<Calendar.YearPickerTriggerHeading />
+									<Calendar.YearPickerTriggerIndicator />
+								</Calendar.YearPickerTrigger>
+								<Calendar.NavButton slot="previous" />
+								<Calendar.NavButton slot="next" />
+							</Calendar.Header>
+							<Calendar.Grid>
+								<Calendar.GridHeader>
+									{(day) => (
+										<Calendar.HeaderCell>
+											{day}
+										</Calendar.HeaderCell>
+									)}
+								</Calendar.GridHeader>
+								<Calendar.GridBody>
+									{(date) => <Calendar.Cell date={date} />}
+								</Calendar.GridBody>
+							</Calendar.Grid>
+							<Calendar.YearPickerGrid>
+								<Calendar.YearPickerGridBody>
+									{({ year }) => (
+										<Calendar.YearPickerCell year={year} />
+									)}
+								</Calendar.YearPickerGridBody>
+							</Calendar.YearPickerGrid>
+						</Calendar>
+					</DatePicker.Popover>
+				</DatePicker>
+			</ToolOptions>
+			{/* The result is a single value, so it doesn't need a tall panel. */}
+			<CodeOutputCard
+				title="Output"
+				language="json"
+				output={output}
+				showLineNumbers={false}
+				allowFullScreen={false}
+				onCopy={handleCopyOutput}
+				className="min-h-40"
+			/>
+		</ToolPage>
 	);
 };
 

@@ -228,7 +228,32 @@
 	background-attachment: fixed;
 }
 
-/* ----------  MARKDOWN PREVIEW  --------------------------------------------- */
+/* ----------  SCROLLBARS  --------------------------------------------------- */
+/* Thin thumb on a transparent track, with no arrow buttons, for scroll areas inside rounded cards. */
+/* Chromium draws arrow buttons on Windows even with `scrollbar-width: thin`, so it gets the -webkit- pseudo-elements. */
+@utility scrollbar-subtle {
+	&::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: var(--scrollbar-thumb);
+		border-radius: 9999px;
+	}
+	&::-webkit-scrollbar-button {
+		display: none;
+	}
+
+	@supports not selector(::-webkit-scrollbar) {
+		scrollbar-width: thin;
+		scrollbar-color: var(--scrollbar-thumb) transparent;
+	}
+}
+
+/* ----------  MARKDOWN PREVIEW--------------------------------------------- */
 /* HeroUI's Typography.Prose covers headings, lists, code, etc. but not tables. */
 @layer components {
 	.typography-prose table {

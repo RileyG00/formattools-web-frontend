@@ -28,7 +28,7 @@ const NumberOption: React.FC<NumberOptionProps> = ({
 	placeholder,
 	hideStepper = false,
 	useGrouping = true,
-	className,
+	className = "w-full sm:w-56",
 }) => {
 	return (
 		<NumberField

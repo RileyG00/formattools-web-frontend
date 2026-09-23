@@ -10,14 +10,12 @@ import {
 	splitOnTab,
 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -70,17 +68,11 @@ const TabularToCsvConverter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{converters_TabularToCsv.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input Text" className="min-h-[200px] w-full">
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full min-w-fit"
-				>
-					<div className="flex w-fit flex-row justify-end gap-2">
+		<ToolPage item={converters_TabularToCsv}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -92,16 +84,28 @@ const TabularToCsvConverter: React.FC = () => {
 							Clear Input
 						</Button>
 						<Button onPress={() => handleFormat()}>Convert</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			/>
+			<ToolPanels>
+				<ToolCard
+					title="Input Tabular Data"
+					className={toolPanelClassName}
+				>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder="Paste tab-separated rows, e.g. from a spreadsheet"
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard title="Output" language="json" output={output} />
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output CSV"
+					language="json"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

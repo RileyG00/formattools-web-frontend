@@ -16,6 +16,7 @@ interface OptionSelectProps<T extends string> {
 	value: T;
 	onChange: (value: T) => void;
 	description?: string;
+	isDisabled?: boolean;
 	className?: string;
 }
 
@@ -26,12 +27,14 @@ const OptionSelect = <T extends string>({
 	value,
 	onChange,
 	description,
-	className,
+	isDisabled,
+	className = "w-full sm:w-56",
 }: OptionSelectProps<T>) => {
 	return (
 		<Select
 			fullWidth
 			className={className}
+			isDisabled={isDisabled}
 			value={value}
 			onChange={(key) => {
 				const option = options.find((o) => o.id === key);

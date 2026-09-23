@@ -6,14 +6,12 @@ import xmlFormat from "xml-formatter";
 import { escapers_Xml } from "@/config/features";
 import { escapeXml, unescapeXml } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import OptionSelect, {
 	IndentationOption,
 	indentationOptions,
@@ -78,23 +76,11 @@ const XmlEscaper: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{escapers_Xml.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input XML" className="min-h-[200px] w-full">
-					<CodeInput value={input} onChange={setInput} />
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full min-w-fit"
-				>
-					<OptionSelect
-						label="XML Output Indentation"
-						options={indentationOptions}
-						value={indentation}
-						onChange={setIndentation}
-					/>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={escapers_Xml}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -114,22 +100,28 @@ const XmlEscaper: React.FC = () => {
 						<Button onPress={() => handleFormat(input, true)}>
 							Escape
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<OptionSelect
+					label="Unescaped Indentation"
+					options={indentationOptions}
+					value={indentation}
+					onChange={setIndentation}
+				/>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard title="Input XML" className={toolPanelClassName}>
+					<CodeInput value={input} onChange={setInput} />
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Output XML"
-				language="xml"
-				output={output}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output XML"
+					language="xml"
+					output={output}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

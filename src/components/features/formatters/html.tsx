@@ -5,14 +5,12 @@ import { Button } from "@heroui/react";
 import { minify, prettify } from "htmlfy";
 import { formatters_Html } from "@/config/features";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
+import ToolPanels, { toolPanelClassName } from "../toolPanels";
 import ToolCard from "../toolCard";
 import CodeInput from "../codeInput";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import OptionSelect, {
 	IndentationOption,
 	indentationOptions,
@@ -74,27 +72,11 @@ const HtmlFormatter: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{formatters_Html.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard title="Input HTML" className="min-h-[200px] w-full">
-					<CodeInput
-						value={input}
-						onChange={setInput}
-						placeholder={`<div><div><strong>employeeId:</strong>1234</div><div><strong>name:</strong><div><div><strong>first:</strong>Data</div><div><strong>last:</strong>Formatters</div></div></div></div>`}
-					/>
-				</ToolCard>
-				<ToolCard
-					title="Formatting Specifications"
-					className="h-full min-w-fit"
-				>
-					<OptionSelect
-						label="HTML Output Indentation"
-						options={indentationOptions}
-						value={indentation}
-						onChange={setIndentation}
-					/>
-					<div className="flex flex-row justify-end gap-2">
+		<ToolPage item={formatters_Html}>
+			<ToolOptions
+				error={error}
+				actions={
+					<>
 						<Button
 							variant="tertiary"
 							onPress={() => {
@@ -108,24 +90,34 @@ const HtmlFormatter: React.FC = () => {
 						<Button onPress={() => handleFormat(input)}>
 							Format HTML
 						</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
+					</>
+				}
+			>
+				<OptionSelect
+					label="Indentation"
+					options={indentationOptions}
+					value={indentation}
+					onChange={setIndentation}
+				/>
+			</ToolOptions>
+			<ToolPanels>
+				<ToolCard title="Input HTML" className={toolPanelClassName}>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`<div><div><strong>employeeId:</strong>1234</div><div><strong>name:</strong><div><div><strong>first:</strong>Data</div><div><strong>last:</strong>Formatters</div></div></div></div>`}
+					/>
 				</ToolCard>
-			</InputSpecsContainer>
-			<CodeOutputCard
-				allowFullScreen
-				title="Output HTML"
-				language="html"
-				output={output}
-				wrapLongLines={false}
-				wrapLines={false}
-				onCopy={handleCopyOutput}
-			/>
-		</FeatureOptionItemContainerLayout>
+				<CodeOutputCard
+					title="Output HTML"
+					language="html"
+					output={output}
+					wrapLongLines={false}
+					wrapLines={false}
+					onCopy={handleCopyOutput}
+				/>
+			</ToolPanels>
+		</ToolPage>
 	);
 };
 

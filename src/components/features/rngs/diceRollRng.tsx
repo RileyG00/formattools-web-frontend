@@ -8,13 +8,9 @@ import {
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
-import CopyButton from "@/components/common/copyButton";
-import FeatureHeader from "../featureHeader";
-import InputSpecsContainer from "../inputSpecsContainer";
-import ToolCard from "../toolCard";
+import ToolPage from "../toolPage";
+import ToolOptions from "../toolOptions";
 import CodeOutputCard from "../codeOutputCard";
-import ErrorAlert from "../errorAlert";
 import NumberOption from "../numberOption";
 import CheckboxOption from "../checkboxOption";
 import OptionSelect, { SelectOption } from "../optionSelect";
@@ -96,54 +92,42 @@ const DiceRollRng: React.FC = () => {
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<FeatureOptionItemContainerLayout>
-			<FeatureHeader>{rngs_DiceRoll.name}</FeatureHeader>
-			<InputSpecsContainer>
-				<ToolCard
-					title="Dice Specifications"
-					className="h-full w-full md:w-fit"
-				>
-					<div className="flex w-full flex-col gap-4 md:flex-row">
-						<OptionSelect
-							label="Number of Sides to the Dice"
-							options={dieOptions}
-							value={numSides}
-							onChange={setNumSides}
-							className="min-w-[250px]"
-						/>
-						<NumberOption
-							label="Number of Dice to Roll"
-							description="Any number between 1 and 10,000"
-							value={numDice}
-							onChange={setNumDice}
-							minValue={1}
-							maxValue={10_000}
-							className="min-w-[250px]"
-						/>
-					</div>
+		<ToolPage item={rngs_DiceRoll}>
+			<ToolOptions
+				error={error}
+				actions={<Button onPress={() => handleRoll()}>Roll</Button>}
+			>
+				<OptionSelect
+					label="Die Type"
+					options={dieOptions}
+					value={numSides}
+					onChange={setNumSides}
+				/>
+				<NumberOption
+					label="Number of Dice"
+					description="Between 1 and 10,000"
+					value={numDice}
+					onChange={setNumDice}
+					minValue={1}
+					maxValue={10_000}
+				/>
+				<div className="pt-1">
 					<CheckboxOption
 						isSelected={isFormatAsArray}
 						onChange={setIsFormatAsArray}
 					>
 						Return results as an array
 					</CheckboxOption>
-					<div className="flex flex-row justify-end gap-2">
-						<Button onPress={() => handleRoll()}>Roll</Button>
-						<CopyButton
-							isDisabled={!output}
-							onPress={handleCopyOutput}
-						/>
-					</div>
-					<ErrorAlert error={error} />
-				</ToolCard>
-			</InputSpecsContainer>
+				</div>
+			</ToolOptions>
 			<CodeOutputCard
 				title="Output Dice Roll"
 				language="number"
 				output={output}
 				wrapLongLines={true}
+				onCopy={handleCopyOutput}
 			/>
-		</FeatureOptionItemContainerLayout>
+		</ToolPage>
 	);
 };
 
