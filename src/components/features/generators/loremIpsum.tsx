@@ -1,17 +1,29 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { NumberInput } from "@heroui/number-input";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
+import { Button } from "@heroui/react";
 import { LoremIpsum } from "lorem-ipsum";
 import { generators_LoremIpsum } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+
+const lorem = new LoremIpsum({
+	sentencesPerParagraph: {
+		max: 8,
+		min: 4,
+	},
+	wordsPerSentence: {
+		max: 16,
+		min: 4,
+	},
+});
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -20,17 +32,6 @@ const LoremIpsumGenerator: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const lorem = new LoremIpsum({
-		sentencesPerParagraph: {
-			max: 8,
-			min: 4,
-		},
-		wordsPerSentence: {
-			max: 16,
-			min: 4,
-		},
-	});
-
 	// Number and length of strings
 	const [numWords, setNumWords] = useState<number>(1);
 	const [numSentences, setNumSentences] = useState<number>(5);
@@ -39,9 +40,10 @@ const LoremIpsumGenerator: React.FC = () => {
 	// Outputs
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
-	//Handle Formatting the Input String
+	//Handle Generating the Text
 	//------------------------------------------------------------------------------------
 	const handleGenerate = (
 		type: "words" | "sentences" | "paragraphs",
@@ -79,27 +81,7 @@ const LoremIpsumGenerator: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -108,97 +90,69 @@ const LoremIpsumGenerator: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_LoremIpsum.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>String Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-col md:flex-row gap-4">
-							<NumberInput
-								value={numWords}
-								onValueChange={setNumWords}
-								label="Number of Words"
-								description="Any number between 1 and 10,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={10_000}
-							/>
-							<NumberInput
-								value={numSentences}
-								onValueChange={setNumSentences}
-								label="Number of Sentences"
-								description="Any number between 1 and 1,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={1_000}
-							/>
-							<NumberInput
-								value={numParagraphs}
-								onValueChange={setNumParagraphs}
-								label="Number of Paragraphs"
-								description="Any number between 1 and 500"
-								variant="bordered"
-								minValue={1}
-								maxValue={500}
+				<ToolCard
+					title="String Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex flex-col gap-4 md:flex-row">
+						<NumberOption
+							label="Number of Words"
+							description="Any number between 1 and 10,000"
+							value={numWords}
+							onChange={setNumWords}
+							minValue={1}
+							maxValue={10_000}
+						/>
+						<NumberOption
+							label="Number of Sentences"
+							description="Any number between 1 and 1,000"
+							value={numSentences}
+							onChange={setNumSentences}
+							minValue={1}
+							maxValue={1_000}
+						/>
+						<NumberOption
+							label="Number of Paragraphs"
+							description="Any number between 1 and 500"
+							value={numParagraphs}
+							onChange={setNumParagraphs}
+							minValue={1}
+							maxValue={500}
+						/>
+					</div>
+					<div className="flex flex-col items-end justify-end gap-2 md:flex-row">
+						<Button
+							variant="secondary"
+							onPress={() => handleGenerate("words")}
+						>
+							Generate Words
+						</Button>
+						<Button
+							variant="secondary"
+							onPress={() => handleGenerate("sentences")}
+						>
+							Generate Sentences
+						</Button>
+						<div className="flex flex-row gap-2">
+							<Button
+								onPress={() => handleGenerate("paragraphs")}
+							>
+								Generate Paragraphs
+							</Button>
+							<CopyButton
+								isDisabled={!output}
+								onPress={handleCopyOutput}
 							/>
 						</div>
-						<div className="flex flex-col md:flex-row gap-2 justify-end items-end">
-							<Button
-								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleGenerate("words")}
-							>
-								Generate Words
-							</Button>
-							<Button
-								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleGenerate("sentences")}
-							>
-								Generate Sentences
-							</Button>
-							<div className="flex flex-row gap-2">
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleGenerate("paragraphs")}
-								>
-									Generate Paragraphs
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Strings</CardHeader>
-				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={false}
-						language="plaintext"
-					>
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard
+				title="Output Strings"
+				output={output}
+				showLineNumbers={false}
+			/>
 		</FeatureOptionItemContainerLayout>
 	);
 };

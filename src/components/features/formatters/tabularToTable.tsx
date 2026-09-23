@@ -1,18 +1,18 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Checkbox } from "@heroui/checkbox";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import { ArrowTopRightOnSquareIcon } from "@/components/common/icons";
-import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
+import { Button, Link, toast } from "@heroui/react";
 import { prettify } from "htmlfy";
-import { Link } from "@heroui/link";
 import { formatters_TabularToTable } from "@/config/features";
+import { env } from "@/config/env";
+import { copyAsRichHtmlTable, generateHtmlTable } from "@/utils/textUtils";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import ErrorAlert from "../errorAlert";
+import CheckboxOption from "../checkboxOption";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -27,6 +27,25 @@ const TabularToTableFormatter: React.FC = () => {
 	const [input, setInput] = useState<string>("");
 
 	//------------------------------------------------------------------------------------
+	//Handle Copying the Text to the Clipboard
+	//------------------------------------------------------------------------------------
+	const handleCopyOutput = async (formatted: string): Promise<void> => {
+		try {
+			await copyAsRichHtmlTable(formatted);
+
+			toast.success("Success", {
+				description:
+					"Successfully copied formatted table to clipboard.",
+			});
+		} catch {
+			toast.danger("Error Occurred", {
+				description:
+					"There was an error when attempting to save the table to the clipboard.",
+			});
+		}
+	};
+
+	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
 	//------------------------------------------------------------------------------------
 	const handleFormat = (raw: string): void => {
@@ -35,7 +54,7 @@ const TabularToTableFormatter: React.FC = () => {
 
 		try {
 			// Extract all rows in the supplied data.
-			let rows: string[] = raw.split("\n");
+			const rows: string[] = raw.split("\n");
 			if (rows.length === 0) return;
 
 			if (rows.length === 1 && hasHeaderRow) {
@@ -53,10 +72,7 @@ const TabularToTableFormatter: React.FC = () => {
 			}
 
 			// Take the rows and split them on the tabular data to break out the columns for the rows.
-			let splitRows: string[][] = [];
-			rows.forEach((row) => {
-				splitRows.push(row.split("\t"));
-			});
+			const splitRows: string[][] = rows.map((row) => row.split("\t"));
 
 			let formatted: string = generateHtmlTable(
 				headerRow,
@@ -76,105 +92,66 @@ const TabularToTableFormatter: React.FC = () => {
 	};
 
 	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = (formatted: string): void => {
-		copyAsRichHtmlTable(formatted);
-
-		addToast({
-			color: "success",
-			title: "Success",
-			description: "Successfully copied formatted table to clipboard.",
-		});
-	};
-
-	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{formatters_TabularToTable.name}</FeatureHeader>
+			{env.chromeExtensionTabularToTable && (
 				<p>
 					Want to skip the website? Get the Google Chrome Extension
-					for formatting in Jira:
+					for formatting in Jira:{" "}
 					<Link
-						isExternal
-						href={
-							import.meta.env.VITE_ChromExtension_TabularToTable
-						}
+						href={env.chromeExtensionTabularToTable}
+						target="_blank"
+						rel="noopener noreferrer"
 					>
-						&nbsp; Extension Store&nbsp;
-						<ArrowTopRightOnSquareIcon size={16} />
+						Extension Store
+						<Link.Icon />
 					</Link>
 				</p>
-				<InputSpecsContainer isDismissFlexGrow isDissmisColReversal>
-					<Card className="w-full min-h-[200px]">
-						<CardHeader>Input Tabular Data</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAutosize
-								aria-label="Container for the raw text input"
-								value={input}
-								onValueChange={setInput}
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="min-w-fit h-fit">
-						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
-							<Checkbox
-								color="secondary"
-								isSelected={hasHeaderRow}
-								onValueChange={setHasHeaderRow}
-							>
-								Table includes header row
-							</Checkbox>
-							<Checkbox
-								color="secondary"
-								isSelected={isPropercaseHeader}
-								onValueChange={setIsPropercaseHeader}
-							>
-								Set header row to Proper Case
-							</Checkbox>
-							<div className="flex flex-row gap-2 justify-end">
-								<Button
-									color="default"
-									className="w-fit"
-									onPress={() => {
-										setInput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleFormat(input)}
-								>
-									Format &amp; Copy to Clipboard
-								</Button>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-			</FeatureOptionItemContainerLayout>
-		</>
+			)}
+			<InputSpecsContainer isDismissFlexGrow isDismissColReversal>
+				<ToolCard
+					title="Input Tabular Data"
+					className="min-h-[200px] w-full"
+				>
+					<CodeInput value={input} onChange={setInput} />
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-fit min-w-fit"
+				>
+					<CheckboxOption
+						isSelected={hasHeaderRow}
+						onChange={setHasHeaderRow}
+					>
+						Table includes header row
+					</CheckboxOption>
+					<CheckboxOption
+						isSelected={isPropercaseHeader}
+						onChange={setIsPropercaseHeader}
+					>
+						Set header row to Proper Case
+					</CheckboxOption>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button onPress={() => handleFormat(input)}>
+							Format &amp; Copy to Clipboard
+						</Button>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

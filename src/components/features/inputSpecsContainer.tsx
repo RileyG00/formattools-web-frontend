@@ -1,19 +1,23 @@
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
+//----------------------------------------------------------------------------------------
+//Create Component
+//----------------------------------------------------------------------------------------
 interface InputSpecsContainerProps {
 	isDismissFlexGrow?: boolean;
-	isDissmisColReversal?: boolean;
+	isDismissColReversal?: boolean;
 	children: ReactNode;
 }
 
-const InputSpecsContainer: FC<InputSpecsContainerProps> = ({
+// Lays out the input card beside the specifications card (stacked on mobile).
+const InputSpecsContainer: React.FC<InputSpecsContainerProps> = ({
 	isDismissFlexGrow = false,
-	isDissmisColReversal = false,
+	isDismissColReversal = false,
 	children,
 }) => {
 	return (
 		<div
-			className={`flex flex-col ${isDissmisColReversal ? "" : "flex-col-reverse"} md:flex-row gap-4 min-h-fit ${isDismissFlexGrow ? "" : "flex-grow"}`}
+			className={`flex min-h-fit flex-col gap-4 md:flex-row ${isDismissColReversal ? "" : "flex-col-reverse"} ${isDismissFlexGrow ? "" : "grow"}`}
 		>
 			{children}
 		</div>

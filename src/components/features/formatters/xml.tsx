@@ -1,21 +1,22 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/utils/textUtils";
+import { Button } from "@heroui/react";
 import xmlFormat from "xml-formatter";
-import FeatureHeader from "@/components/features/featureHeader";
 import { formatters_Xml } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
-import FullScreen from "@/components/features/fullScreen.Modal";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import OptionSelect, {
+	IndentationOption,
+	indentationOptions,
+} from "../optionSelect";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -24,11 +25,11 @@ const XmlFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
+	const [indentation, setIndentation] = useState<IndentationOption>("tab");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -37,7 +38,7 @@ const XmlFormatter: React.FC = () => {
 		if (!raw) return;
 		if (error) setError(null);
 
-		let indentStyle: string | number = "\t";
+		let indentStyle: string = "\t";
 
 		if (indentation === "compact") {
 			indentStyle = "";
@@ -48,7 +49,7 @@ const XmlFormatter: React.FC = () => {
 		}
 
 		try {
-			const formatted: string = xmlFormat(input, {
+			const formatted: string = xmlFormat(raw, {
 				indentation: indentStyle,
 				lineSeparator: indentStyle === "" ? "" : "\r\n",
 				whiteSpaceAtEndOfSelfclosingTag: true,
@@ -64,145 +65,63 @@ const XmlFormatter: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{formatters_Xml.name}</FeatureHeader>
-				<InputSpecsContainer>
-					<Card className="w-full min-h-[200px]">
-						<CardHeader>Input XML</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAutosize
-								aria-label="Container for the raw text input"
-								value={input}
-								onValueChange={setInput}
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-								placeholder={`<root><employeeId>1234</employeeId><name><first>Data</first><last>Formatters</last></name></root>`}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="min-w-fit h-full">
-						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
-							<Select
-								aria-label="Options for how to format the JSON output."
-								label="XML Output Indentation"
-								selectedKeys={[indentation]}
-								onSelectionChange={(e) =>
-									setIndentation(e.currentKey ?? "tab")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"2"}>2 spaces</SelectItem>
-								<SelectItem key={"4"}>4 spaces</SelectItem>
-								<SelectItem key={"tab"}>Tab</SelectItem>
-								<SelectItem key={"compact"}>Compact</SelectItem>
-							</Select>
-							<div className="flex flex-row gap-2 justify-end">
-								<Button
-									color="default"
-									className="min-w-fit"
-									onPress={() => {
-										setInput("");
-										setOutput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="primary"
-									className="min-w-fit"
-									onPress={() => handleFormat(input)}
-								>
-									Format XML
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Output XML</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
-						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax
-							showLineNumbers={true}
-							language="xml"
-							wrapLongLines={false}
-						>
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</FeatureOptionItemContainerLayout>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
-				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax
-					showLineNumbers={true}
-					language="xml"
-					wrapLongLines={false}
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{formatters_Xml.name}</FeatureHeader>
+			<InputSpecsContainer>
+				<ToolCard title="Input XML" className="min-h-[200px] w-full">
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`<root><employeeId>1234</employeeId><name><first>Data</first><last>Formatters</last></name></root>`}
+					/>
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-full min-w-fit"
 				>
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
-		</>
+					<OptionSelect
+						label="XML Output Indentation"
+						options={indentationOptions}
+						value={indentation}
+						onChange={setIndentation}
+					/>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button onPress={() => handleFormat(input)}>
+							Format XML
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				allowFullScreen
+				title="Output XML"
+				language="xml"
+				output={output}
+				wrapLongLines={false}
+				onCopy={handleCopyOutput}
+			/>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

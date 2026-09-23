@@ -1,5 +1,7 @@
+"use client";
+
 import { ReactNode } from "react";
-import { title } from "../primitives";
+import { Typography } from "@heroui/react";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -9,7 +11,14 @@ interface FeatureHeaderProps {
 }
 
 const FeatureHeader: React.FC<FeatureHeaderProps> = ({ children }) => {
-	return <h1 className={title({ size: "sm", color: "pink" })}>{children}</h1>;
+	return (
+		<Typography.Heading
+			level={1}
+			className="w-fit text-2xl font-semibold tracking-tight text-foreground md:text-3xl"
+		>
+			{children}
+		</Typography.Heading>
+	);
 };
 
 export default FeatureHeader;

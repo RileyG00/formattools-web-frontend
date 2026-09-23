@@ -1,28 +1,50 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { RadioGroup, Radio } from "@heroui/radio";
-import { Select, SelectItem } from "@heroui/select";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button, Description, Label, Radio, RadioGroup } from "@heroui/react";
+import { formatters_String } from "@/config/features";
 import {
-	copyToClipboard,
 	encloseTextInDoubleQuotes,
 	encloseTextInSingleQuotes,
 	formatAsArrayString,
 	splitOnLineBreak,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { Checkbox } from "@heroui/checkbox";
-import { formatters_String } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
-import FullScreen from "@/components/features/fullScreen.Modal";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import CheckboxOption from "../checkboxOption";
+import OptionSelect, { SelectOption } from "../optionSelect";
+
+//----------------------------------------------------------------------------------------
+//Options
+//----------------------------------------------------------------------------------------
+type Casing = "preserve" | "uppercase" | "lowercase";
+type Quotes = "none" | "double" | "single";
+type Delimiter = "tab" | "semicolon" | "comma";
+
+const casingOptions: readonly SelectOption<Casing>[] = [
+	{ id: "preserve", label: "Preserve" },
+	{ id: "uppercase", label: "Uppercase" },
+	{ id: "lowercase", label: "Lowercase" },
+];
+
+const delimiterOptions: readonly SelectOption<Delimiter>[] = [
+	{ id: "tab", label: "Tab" },
+	{ id: "semicolon", label: "Semicolon" },
+	{ id: "comma", label: "Comma" },
+];
+
+const quoteOptions: readonly SelectOption<Quotes>[] = [
+	{ id: "none", label: "None" },
+	{ id: "double", label: "Double" },
+	{ id: "single", label: "Single" },
+];
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -32,20 +54,16 @@ const StringFormatter: React.FC = () => {
 	//Variables
 	//------------------------------------------------------------------------------------
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
-	const [casing, setCasing] = useState<
-		"preserve" | "uppercase" | "lowercase"
-	>("preserve");
-	const [quotes, setQuotes] = useState<"none" | "double" | "single">("none");
-	const [delimiter, setDelimiter] = useState<"tab" | "semicolon" | "comma">(
-		"comma",
-	);
+	const [casing, setCasing] = useState<Casing>("preserve");
+	const [quotes, setQuotes] = useState<Quotes>("none");
+	const [delimiter, setDelimiter] = useState<Delimiter>("comma");
 	const [isAddSpaceAfterDelimiter, setIsAddSpaceAfterDelimiter] =
 		useState<boolean>(false);
 
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -55,7 +73,7 @@ const StringFormatter: React.FC = () => {
 		if (error) setError(null);
 
 		try {
-			// 1️⃣ Normalize casing in one pass
+			// Normalize casing in one pass
 			const strings: string[] = splitOnLineBreak(raw).map((s: string) => {
 				if (casing === "uppercase") return s.toUpperCase();
 				if (casing === "lowercase") return s.toLowerCase();
@@ -103,239 +121,111 @@ const StringFormatter: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{formatters_String.name}</FeatureHeader>
-				<InputSpecsContainer>
-					<Card className="w-full">
-						<CardHeader>Input String(s)</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAutosize
-								aria-label="Container for the raw text input"
-								value={input}
-								placeholder={"How\nNow\nBrown\nCow"}
-								onValueChange={setInput}
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="min-w-fit h-fit">
-						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-col gap-4">
-							<Select
-								aria-label="Options for how to format the string output."
-								label="Casing Options"
-								selectedKeys={[casing]}
-								onSelectionChange={(e) => {
-									let caseMaster:
-										| "preserve"
-										| "uppercase"
-										| "lowercase" = "preserve";
-									const val: string =
-										e.currentKey ?? "preserve";
-
-									if (
-										[
-											"preserve",
-											"uppercase",
-											"lowercase",
-										].includes(val)
-									) {
-										caseMaster = val as typeof caseMaster;
-
-										setCasing(caseMaster);
-									}
-								}}
-								variant="bordered"
-							>
-								<SelectItem key={"preserve"}>
-									Preserve
-								</SelectItem>
-								<SelectItem key={"uppercase"}>
-									Uppercase
-								</SelectItem>
-								<SelectItem key={"lowercase"}>
-									Lowercase
-								</SelectItem>
-							</Select>
-							<div className="flex flex-col flex-col-reverse md:flex-row w-full min-w-fit gap-4">
-								<div className="flex flex-col gap-4 w-full">
-									<Checkbox
-										color="secondary"
-										isSelected={isFormatAsArray}
-										onValueChange={setIsFormatAsArray}
-										className="text-nowrap"
-									>
-										Return results as array
-									</Checkbox>
-									<Checkbox
-										color="secondary"
-										isSelected={isAddSpaceAfterDelimiter}
-										onValueChange={
-											setIsAddSpaceAfterDelimiter
-										}
-										className="text-nowrap"
-									>
-										Add space after delimiter
-									</Checkbox>
-								</div>
-								<Select
-									aria-label="Options for how to format the JSON output."
-									label="Delimiter Options"
-									selectedKeys={[delimiter]}
-									className="min-w-[225px]"
-									onSelectionChange={(e) => {
-										let delimiterMaster:
-											| "tab"
-											| "semicolon"
-											| "comma" = "comma";
-										const val: string =
-											e.currentKey ?? "comma";
-
-										if (
-											[
-												"tab",
-												"semicolon",
-												"comma",
-											].includes(val)
-										) {
-											delimiterMaster =
-												val as typeof delimiterMaster;
-
-											setDelimiter(delimiterMaster);
-										}
-									}}
-									variant="bordered"
-									description="Has no effect if formatting as an array."
-								>
-									<SelectItem key={"tab"}>Tab</SelectItem>
-									<SelectItem key={"semicolon"}>
-										Semicolon
-									</SelectItem>
-									<SelectItem key={"comma"}>Comma</SelectItem>
-								</Select>
-							</div>
-							<RadioGroup
-								label="Apply Quotes"
-								orientation="horizontal"
-								color="secondary"
-								description="Has no effect if formatting as an array."
-								value={quotes}
-								onValueChange={(e) =>
-									setQuotes(e as "none" | "double" | "single")
-								}
-							>
-								<Radio value={"none"}>None</Radio>
-								<Radio value={"double"}>Double</Radio>
-								<Radio value={"single"}>Single</Radio>
-							</RadioGroup>
-							<div className="flex flex-row gap-2 justify-end">
-								<Button
-									color="default"
-									className="w-fit"
-									onPress={() => {
-										setInput("");
-										setOutput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleFormat(input)}
-								>
-									Format String
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Output String(s)</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
-						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax
-							showLineNumbers={true}
-							language={"json"}
-							wrapLongLines={false}
-							wrapLines={true}
-						>
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</FeatureOptionItemContainerLayout>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
-				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax
-					showLineNumbers={true}
-					language="json"
-					wrapLongLines={false}
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{formatters_String.name}</FeatureHeader>
+			<InputSpecsContainer>
+				<ToolCard
+					title="Input String(s)"
+					className="min-h-[200px] w-full"
 				>
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
-		</>
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={"How\nNow\nBrown\nCow"}
+					/>
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-fit min-w-fit"
+				>
+					<OptionSelect
+						label="Casing Options"
+						options={casingOptions}
+						value={casing}
+						onChange={setCasing}
+					/>
+					<div className="flex w-full min-w-fit flex-col-reverse gap-4 md:flex-row">
+						<div className="flex w-full flex-col gap-4">
+							<CheckboxOption
+								isSelected={isFormatAsArray}
+								onChange={setIsFormatAsArray}
+							>
+								Return results as array
+							</CheckboxOption>
+							<CheckboxOption
+								isSelected={isAddSpaceAfterDelimiter}
+								onChange={setIsAddSpaceAfterDelimiter}
+							>
+								Add space after delimiter
+							</CheckboxOption>
+						</div>
+						<OptionSelect
+							label="Delimiter Options"
+							options={delimiterOptions}
+							value={delimiter}
+							onChange={setDelimiter}
+							className="min-w-[225px]"
+							description="Has no effect if formatting as an array."
+						/>
+					</div>
+					<RadioGroup
+						orientation="horizontal"
+						value={quotes}
+						onChange={(value) => setQuotes(value as Quotes)}
+					>
+						<Label>Apply Quotes</Label>
+						<Description>
+							Has no effect if formatting as an array.
+						</Description>
+						{quoteOptions.map((option) => (
+							<Radio key={option.id} value={option.id}>
+								<Radio.Content>
+									<Radio.Control>
+										<Radio.Indicator />
+									</Radio.Control>
+									{option.label}
+								</Radio.Content>
+							</Radio>
+						))}
+					</RadioGroup>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button onPress={() => handleFormat(input)}>
+							Format String
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				allowFullScreen
+				title="Output String(s)"
+				language="json"
+				output={output}
+				wrapLongLines={false}
+				wrapLines={true}
+				onCopy={handleCopyOutput}
+			/>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

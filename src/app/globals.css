@@ -1,0 +1,246 @@
+/* --- Tailwind & HeroUI ---------------------------------------------------- */
+/* Import order matters: Tailwind first, then HeroUI styles. */
+@import "tailwindcss";
+@import "@heroui/styles";
+
+/*
+ * Design system: "Data Formatters" (see DESIGN.md, exported from the HeroUI Theme Builder).
+ * Only base tokens are overridden here. HeroUI derives the calculated colors
+ * (hover, soft, field states, secondary borders/separators) from them using the
+ * same formulas listed in DESIGN.md.
+ */
+
+/* ----------  TAILWIND THEME  ----------------------------------------------- */
+@theme {
+	--breakpoint-xs: 0rem;
+
+	/* Figtree is loaded with next/font in the root layout (exposes --font-figtree). */
+	--font-sans:
+		var(--font-figtree), "Figtree", ui-sans-serif, system-ui, sans-serif;
+
+	/* Code output panels. Matches the syntax highlighter's atom-one-dark theme, so it stays dark in both modes. */
+	--color-code: #282c34;
+}
+
+/* Design-system tokens that HeroUI doesn't map to Tailwind itself. */
+@theme inline {
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+
+	--color-glass-pinned-surface: var(--glass-pinned-surface);
+	--color-glass-pinned-surface-secondary: var(
+		--glass-pinned-surface-secondary
+	);
+}
+
+/* ----------  HEROUI THEME  ------------------------------------------------- */
+@layer base {
+	/* Shared by light and dark */
+	:root,
+	:host {
+		/* Spacing & shape */
+		--spacing: 0.265625rem; /* 4.25px */
+		--radius: 1rem; /* 16px */
+		--field-radius: 2rem; /* 32px */
+		--field-border-width: 1px;
+
+		/* Brand & status hues shared across modes */
+		--accent: oklch(63.92% 0.1219 280.76);
+		--accent-foreground: var(--snow);
+
+		--success: oklch(73.29% 0.1947 154.04);
+		--success-foreground: var(--eclipse);
+	}
+
+	/* Light */
+	:root,
+	.light,
+	[data-theme="light"] {
+		--background: oklch(0.97 0.0029 264.54);
+		--foreground: var(--eclipse);
+
+		--surface: var(--white);
+		--surface-foreground: var(--foreground);
+		--surface-secondary: oklch(
+			from color-mix(in oklab, var(--surface) 100%, var(--foreground) 6%)
+				l c h / 0.5
+		);
+		--surface-tertiary: oklch(
+			from color-mix(in oklab, var(--surface) 100%, var(--foreground) 6%)
+				l c h / 0.7
+		);
+
+		--overlay: var(--white);
+		--overlay-foreground: var(--foreground);
+
+		--muted: oklch(55.17% 0.006 280.76);
+
+		--default: oklch(0 0 0 / 7%);
+		--default-foreground: var(--eclipse);
+
+		--field-background: var(--white);
+		--field-foreground: var(--foreground);
+		--field-placeholder: var(--muted);
+		--field-border: oklch(0 0 0 / 4%);
+
+		--warning: oklch(78.19% 0.1595 75.56);
+		--warning-foreground: var(--eclipse);
+
+		--danger: oklch(65.32% 0.2342 28.97);
+		--danger-foreground: var(--snow);
+
+		--segment: var(--white);
+		--segment-foreground: var(--eclipse);
+
+		--border: oklch(90% 0.003 280.76);
+		--separator: oklch(0 0 0 / 10%);
+		--focus: var(--accent);
+		--link: var(--foreground);
+
+		--scrollbar-thumb: oklch(87.1% 0.003 280.76);
+
+		--backdrop: oklch(0.7721 0.0036 247.87 / 0.6);
+
+		/* Charts */
+		--chart-1: oklch(0.65 0.06 240);
+		--chart-2: oklch(0.55 0.05 240);
+		--chart-3: var(--accent);
+		--chart-4: oklch(0.35 0.03 240);
+		--chart-5: oklch(0.75 0.06 240);
+
+		/* Glass */
+		--glass-blur: 20px;
+		--glass-pinned-surface: oklch(0.9911 0 0);
+		--glass-pinned-surface-secondary: oklch(0.9577 0.0017 247.84);
+		--background-gradient-start: #3040c8;
+		--background-gradient-end: #408cf0;
+		--background-gradient: linear-gradient(
+			rgba(48, 64, 200, 0.2) 0%,
+			rgba(64, 140, 240, 0.1) 50%,
+			rgba(124, 210, 228, 0) 100%
+		);
+
+		/* Elevation: flat surfaces and fields; overlays keep HeroUI's default shadow */
+		--surface-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0);
+		--field-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0);
+		--overlay-shadow:
+			0 2px 8px 0 rgba(0, 0, 0, 0.06), 0 -6px 12px 0 rgba(0, 0, 0, 0.03),
+			0 14px 28px 0 rgba(0, 0, 0, 0.08);
+	}
+
+	/* Dark */
+	.dark,
+	[data-theme="dark"] {
+		--background: oklch(0.15 0.003 240);
+		--foreground: var(--snow);
+
+		--surface: oklch(1 0 0 / 4%);
+		--surface-foreground: var(--foreground);
+		--surface-secondary: oklch(
+			from color-mix(in oklab, var(--surface) 100%, var(--foreground) 6%)
+				l c h / 0.1
+		);
+		--surface-tertiary: oklch(
+			from color-mix(in oklab, var(--surface) 100%, var(--foreground) 6%)
+				l c h / 0.2
+		);
+
+		--overlay: oklch(1 0 0 / 5%);
+		--overlay-foreground: var(--foreground);
+
+		--muted: oklch(70.5% 0.006 280.76);
+
+		--default: oklch(1 0 0 / 8%);
+		--default-foreground: var(--snow);
+
+		--field-background: oklch(1 0 0 / 8%);
+		--field-foreground: var(--foreground);
+		--field-placeholder: var(--muted);
+		--field-border: oklch(1 0 0 / 4%);
+
+		--warning: oklch(82.03% 0.1396 79.57);
+		--warning-foreground: var(--eclipse);
+
+		--danger: oklch(59.4% 0.1979 27.86);
+		--danger-foreground: var(--snow);
+
+		--segment: oklch(39.64% 0.003 280.76);
+		--segment-foreground: var(--foreground);
+
+		--border: oklch(28% 0.003 280.76);
+		--separator: oklch(1 0 0 / 12%);
+		--focus: var(--accent);
+		--link: var(--foreground);
+
+		--scrollbar-thumb: oklch(70.5% 0.003 280.76);
+
+		--backdrop: oklch(0 0 0 / 0.3);
+
+		/* Charts: accent-derived shades */
+		--chart-1: oklch(from var(--accent) calc(l - 0.4) c h);
+		--chart-2: oklch(from var(--accent) calc(l - 0.2) c h);
+		--chart-3: var(--accent);
+		--chart-4: oklch(from var(--accent) calc(l + 0.06) c h);
+		--chart-5: oklch(from var(--accent) calc(l + 0.12) c h);
+
+		/* Glass */
+		--glass-blur: 36px;
+		--glass-pinned-surface: oklch(0.2925 0.0023 247.9);
+		--glass-pinned-surface-secondary: oklch(0.2555 0.0024 247.92);
+		--background-gradient: linear-gradient(
+			rgba(25, 94, 180, 0.16) 0%,
+			rgba(0, 94, 80, 0.04) 50%,
+			rgba(0, 120, 110, 0) 100%
+		);
+
+		/* Elevation */
+		--surface-shadow: 0 0 0 0 transparent inset;
+		--field-shadow: 0 0 0 0 transparent inset;
+		--overlay-shadow: 0 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+	}
+}
+
+/* ----------  GLASS OVERLAYS  ----------------------------------------------- */
+/* Dark-mode overlays and toasts are translucent, so blur what's behind them to keep them legible. */
+@layer components {
+	.popover,
+	.dropdown__popover,
+	.select__popover,
+	.date-picker__popover,
+	.tooltip,
+	.modal__dialog,
+	.drawer__dialog,
+	.toast {
+		-webkit-backdrop-filter: blur(var(--glass-blur));
+		backdrop-filter: blur(var(--glass-blur));
+	}
+}
+
+/* ----------  PAGE BACKGROUND  ---------------------------------------------- */
+/* Ambient gradient from the design system, layered over `bg-background`. */
+@utility bg-app-gradient {
+	background-image: var(--background-gradient);
+	background-repeat: no-repeat;
+	background-size: 100% 100vh;
+	background-attachment: fixed;
+}
+
+/* ----------  MARKDOWN PREVIEW  --------------------------------------------- */
+/* HeroUI's Typography.Prose covers headings, lists, code, etc. but not tables. */
+@layer components {
+	.typography-prose table {
+		@apply my-4 w-full border-collapse text-sm;
+	}
+
+	.typography-prose th,
+	.typography-prose td {
+		@apply border border-separator px-3 py-2 text-left;
+	}
+
+	.typography-prose th {
+		@apply bg-default font-semibold;
+	}
+}

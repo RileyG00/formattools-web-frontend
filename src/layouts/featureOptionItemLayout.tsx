@@ -1,16 +1,22 @@
-import NavigationList from "@/components/features/navigationList";
 import { ReactNode } from "react";
+import FeatureNavigationListBox from "@/components/layout/featureNavigationListBox";
 
-interface FeatureLayoutProps {
+//----------------------------------------------------------------------------------------
+//Create Component
+//----------------------------------------------------------------------------------------
+interface FeatureOptionItemLayoutProps {
 	children: ReactNode;
 }
 
-const FeatureOptionItemLayout: React.FC<FeatureLayoutProps> = ({
+// Sidebar navigation (desktop only) next to the active feature page.
+const FeatureOptionItemLayout: React.FC<FeatureOptionItemLayoutProps> = ({
 	children,
 }) => {
 	return (
-		<main className="w-full flex flex-row justify-between items-between px-[4%] pt-8 h-full flex-grow-1 gap-8">
-			<NavigationList />
+		<main className="flex h-full w-full max-w-screen-2xl grow flex-row justify-between gap-8 px-[4%] pt-8">
+			<nav className="hidden max-h-[775px] min-w-fit xl:flex">
+				<FeatureNavigationListBox className="h-full min-w-fit overflow-y-auto rounded-2xl bg-surface/60 p-2 shadow-surface" />
+			</nav>
 			{children}
 		</main>
 	);

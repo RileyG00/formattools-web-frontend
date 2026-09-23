@@ -1,5 +1,5 @@
-import { featureRoutes, featureSubRoutes } from "@/config/features";
-import { navLinks } from "@/config/site";
+import type { featureRoutes, featureSubRoutes } from "@/config/features";
+import type { navLinks } from "@/config/site";
 
 // Types associated with the keys and paths of each feature
 type FeatureRouteKey = keyof typeof featureRoutes;

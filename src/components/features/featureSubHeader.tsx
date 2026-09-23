@@ -1,5 +1,7 @@
+"use client";
+
 import { ReactNode } from "react";
-import { subtitle } from "../primitives";
+import { Typography } from "@heroui/react";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -10,14 +12,12 @@ interface FeatureSubHeaderProps {
 
 const FeatureSubHeader: React.FC<FeatureSubHeaderProps> = ({ children }) => {
 	return (
-		<h2
-			className={subtitle({
-				size: "xs",
-				className: "max-w-3/3 md:max-w-2/3",
-			})}
+		<Typography.Paragraph
+			color="muted"
+			className="my-2 max-w-full text-base text-balance md:max-w-2/3 md:text-lg"
 		>
 			{children}
-		</h2>
+		</Typography.Paragraph>
 	);
 };
 

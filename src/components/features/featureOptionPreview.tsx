@@ -1,6 +1,10 @@
+"use client";
+
+import NextLink from "next/link";
+import { buttonVariants, Card } from "@heroui/react";
 import FeatureHeader from "@/components/features/featureHeader";
 import FeatureSubHeader from "@/components/features/featureSubHeader";
-import { Spacer } from "@heroui/spacer";
+import FeatureOptionItemStatusChip from "@/components/features/featureOptionItemStatusChip";
 import {
 	ArrowPathIcon,
 	ArrowRightStartOnRectangleIcon,
@@ -9,113 +13,77 @@ import {
 	LockClosedIcon,
 	WrenchIcon,
 } from "@/components/common/icons";
-import { Button } from "@heroui/button";
-import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { Link } from "@heroui/link";
 import { FeatureOption } from "@/types/siteConfigs";
+import { toHref } from "@/utils/configUtils";
+
+//----------------------------------------------------------------------------------------
+//Icon Styling
+//----------------------------------------------------------------------------------------
+const iconByFeatureKey: Record<string, typeof WrenchIcon> = {
+	"key:formatters": WrenchIcon,
+	"key:escapers": CodeBracketIcon,
+	"key:ciphers": LockClosedIcon,
+	"key:random-numbers": CalculatorIcon,
+	"key:generators": ArrowRightStartOnRectangleIcon,
+	"key:converter": ArrowPathIcon,
+};
 
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
-interface OptionsDescriptionsProps {
+interface FeatureOptionPreviewProps {
 	featureOption: FeatureOption;
 }
 
-const FeatureOptionPreview: React.FC<OptionsDescriptionsProps> = ({
+const FeatureOptionPreview: React.FC<FeatureOptionPreviewProps> = ({
 	featureOption,
 }) => {
-	//------------------------------------------------------------------------------------
-	//Get Icon to Use
-	//------------------------------------------------------------------------------------
-	const colorOptions: string[] = [
-		"bg-cyan-800",
-		"bg-slate-500",
-		"bg-danger-200",
-		"bg-green-500",
-		"bg-stone-500",
-		"bg-teal-500",
-		"bg-primary-500",
-		"bg-violet-500",
-		"bg-secondary-400",
-		"bg-orange-400",
-	];
-
-	const getIcon = (itemIndex: number) => {
-		let newIndex: number = itemIndex;
-		let color: string = "bg-cyan-800";
-
-		if (itemIndex >= colorOptions.length - 1) {
-			newIndex = (colorOptions.length - 1) % itemIndex;
-		}
-
-		color = colorOptions[newIndex];
-		const baseStyles: string =
-			"min-h-8 min-w-8 h-fit w-fit px-3 py-1 mt-1 rounded-md text-white";
-
-		switch (featureOption.key) {
-			case "key:formatters":
-				return <WrenchIcon className={`${baseStyles} ${color} `} />;
-			case "key:escapers":
-				return (
-					<CodeBracketIcon className={`${baseStyles} ${color} `} />
-				);
-			case "key:ciphers":
-				return <LockClosedIcon className={`${baseStyles} ${color} `} />;
-			case "key:random-numbers":
-				return <CalculatorIcon className={`${baseStyles} ${color} `} />;
-			case "key:generators":
-				return (
-					<ArrowRightStartOnRectangleIcon
-						className={`${baseStyles} ${color} `}
-					/>
-				);
-			case "key:converter":
-				return <ArrowPathIcon className={`${baseStyles} ${color} `} />;
-			default:
-				return (
-					<CodeBracketIcon className={`${baseStyles} ${color} `} />
-				);
-		}
-	};
+	const Icon = iconByFeatureKey[featureOption.key] ?? CodeBracketIcon;
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<div className="flex flex-col w-full">
+		<div className="flex w-full min-w-0 flex-col">
 			<FeatureHeader>{featureOption.header}</FeatureHeader>
 			<FeatureSubHeader>{featureOption.subheader}</FeatureSubHeader>
-			<Spacer y={4} />
-			<ul className="w-full h-fit grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-4">
-				{featureOption.items.map((option, index) => {
-					return (
-						<li key={option.path}>
-							<Card
-								isHoverable
-								className="h-full border-1 border-secondary-100/25"
-								title={option.name}
-							>
-								<CardHeader className="flex flex-row gap-3">
-									{getIcon(index)}
-									<h3>
-										<strong>{option.name}</strong>
-									</h3>
-								</CardHeader>
-								<CardBody>{option.description}</CardBody>
-								<CardFooter className="flex flex-row justify-end">
-									<Button
-										className="bg-secondary-400/20"
-										as={Link}
-										href={option.path}
-										title={`Visit page for ${option.name}`}
-									>
-										Visit Page
-									</Button>
-								</CardFooter>
-							</Card>
-						</li>
-					);
-				})}
+			<ul className="mt-4 grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-4">
+				{featureOption.items.map((option) => (
+					<li key={option.path}>
+						<Card className="h-full">
+							<Card.Header className="flex flex-row items-center gap-3">
+								<span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-soft-foreground">
+									<Icon
+										aria-hidden="true"
+										className="size-5"
+									/>
+								</span>
+								<Card.Title className="flex flex-row items-center gap-2">
+									{option.name}
+									<FeatureOptionItemStatusChip
+										status={option.status}
+									/>
+								</Card.Title>
+							</Card.Header>
+							<Card.Content>
+								<Card.Description>
+									{option.description}
+								</Card.Description>
+							</Card.Content>
+							<Card.Footer className="flex flex-row justify-end">
+								<NextLink
+									href={toHref(option.path)}
+									title={`Visit page for ${option.name}`}
+									className={buttonVariants({
+										variant: "tertiary",
+									})}
+								>
+									Visit Page
+								</NextLink>
+							</Card.Footer>
+						</Card>
+					</li>
+				))}
 			</ul>
 		</div>
 	);

@@ -1,22 +1,22 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Input } from "@heroui/input";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button, Input, Label, TextField } from "@heroui/react";
+import { rngs_CoinToss } from "@/config/features";
 import {
-	copyToClipboard,
 	formatAsArrayString,
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { rngs_CoinToss } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+import CheckboxOption from "../checkboxOption";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -31,16 +31,17 @@ const CoinTossRng: React.FC = () => {
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
-	//Handle Formatting the Input String
+	//Handle Tossing the Coins
 	//------------------------------------------------------------------------------------
-	const handleRoll = (): void => {
+	const handleToss = (): void => {
 		if (error) setError(null);
 
 		try {
-			if (numTosses > 100000) {
-				throw new Error("Maximum number of tosses is 100000");
+			if (numTosses > 100_000) {
+				throw new Error("Maximum number of tosses is 100,000");
 			}
 
 			let response = "";
@@ -53,6 +54,7 @@ const CoinTossRng: React.FC = () => {
 					randomNumber === 0
 						? tailsSideIdentifier
 						: headSideIdentifier;
+
 				if (i === 0) {
 					response += `"${result}"`;
 				} else {
@@ -76,27 +78,7 @@ const CoinTossRng: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -105,78 +87,57 @@ const CoinTossRng: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{rngs_CoinToss.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>Coin Toss Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-col md:flex-row gap-4">
-							<NumberInput
-								value={numTosses}
-								onValueChange={setNumTosses}
-								label="Number of Tosses"
-								description="Any number between 1 and 100,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={100_000}
-							/>
-							<Input
-								value={tailsSideIdentifier}
-								onValueChange={setTailSideIdentifier}
-								label="Identifier for Tails Side"
-								variant="bordered"
-							/>
-							<Input
-								value={headSideIdentifier}
-								onValueChange={setHeadSideIdentifier}
-								label="Identifier for Heads Side"
-								variant="bordered"
-							/>
-						</div>
-						<Checkbox
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-							color="secondary"
-							aria-label="Controls whether the results should be returned as an array."
+				<ToolCard
+					title="Coin Toss Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex flex-col gap-4 md:flex-row">
+						<NumberOption
+							label="Number of Tosses"
+							description="Any number between 1 and 100,000"
+							value={numTosses}
+							onChange={setNumTosses}
+							minValue={1}
+							maxValue={100_000}
+						/>
+						<TextField
+							fullWidth
+							value={tailsSideIdentifier}
+							onChange={setTailSideIdentifier}
 						>
-							Return results as an array
-						</Checkbox>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleRoll()}
-							>
-								Toss
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+							<Label>Identifier for Tails Side</Label>
+							<Input />
+						</TextField>
+						<TextField
+							fullWidth
+							value={headSideIdentifier}
+							onChange={setHeadSideIdentifier}
+						>
+							<Label>Identifier for Heads Side</Label>
+							<Input />
+						</TextField>
+					</div>
+					<CheckboxOption
+						isSelected={isFormatAsArray}
+						onChange={setIsFormatAsArray}
+					>
+						Return results as an array
+					</CheckboxOption>
+					<div className="flex flex-row justify-end gap-2">
+						<Button onPress={() => handleToss()}>Toss</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Coin Toss</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="json">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard
+				title="Output Coin Toss"
+				language="json"
+				output={output}
+			/>
 		</FeatureOptionItemContainerLayout>
 	);
 };

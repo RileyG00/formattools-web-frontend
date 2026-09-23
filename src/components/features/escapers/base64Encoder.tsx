@@ -1,16 +1,18 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, decodeBase64, encodeBase64 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
+import { Button } from "@heroui/react";
 import { escapers_Base64 } from "@/config/features";
+import { decodeBase64, encodeBase64 } from "@/utils/textUtils";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -22,6 +24,7 @@ const Base64EncoderDecoder: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -32,11 +35,9 @@ const Base64EncoderDecoder: React.FC = () => {
 
 		try {
 			if (isEncoding) {
-				const encodedUri: string = encodeBase64(raw);
-				setOutput(encodedUri);
+				setOutput(encodeBase64(raw));
 			} else {
-				const decodedUri: string = decodeBase64(raw);
-				setOutput(decodedUri);
+				setOutput(decodeBase64(raw));
 			}
 		} catch (error) {
 			const err = error as unknown as Error;
@@ -46,27 +47,7 @@ const Base64EncoderDecoder: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -75,85 +56,42 @@ const Base64EncoderDecoder: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{escapers_Base64.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full min-h-[200px]">
-					<CardHeader>Input Text</CardHeader>
-					<CardBody>
-						<Textarea
-							disableAnimation
-							classNames={{
-								base: "!h-full",
-								inputWrapper: "!h-full",
-								innerWrapper: "!h-full",
-								input: "!h-full",
+				<ToolCard title="Input Text" className="min-h-[200px] w-full">
+					<CodeInput value={input} onChange={setInput} />
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-full min-w-fit"
+				>
+					<div className="flex w-fit flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
 							}}
-							aria-label="Container for the raw text input"
-							value={input}
-							onValueChange={setInput}
+						>
+							Clear Input
+						</Button>
+						<Button
+							variant="secondary"
+							onPress={() => handleFormat(input, false)}
+						>
+							Decode
+						</Button>
+						<Button onPress={() => handleFormat(input, true)}>
+							Encode
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
 						/>
-					</CardBody>
-				</Card>
-				<Card className="min-w-fit h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-gap gap-4">
-						<div className="flex flex-row gap-2 justify-end w-fit">
-							<Button
-								color="default"
-								onPress={() => {
-									setInput("");
-									setOutput("");
-									setError(null);
-								}}
-							>
-								Clear Input
-							</Button>
-							<Button
-								color="secondary"
-								variant="flat"
-								className="w-fit"
-								onPress={() => handleFormat(input, false)}
-							>
-								Decode
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(input, true)}
-							>
-								Encode
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Text</CardHeader>
-				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="plaintext"
-					>
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard title="Output Text" output={output} />
 		</FeatureOptionItemContainerLayout>
 	);
 };

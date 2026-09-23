@@ -1,23 +1,61 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/utils/textUtils";
+import { Button } from "@heroui/react";
 import { format, KeywordCase } from "sql-formatter";
-import FeatureHeader from "@/components/features/featureHeader";
-import SQLLanguage from "@/types/sqlLanguage";
-import { NumberInput } from "@heroui/number-input";
 import { formatters_Sql } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
-import FullScreen from "@/components/features/fullScreen.Modal";
+import SQLLanguage from "@/types/sqlLanguage";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+import OptionSelect, { SelectOption } from "../optionSelect";
+
+//----------------------------------------------------------------------------------------
+//Options
+//----------------------------------------------------------------------------------------
+type SqlIndentation = "2" | "4" | "tab";
+type Casing = "preserve" | "upper" | "lower";
+
+const indentationOptions: readonly SelectOption<SqlIndentation>[] = [
+	{ id: "2", label: "2 spaces" },
+	{ id: "4", label: "4 spaces" },
+	{ id: "tab", label: "Tab" },
+];
+
+const casingOptions: readonly SelectOption<Casing>[] = [
+	{ id: "preserve", label: "Preserve" },
+	{ id: "upper", label: "Uppercase" },
+	{ id: "lower", label: "Lowercase" },
+];
+
+const languageOptions: readonly SelectOption<SQLLanguage>[] = [
+	{ id: "bigquery", label: "BigQuery" },
+	{ id: "db2", label: "DB2" },
+	{ id: "db2i", label: "DB2 i" },
+	{ id: "duckdb", label: "DuckDB" },
+	{ id: "hive", label: "Hive" },
+	{ id: "mariadb", label: "MariaDB" },
+	{ id: "mysql", label: "MySQL" },
+	{ id: "n1ql", label: "N1QL" },
+	{ id: "plsql", label: "PL/SQL" },
+	{ id: "postgresql", label: "PostgreSQL" },
+	{ id: "redshift", label: "Redshift" },
+	{ id: "singlestoredb", label: "SingleStoreDB" },
+	{ id: "snowflake", label: "Snowflake" },
+	{ id: "spark", label: "Spark" },
+	{ id: "sql", label: "SQL" },
+	{ id: "sqlite", label: "SQLite" },
+	{ id: "tidb", label: "TiDB" },
+	{ id: "trino", label: "Trino" },
+	{ id: "tsql", label: "T-SQL" },
+];
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -26,16 +64,16 @@ const SqlFormatter: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
-	const [keywordCasing, setKeywordCasing] = useState<string>("preserve");
+	const [indentation, setIndentation] = useState<SqlIndentation>("tab");
+	const [keywordCasing, setKeywordCasing] = useState<Casing>("preserve");
 	const [language, setLanguage] = useState<SQLLanguage>("tsql");
 	const [linesBetweenQueries, setLinesBetweenQueries] = useState<number>(2);
 	const [identifierCasing, setIdentifierCasing] =
-		useState<string>("preserve");
+		useState<Casing>("preserve");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -45,15 +83,15 @@ const SqlFormatter: React.FC = () => {
 		if (error) setError(null);
 
 		try {
-			const formatted: string = format(input, {
+			const formatted: string = format(raw, {
 				language: language,
 				tabWidth: !isNaN(parseInt(indentation))
 					? parseInt(indentation)
 					: 1, // If not a NaN, it means the user is not using the tab option,
 				useTabs: indentation === "tab",
-				keywordCase: keywordCasing as unknown as KeywordCase,
-				functionCase: keywordCasing as unknown as KeywordCase,
-				identifierCase: identifierCasing as unknown as KeywordCase,
+				keywordCase: keywordCasing as KeywordCase,
+				functionCase: keywordCasing as KeywordCase,
+				identifierCase: identifierCasing as KeywordCase,
 				linesBetweenQueries: linesBetweenQueries,
 			});
 
@@ -66,246 +104,97 @@ const SqlFormatter: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
-				<InputSpecsContainer>
-					<Card className="w-full">
-						<CardHeader>Input SQL</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAutosize
-								aria-label="Container for the raw text input"
-								value={input}
-								onValueChange={setInput}
-								placeholder={`select * from Data.dbo.Formatters with (nolock)`}
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="min-w-fit">
-						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4 min-w-fit">
-							<div className="flex flex-row gap-4">
-								<Select
-									aria-label="Options for how to format the SQL output."
-									label="Indentation"
-									selectedKeys={[indentation]}
-									onSelectionChange={(e) =>
-										setIndentation(e.currentKey ?? "tab")
-									}
-									variant="bordered"
-									className="min-w-1/2"
-								>
-									<SelectItem key={"2"}>2 spaces</SelectItem>
-									<SelectItem key={"4"}>4 spaces</SelectItem>
-									<SelectItem key={"tab"}>Tab</SelectItem>
-								</Select>
-								<Select
-									aria-label="Select the language that you are trying to format."
-									label="Language"
-									selectedKeys={[language]}
-									onSelectionChange={(e) =>
-										setLanguage(
-											(e.currentKey as SQLLanguage) ??
-												"tsql",
-										)
-									}
-									variant="bordered"
-									className="min-w-fit"
-								>
-									<SelectItem key={"bigquery"}>
-										BigQuery
-									</SelectItem>
-									<SelectItem key={"db2"}>DB2</SelectItem>
-									<SelectItem key={"db2i"}>DB2 i</SelectItem>
-									<SelectItem key={"duckdb"}>
-										DuckDB
-									</SelectItem>
-									<SelectItem key={"hive"}>Hive</SelectItem>
-									<SelectItem key={"mariadb"}>
-										MariaDB
-									</SelectItem>
-									<SelectItem key={"mysql"}>MySQL</SelectItem>
-									<SelectItem key={"n1ql"}>N1QL</SelectItem>
-									<SelectItem key={"plsql"}>
-										PL/SQL
-									</SelectItem>
-									<SelectItem key={"postgresql"}>
-										PostgreSQL
-									</SelectItem>
-									<SelectItem key={"redshift"}>
-										Redshift
-									</SelectItem>
-									<SelectItem key={"singlestoredb"}>
-										SingleStoreDB
-									</SelectItem>
-									<SelectItem key={"snowflake"}>
-										Snowflake
-									</SelectItem>
-									<SelectItem key={"spark"}>Spark</SelectItem>
-									<SelectItem key={"sql"}>SQL</SelectItem>
-									<SelectItem key={"sqlite"}>
-										SQLite
-									</SelectItem>
-									<SelectItem key={"tidb"}>TiDB</SelectItem>
-									<SelectItem key={"trino"}>Trino</SelectItem>
-									<SelectItem key={"tsql"}>T-SQL</SelectItem>
-								</Select>
-							</div>
-							<div className="flex flex-row gap-4 min-w-fit w-full">
-								<Select
-									aria-label="Options for how to set the keyword casing."
-									label="Keyword Casing"
-									selectedKeys={[keywordCasing]}
-									onSelectionChange={(e) =>
-										setKeywordCasing(
-											e.currentKey ?? "preserve",
-										)
-									}
-									className="min-w-1/2"
-									variant="bordered"
-								>
-									<SelectItem key={"preserve"}>
-										Preserve
-									</SelectItem>
-									<SelectItem key={"upper"}>
-										Uppercase
-									</SelectItem>
-									<SelectItem key={"lower"}>
-										Lowercase
-									</SelectItem>
-								</Select>
-								<Select
-									aria-label="Options for how to set the identifier casing."
-									label="Identifier Casing"
-									selectedKeys={[identifierCasing]}
-									onSelectionChange={(e) =>
-										setIdentifierCasing(
-											e.currentKey ?? "preserve",
-										)
-									}
-									variant="bordered"
-									className="w-full"
-								>
-									<SelectItem key={"preserve"}>
-										Preserve
-									</SelectItem>
-									<SelectItem key={"upper"}>
-										Uppercase
-									</SelectItem>
-									<SelectItem key={"lower"}>
-										Lowercase
-									</SelectItem>
-								</Select>
-							</div>
-							<NumberInput
-								hideStepper
-								variant="bordered"
-								label="Lines Between Queries"
-								value={linesBetweenQueries}
-								onValueChange={setLinesBetweenQueries}
-								minValue={1}
-								maxValue={10}
-								description="You must use semicolons to break queries up for this feature to apply."
-							/>
-							<div className="flex flex-row gap-2 justify-end">
-								<Button
-									color="default"
-									className="w-fit"
-									onPress={() => {
-										setInput("");
-										setOutput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleFormat(input)}
-								>
-									Format SQL
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Output SQL</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{formatters_Sql.name}</FeatureHeader>
+			<InputSpecsContainer>
+				<ToolCard title="Input SQL" className="min-h-[200px] w-full">
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`select * from Data.dbo.Formatters with (nolock)`}
+					/>
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="min-w-fit"
+				>
+					<div className="flex flex-row gap-4">
+						<OptionSelect
+							label="Indentation"
+							options={indentationOptions}
+							value={indentation}
+							onChange={setIndentation}
+							className="min-w-40"
 						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="sql">
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</FeatureOptionItemContainerLayout>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
+						<OptionSelect
+							label="Language"
+							options={languageOptions}
+							value={language}
+							onChange={setLanguage}
+							className="min-w-40"
+						/>
+					</div>
+					<div className="flex flex-row gap-4">
+						<OptionSelect
+							label="Keyword Casing"
+							options={casingOptions}
+							value={keywordCasing}
+							onChange={setKeywordCasing}
+							className="min-w-40"
+						/>
+						<OptionSelect
+							label="Identifier Casing"
+							options={casingOptions}
+							value={identifierCasing}
+							onChange={setIdentifierCasing}
+							className="min-w-40"
+						/>
+					</div>
+					<NumberOption
+						hideStepper
+						label="Lines Between Queries"
+						value={linesBetweenQueries}
+						onChange={setLinesBetweenQueries}
+						minValue={1}
+						maxValue={10}
+						description="You must use semicolons to break queries up for this feature to apply."
+					/>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button onPress={() => handleFormat(input)}>
+							Format SQL
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				allowFullScreen
+				title="Output SQL"
+				language="sql"
+				output={output}
 				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax showLineNumbers={true} language="sql">
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
-		</>
+			/>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

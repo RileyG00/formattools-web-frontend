@@ -1,25 +1,23 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea, Input } from "@heroui/input";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button, Description, Input, Label, TextField } from "@heroui/react";
+import { format } from "sql-formatter";
+import { formatters_TabularToSql } from "@/config/features";
 import {
-	copyToClipboard,
 	encloseTextInSingleQuotes,
 	escapeAllSingleQuotes,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { format } from "sql-formatter";
 import { isNumber } from "@/utils/numberUtils";
-import { formatters_TabularToSql } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
-import FullScreen from "@/components/features/fullScreen.Modal";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -32,7 +30,7 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -117,124 +115,71 @@ const TabularToSqlInsertFormatter: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = (): void => {
-		copyToClipboard(output);
-
-		addToast({
-			color: "success",
-			title: "Success",
-			description: "Successfully copied text to clipboard.",
-		});
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
-				<InputSpecsContainer>
-					<Card className="w-full min-h-[200px]">
-						<CardHeader>Input Tabular Data</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAutosize
-								aria-label="Container for the raw text input"
-								value={input}
-								onValueChange={setInput}
-								spellCheck="false"
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="w-fit h-full">
-						<CardHeader>Insert Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
-							<Input
-								name="table"
-								label="Insert Into"
-								variant="bordered"
-								placeholder="database.schema.table"
-								value={table}
-								onValueChange={setTable}
-								spellCheck="false"
-								description="You can also specify the column names to insert into. E.g.: database.schema.table (ColumnA, ColumnB)"
-							/>
-							<div className="flex flex-row gap-2 justify-end">
-								<Button
-									color="default"
-									className="w-fit"
-									onPress={() => {
-										setInput("");
-										setOutput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleFormat(input)}
-								>
-									Format to Table
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Insert Statement</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{formatters_TabularToSql.name}</FeatureHeader>
+			<InputSpecsContainer>
+				<ToolCard
+					title="Input Tabular Data"
+					className="min-h-[200px] w-full"
+				>
+					<CodeInput value={input} onChange={setInput} />
+				</ToolCard>
+				<ToolCard
+					title="Insert Specifications"
+					className="h-full md:max-w-md"
+				>
+					<TextField
+						fullWidth
+						name="table"
+						value={table}
+						onChange={setTable}
+					>
+						<Label>Insert Into</Label>
+						<Input
+							placeholder="database.schema.table"
+							spellCheck={false}
 						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="sql">
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</FeatureOptionItemContainerLayout>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
+						<Description>
+							You can also specify the column names to insert
+							into. E.g.: database.schema.table (ColumnA, ColumnB)
+						</Description>
+					</TextField>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button onPress={() => handleFormat(input)}>
+							Format to Table
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				allowFullScreen
+				title="Insert Statement"
+				language="sql"
+				output={output}
 				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax showLineNumbers={true} language="sql">
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
-		</>
+			/>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 

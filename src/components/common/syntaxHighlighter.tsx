@@ -1,3 +1,5 @@
+"use client";
+
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import plaintext from "react-syntax-highlighter/dist/esm/languages/hljs/plaintext";
@@ -16,11 +18,14 @@ SyntaxHighlighter.registerLanguage("css", css);
 SyntaxHighlighter.registerLanguage("json", json);
 SyntaxHighlighter.registerLanguage("sql", sql);
 
+export type HighlightLanguage =
+	"plaintext" | "number" | "xml" | "html" | "css" | "json" | "sql";
+
 //----------------------------------------------------------------------------------------
 //Create Component
 //----------------------------------------------------------------------------------------
 interface HighlightSyntaxProps {
-	language?: "plaintext" | "number" | "xml" | "html" | "css" | "json" | "sql";
+	language?: HighlightLanguage;
 	children: string;
 	showLineNumbers?: boolean;
 	wrapLongLines?: boolean;
@@ -46,6 +51,8 @@ const HighlightSyntax: React.FC<HighlightSyntaxProps> = ({
 				background: "none",
 				wordBreak: "break-all",
 				overflowX: "auto",
+				margin: 0,
+				padding: 0,
 			}}
 			language={language}
 			style={atomOneDark}

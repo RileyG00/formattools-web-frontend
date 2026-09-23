@@ -98,7 +98,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
 	try {
 		await navigator.clipboard.writeText(text);
 		return true;
-	} catch (err) {
+	} catch {
 		return false;
 	}
 };
@@ -281,7 +281,7 @@ export const getQueryStringParams = (url: string): KeyValue[] => {
 
 	const queryParamSegments: string[] = urlParts[1].split("&");
 
-	let response: KeyValue[] = [];
+	const response: KeyValue[] = [];
 
 	queryParamSegments.forEach((queryParamPart) => {
 		const queryParam: string[] = queryParamPart.split("=");

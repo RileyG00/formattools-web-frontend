@@ -1,22 +1,23 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button } from "@heroui/react";
+import { generators_Number } from "@/config/features";
 import {
-	copyToClipboard,
 	formatAsArrayString,
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
 import { getRandomInt } from "@/utils/numberUtils";
-import { generators_Number } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+import CheckboxOption from "../checkboxOption";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -34,21 +35,22 @@ const NumberGenerator: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
-	//Handle Formatting the Input String
+	//Handle Generating the Numbers
 	//------------------------------------------------------------------------------------
 	const handleGenerateNumbers = (): void => {
 		if (error) setError(null);
 
 		try {
-			if (minNumber < 1 || maxNumber > 999_000) {
+			if (minNumber < 1 || minNumber > 999_000) {
 				throw new Error(
 					"Minimum number cannot be lower than 1 or higher than 999,000",
 				);
 			}
 
-			if (minNumber < 1 || maxNumber > 1_000_000) {
+			if (maxNumber < 1 || maxNumber > 1_000_000) {
 				throw new Error(
 					"Maximum number cannot be lower than 1 or higher than 1,000,000",
 				);
@@ -94,27 +96,7 @@ const NumberGenerator: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -123,87 +105,60 @@ const NumberGenerator: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_Number.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>String Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-col md:flex-row gap-4">
-							<NumberInput
-								value={minNumber}
-								onValueChange={setMinNumber}
-								label="Minimum Number"
-								description="Any number between 1 and 999,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={999_000}
-							/>
-							<NumberInput
-								value={maxNumber}
-								onValueChange={setMaxNumber}
-								label="Maximum Number"
-								description="Any number between 1 and 1,000,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={1_000_000}
-							/>
-							<NumberInput
-								value={numbersToGenerate}
-								className="min-w-fit"
-								onValueChange={setNumbersToGenerate}
-								label="Numbers to Generate"
-								description="Any number between 1 and 10,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={10_000}
-							/>
-						</div>
-						<div className="flex flex-row gap-8">
-							<Checkbox
-								isSelected={isFormatAsArray}
-								onValueChange={setIsFormatAsArray}
-								color="secondary"
-								aria-label="Controls whether the results should be returned as an array."
-							>
-								Return results as an array
-							</Checkbox>
-						</div>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleGenerateNumbers()}
-							>
-								Generate
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+				<ToolCard
+					title="Number Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex flex-col gap-4 md:flex-row">
+						<NumberOption
+							label="Minimum Number"
+							description="Any number between 1 and 999,000"
+							value={minNumber}
+							onChange={setMinNumber}
+							minValue={1}
+							maxValue={999_000}
+						/>
+						<NumberOption
+							label="Maximum Number"
+							description="Any number between 1 and 1,000,000"
+							value={maxNumber}
+							onChange={setMaxNumber}
+							minValue={1}
+							maxValue={1_000_000}
+						/>
+						<NumberOption
+							label="Numbers to Generate"
+							description="Any number between 1 and 10,000"
+							value={numbersToGenerate}
+							onChange={setNumbersToGenerate}
+							minValue={1}
+							maxValue={10_000}
+							className="min-w-fit"
+						/>
+					</div>
+					<CheckboxOption
+						isSelected={isFormatAsArray}
+						onChange={setIsFormatAsArray}
+					>
+						Return results as an array
+					</CheckboxOption>
+					<div className="flex flex-row justify-end gap-2">
+						<Button onPress={() => handleGenerateNumbers()}>
+							Generate
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Strings</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="number">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard
+				title="Output Numbers"
+				language="number"
+				output={output}
+			/>
 		</FeatureOptionItemContainerLayout>
 	);
 };

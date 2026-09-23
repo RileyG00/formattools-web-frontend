@@ -1,16 +1,19 @@
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 
+//----------------------------------------------------------------------------------------
+//Create Component
+//----------------------------------------------------------------------------------------
 interface FeatureOptionItemContainerLayoutProps {
 	disobeyMinHeightOnMobile?: boolean;
 	children: ReactNode;
 }
 
-const FeatureOptionItemContainerLayout: FC<
+const FeatureOptionItemContainerLayout: React.FC<
 	FeatureOptionItemContainerLayoutProps
 > = ({ disobeyMinHeightOnMobile = false, children }) => {
 	return (
 		<div
-			className={`${disobeyMinHeightOnMobile ? "md:h-[775px]" : "h-[775px]"} min-w-0 flex flex-col flex-grow gap-4`}
+			className={`${disobeyMinHeightOnMobile ? "md:h-[775px]" : "h-[775px]"} flex min-w-0 grow flex-col gap-4`}
 		>
 			{children}
 		</div>

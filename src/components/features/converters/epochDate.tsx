@@ -1,24 +1,32 @@
-import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { DatePicker } from "@heroui/date-picker";
+"use client";
+
+import { useMemo, useState } from "react";
 import {
-	now,
-	getLocalTimeZone,
-	parseDate,
-	fromAbsolute,
+	Button,
+	Calendar,
+	DateField,
+	DatePicker,
+	Label,
+	useIsHydrated,
+} from "@heroui/react";
+import {
 	DateFormatter,
+	fromAbsolute,
+	getLocalTimeZone,
+	now,
+	parseDate,
+	ZonedDateTime,
 } from "@internationalized/date";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { NumberInput } from "@heroui/number-input";
 import { converters_EpochDate } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -28,9 +36,19 @@ const EpochDateConverter: React.FC = () => {
 	//Variables
 	//------------------------------------------------------------------------------------
 	const [epoch, setEpoch] = useState<number>(0);
-	const [dateTime, setDateTime] = useState(now(getLocalTimeZone()));
+	const [selectedDateTime, setSelectedDateTime] =
+		useState<ZonedDateTime | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
+	const copy = useCopyToClipboard();
+
+	// The server doesn't know the visitor's time zone, so "now" is only captured once hydrated.
+	const isHydrated = useIsHydrated();
+	const initialDateTime = useMemo(
+		() => (isHydrated ? now(getLocalTimeZone()) : null),
+		[isHydrated],
+	);
+	const dateTime: ZonedDateTime | null = selectedDateTime ?? initialDateTime;
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -41,7 +59,7 @@ const EpochDateConverter: React.FC = () => {
 		if (error) setError(null);
 
 		try {
-			if (!isConvertingEpoch) {
+			if (!isConvertingEpoch && dateTime) {
 				const epochMs = dateTime.toDate().getTime();
 				setOutput(String(epochMs));
 			} else {
@@ -65,27 +83,7 @@ const EpochDateConverter: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -94,84 +92,102 @@ const EpochDateConverter: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{converters_EpochDate.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>Formatting Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="w-fit flex flex-col md:flex-row gap-4 w-full">
-							<NumberInput
-								hideStepper
-								name="epoch"
-								label="Epoch Timestamp"
-								minValue={0}
-								placeholder="1754447470"
-								variant="bordered"
-								value={epoch}
-								className="w-full min-w-[250px]"
-								onValueChange={setEpoch}
-							/>
-							<DatePicker
-								hideTimeZone
-								showMonthAndYearPickers
-								label="Date Time"
-								variant="bordered"
-								minValue={parseDate("1970-01-01")}
-								calendarProps={{ color: "secondary" }}
-								hourCycle={24}
-								value={dateTime}
-								className="w-full min-w-[250px]"
-								onChange={(value) => {
-									setDateTime(
-										value ?? now(getLocalTimeZone()),
-									);
-								}}
-								granularity="second"
-							/>
-						</div>
-						<div className="flex flex-row gap-2 items-end justify-end">
-							<Button
-								color="default"
-								className="w-fit"
-								onPress={() => handleFormat(true)}
-							>
-								To Date Time
-							</Button>
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleFormat(false)}
-							>
-								To Epoch (ms)
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex w-full flex-col gap-4 md:flex-row">
+						<NumberOption
+							hideStepper
+							useGrouping={false}
+							label="Epoch Timestamp"
+							minValue={0}
+							placeholder="1754447470"
+							value={epoch}
+							onChange={setEpoch}
+							className="min-w-[250px]"
+						/>
+						<DatePicker
+							hideTimeZone
+							className="w-full min-w-[250px]"
+							granularity="second"
+							hourCycle={24}
+							minValue={parseDate("1970-01-01")}
+							value={dateTime}
+							onChange={(value) => {
+								if (value)
+									setSelectedDateTime(value as ZonedDateTime);
+							}}
+						>
+							<Label>Date Time</Label>
+							<DateField.Group fullWidth>
+								<DateField.Input>
+									{(segment) => (
+										<DateField.Segment segment={segment} />
+									)}
+								</DateField.Input>
+								<DateField.Suffix>
+									<DatePicker.Trigger>
+										<DatePicker.TriggerIndicator />
+									</DatePicker.Trigger>
+								</DateField.Suffix>
+							</DateField.Group>
+							<DatePicker.Popover>
+								<Calendar aria-label="Date to convert">
+									<Calendar.Header>
+										<Calendar.YearPickerTrigger>
+											<Calendar.YearPickerTriggerHeading />
+											<Calendar.YearPickerTriggerIndicator />
+										</Calendar.YearPickerTrigger>
+										<Calendar.NavButton slot="previous" />
+										<Calendar.NavButton slot="next" />
+									</Calendar.Header>
+									<Calendar.Grid>
+										<Calendar.GridHeader>
+											{(day) => (
+												<Calendar.HeaderCell>
+													{day}
+												</Calendar.HeaderCell>
+											)}
+										</Calendar.GridHeader>
+										<Calendar.GridBody>
+											{(date) => (
+												<Calendar.Cell date={date} />
+											)}
+										</Calendar.GridBody>
+									</Calendar.Grid>
+									<Calendar.YearPickerGrid>
+										<Calendar.YearPickerGridBody>
+											{({ year }) => (
+												<Calendar.YearPickerCell
+													year={year}
+												/>
+											)}
+										</Calendar.YearPickerGridBody>
+									</Calendar.YearPickerGrid>
+								</Calendar>
+							</DatePicker.Popover>
+						</DatePicker>
+					</div>
+					<div className="flex flex-row items-end justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => handleFormat(true)}
+						>
+							To Date Time
+						</Button>
+						<Button onPress={() => handleFormat(false)}>
+							To Epoch (ms)
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output</CardHeader>
-				<CardBody>
-					<HighlightSyntax showLineNumbers={true} language="json">
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard title="Output" language="json" output={output} />
 		</FeatureOptionItemContainerLayout>
 	);
 };

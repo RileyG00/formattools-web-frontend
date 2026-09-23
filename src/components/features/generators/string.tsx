@@ -1,22 +1,23 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button } from "@heroui/react";
+import { generators_String } from "@/config/features";
 import {
-	copyToClipboard,
 	formatAsArrayString,
 	getRandomCharacter,
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { generators_String } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+import CheckboxOption from "../checkboxOption";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -39,11 +40,12 @@ const StringGenerator: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(false);
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
-	//Handle Formatting the Input String
+	//Handle Generating the Strings
 	//------------------------------------------------------------------------------------
-	const handleRoll = (): void => {
+	const handleGenerate = (): void => {
 		if (error) setError(null);
 
 		try {
@@ -52,7 +54,7 @@ const StringGenerator: React.FC = () => {
 			}
 
 			if (stringLength > 256) {
-				throw new Error("Maximum length of strings is 1,000");
+				throw new Error("Maximum length of strings is 256");
 			}
 
 			let response = "";
@@ -61,15 +63,13 @@ const StringGenerator: React.FC = () => {
 				let currentString: string = "";
 
 				for (let y = 0; y < stringLength; y++) {
-					const randomCharacter: string = getRandomCharacter(
+					currentString += getRandomCharacter(
 						isIncludeLowercase,
 						isIncludeUppercase,
 						isIncludeDigits,
 						isIncludeSpecial,
 						[],
 					);
-
-					currentString += randomCharacter;
 				}
 
 				if (i === 0) {
@@ -98,27 +98,7 @@ const StringGenerator: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -127,116 +107,81 @@ const StringGenerator: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{generators_String.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>String Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4">
-						<div className="flex flex-col md:flex-row gap-4">
-							<NumberInput
-								value={numStrings}
-								onValueChange={setNumStrings}
-								label="Number of Strings to Return"
-								description="Any number between 1 and 1,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={1_000}
-							/>
-							<NumberInput
-								value={stringLength}
-								onValueChange={setStringLength}
-								label="String Length"
-								description="Any number between 1 and 256"
-								variant="bordered"
-								minValue={1}
-								maxValue={256}
-							/>
-						</div>
-						<div className="flex flex-col md:flex-row gap-4 md:gap-8">
-							<div className="flex flex-col gap-4">
-								<Checkbox
-									isSelected={isFormatAsArray}
-									onValueChange={setIsFormatAsArray}
-									color="secondary"
-									aria-label="Controls whether the results should be returned as an array."
-								>
-									Return results as an array
-								</Checkbox>
-								<Checkbox
-									isSelected={isIncludeLowercase}
-									onValueChange={setIsIncludeLowercase}
-									color="secondary"
-									aria-label="Controls whether the results should include lowercase characters."
-								>
-									Lowercase characters
-								</Checkbox>
-								<Checkbox
-									isSelected={isIncludeUppercase}
-									onValueChange={setIsIncludeUppercase}
-									color="secondary"
-									aria-label="Controls whether the results should include uppercase characters."
-								>
-									Uppercase characters
-								</Checkbox>
-							</div>
-							<div className="flex flex-col gap-4">
-								<Checkbox
-									isSelected={isIncludeSpecial}
-									onValueChange={setIsIncludeSpecial}
-									color="secondary"
-									aria-label="Controls whether the results should include special characters."
-								>
-									Special characters
-								</Checkbox>
-								<Checkbox
-									isSelected={isIncludeDigits}
-									onValueChange={setIsIncludeDigits}
-									color="secondary"
-									aria-label="Controls whether the results should include digits."
-								>
-									Numbers
-								</Checkbox>
-							</div>
-						</div>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleRoll()}
+				<ToolCard
+					title="String Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex flex-col gap-4 md:flex-row">
+						<NumberOption
+							label="Number of Strings to Return"
+							description="Any number between 1 and 1,000"
+							value={numStrings}
+							onChange={setNumStrings}
+							minValue={1}
+							maxValue={1_000}
+						/>
+						<NumberOption
+							label="String Length"
+							description="Any number between 1 and 256"
+							value={stringLength}
+							onChange={setStringLength}
+							minValue={1}
+							maxValue={256}
+						/>
+					</div>
+					<div className="flex flex-col gap-4 md:flex-row md:gap-8">
+						<div className="flex flex-col gap-4">
+							<CheckboxOption
+								isSelected={isFormatAsArray}
+								onChange={setIsFormatAsArray}
 							>
-								Generate
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
+								Return results as an array
+							</CheckboxOption>
+							<CheckboxOption
+								isSelected={isIncludeLowercase}
+								onChange={setIsIncludeLowercase}
+							>
+								Lowercase characters
+							</CheckboxOption>
+							<CheckboxOption
+								isSelected={isIncludeUppercase}
+								onChange={setIsIncludeUppercase}
+							>
+								Uppercase characters
+							</CheckboxOption>
 						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
+						<div className="flex flex-col gap-4">
+							<CheckboxOption
+								isSelected={isIncludeSpecial}
+								onChange={setIsIncludeSpecial}
+							>
+								Special characters
+							</CheckboxOption>
+							<CheckboxOption
+								isSelected={isIncludeDigits}
+								onChange={setIsIncludeDigits}
+							>
+								Numbers
+							</CheckboxOption>
+						</div>
+					</div>
+					<div className="flex flex-row justify-end gap-2">
+						<Button onPress={() => handleGenerate()}>
+							Generate
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
 			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Strings</CardHeader>
-				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language={isFormatAsArray ? "json" : "plaintext"}
-					>
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+			<CodeOutputCard
+				title="Output Strings"
+				language={isFormatAsArray ? "json" : "plaintext"}
+				output={output}
+			/>
 		</FeatureOptionItemContainerLayout>
 	);
 };

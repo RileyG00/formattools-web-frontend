@@ -1,7 +1,12 @@
 //----------------------------------------------------------------------------------------
 //Imports
 //----------------------------------------------------------------------------------------
-import { FeatureOption, FeatureOptionItem } from "@/types/siteConfigs";
+import type {
+	FeatureOption,
+	FeatureOptionItem,
+	FeatureOptionKey,
+	FeatureRoutePath,
+} from "@/types/siteConfigs";
 import {
 	getFeatureOptionItemKey,
 	getFeatureOptionKey,
@@ -464,3 +469,21 @@ export const featureConfigs: FeatureOption[] = [
 		items: [generators_String, generators_Number, generators_LoremIpsum],
 	},
 ] as const;
+
+//----------------------------------------------------------------------------------------
+//Lookups
+//----------------------------------------------------------------------------------------
+export const getFeatureOptionByRoute = (
+	route: FeatureRoutePath,
+): FeatureOption => {
+	const key: FeatureOptionKey = getFeatureOptionKey(route);
+	const option: FeatureOption | undefined = featureConfigs.find(
+		(feature) => feature.key === key,
+	);
+
+	if (!option) {
+		throw new Error(`Invalid Feature Option Key: ${key}`);
+	}
+
+	return option;
+};

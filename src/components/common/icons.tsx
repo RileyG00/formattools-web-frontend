@@ -7,7 +7,7 @@ export const Logo: React.FC = () => (
 		width="48"
 		height="48"
 		role="img"
-		aria-label="DevForge icon"
+		aria-label="Data Formatters logo"
 	>
 		<circle cx="32" cy="32" r="32" fill="url(#grad)" />
 
@@ -413,6 +413,32 @@ export const ChevronDownIcon = ({
 			strokeLinejoin="round"
 			strokeWidth="1.5"
 			d="m19.5 8.25-7.5 7.5-7.5-7.5"
+		/>
+	</svg>
+);
+
+export const Bars3Icon = ({
+	size = 24,
+	width,
+	height,
+	...props
+}: IconSvgProps) => (
+	<svg
+		aria-hidden="true"
+		fill="none"
+		focusable="false"
+		height={size || height}
+		role="presentation"
+		viewBox="0 0 24 24"
+		width={size || width}
+		{...props}
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.5"
+			d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
 		/>
 	</svg>
 );

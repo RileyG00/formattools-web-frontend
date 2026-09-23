@@ -1,21 +1,26 @@
-import { FC } from "react";
-import { Button } from "@heroui/button";
+"use client";
+
+import { Button } from "@heroui/react";
 import { ArrowsPointingOutIcon } from "./icons";
 
+//----------------------------------------------------------------------------------------
+//Create Component
+//----------------------------------------------------------------------------------------
 interface FullScreenButtonProps {
 	onPress: () => void;
 }
 
-const FullScreenButton: FC<FullScreenButtonProps> = ({ onPress }) => {
+const FullScreenButton: React.FC<FullScreenButtonProps> = ({ onPress }) => {
 	return (
 		<Button
 			isIconOnly
-			variant="ghost"
+			size="sm"
+			variant="outline"
 			aria-label="Open full screen for the output."
-			title="Open full screen"
 			onPress={onPress}
-			startContent={<ArrowsPointingOutIcon />}
-		/>
+		>
+			<ArrowsPointingOutIcon size={18} />
+		</Button>
 	);
 };
 

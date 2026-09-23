@@ -1,7 +1,6 @@
-import { featureConfigs } from "@/config/features";
-import {
-	FeatureOption,
-	FeatureOptionItem,
+// Kept free of imports from "@/config/features" (which depends on these helpers)
+// so the two modules never form an initialization cycle.
+import type {
 	FeatureOptionKey,
 	FeatureRoutePath,
 	FeatureRouteSubPath,
@@ -11,6 +10,11 @@ import {
 
 export const getFeatureRoutePath = (path: FeatureRoutePath | "/"): string =>
 	path === "/" ? "/" : "/" + path;
+
+// Converts a config path (e.g. "formatters/json-formatter") into an absolute href.
+export const toHref = (
+	path: FeatureRoutePath | FeatureRouteUniquePath,
+): string => "/" + path;
 
 export const getFeatureOptionKey = (
 	routeRootKey: FeatureRoutePath,
@@ -25,32 +29,3 @@ export const getFeatureRouteUniquePath = (
 	routeRootKey: FeatureRoutePath,
 	routeSubKey: FeatureRouteSubPath,
 ): FeatureRouteUniquePath => `${routeRootKey}/${routeSubKey}`;
-
-export const getFeatureOptionByKey = (key: FeatureOptionKey): FeatureOption => {
-	const option: FeatureOption | undefined = featureConfigs.find(
-		(feature) => feature.key === key,
-	);
-
-	if (!option) {
-		throw new Error(`Invalid Feature Option Key: ${key}`);
-	}
-
-	return option;
-};
-
-export const getFeatureOptionItemByKey = (
-	featureKey: FeatureOptionKey,
-	featureItemKey: FeatureOptionItemKey,
-): FeatureOptionItem => {
-	const option: FeatureOption = getFeatureOptionByKey(featureKey);
-
-	const optionItem: FeatureOptionItem | undefined = option.items.find(
-		(item) => item.key === featureItemKey,
-	);
-
-	if (!optionItem) {
-		throw new Error("Invalid Feature Option Item Key.");
-	}
-
-	return optionItem;
-};

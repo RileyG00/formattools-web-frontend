@@ -1,22 +1,37 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Select, SelectItem } from "@heroui/select";
-import { NumberInput } from "@heroui/number-input";
-import { Checkbox } from "@heroui/checkbox";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
+import { Button } from "@heroui/react";
+import { rngs_DiceRoll } from "@/config/features";
 import {
-	copyToClipboard,
 	formatAsArrayString,
 	replaceAllLineBreaksWithComma,
 } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
-import { rngs_DiceRoll } from "@/config/features";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import NumberOption from "../numberOption";
+import CheckboxOption from "../checkboxOption";
+import OptionSelect, { SelectOption } from "../optionSelect";
+
+//----------------------------------------------------------------------------------------
+//Options
+//----------------------------------------------------------------------------------------
+type DieSides = "4" | "6" | "8" | "10" | "12" | "20";
+
+const dieOptions: readonly SelectOption<DieSides>[] = [
+	{ id: "4", label: "4-Sided Die" },
+	{ id: "6", label: "6-Sided Die" },
+	{ id: "8", label: "8-Sided Die" },
+	{ id: "10", label: "10-Sided Die" },
+	{ id: "12", label: "12-Sided Die" },
+	{ id: "20", label: "20-Sided Die" },
+];
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -25,14 +40,15 @@ const DiceRollRng: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [numSides, setNumSides] = useState<string>("8");
+	const [numSides, setNumSides] = useState<DieSides>("8");
 	const [numDice, setNumDice] = useState<number>(1);
 	const [isFormatAsArray, setIsFormatAsArray] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 	const [output, setOutput] = useState<string>("");
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
-	//Handle Formatting the Input String
+	//Handle Rolling the Dice
 	//------------------------------------------------------------------------------------
 	const handleRoll = (): void => {
 		if (error) setError(null);
@@ -40,12 +56,6 @@ const DiceRollRng: React.FC = () => {
 		try {
 			if (numDice > 10_000) {
 				throw new Error("Maximum number of dice is 10,000");
-			}
-
-			if (!["4", "6", "8", "10", "12", "20"].includes(numSides)) {
-				throw new Error(
-					"Please select a valid number of sides from the drop down.",
-				);
 			}
 
 			const min: number = 1;
@@ -80,27 +90,7 @@ const DiceRollRng: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
@@ -109,88 +99,50 @@ const DiceRollRng: React.FC = () => {
 		<FeatureOptionItemContainerLayout>
 			<FeatureHeader>{rngs_DiceRoll.name}</FeatureHeader>
 			<InputSpecsContainer>
-				<Card className="w-full md:w-fit h-full">
-					<CardHeader>Dice Specifications</CardHeader>
-					<CardBody className="flex flex-col gap-4 w-full">
-						<div className="flex flex-col md:flex-row gap-4 w-full">
-							<Select
-								aria-label="Options for how many sides the dice will have when rolling."
-								label="Number of Sides to the Dice"
-								selectedKeys={[numSides]}
-								onSelectionChange={(e) =>
-									setNumSides(e.currentKey ?? "8")
-								}
-								variant="bordered"
-								className="w-full min-w-[250px]"
-							>
-								<SelectItem key={"4"}>4-Sided Die</SelectItem>
-								<SelectItem key={"6"}>6-Sided Die</SelectItem>
-								<SelectItem key={"8"}>8-Sided Die</SelectItem>
-								<SelectItem key={"10"}>10-Sided Die</SelectItem>
-								<SelectItem key={"12"}>12-Sided Die</SelectItem>
-								<SelectItem key={"20"}>20-Sided Die</SelectItem>
-							</Select>
-							<NumberInput
-								value={numDice}
-								onValueChange={setNumDice}
-								label="Number of Dice to Roll"
-								description="Any number between 1 and 10,000"
-								variant="bordered"
-								minValue={1}
-								maxValue={10_000}
-								className="w-full min-w-[250px]"
-							/>
-						</div>
-						<Checkbox
-							isSelected={isFormatAsArray}
-							onValueChange={setIsFormatAsArray}
-							color="secondary"
-							aria-label="Controls whether the results should be returned as an array."
-						>
-							Return results as an array
-						</Checkbox>
-						<div className="flex flex-row gap-2 justify-end">
-							<Button
-								color="primary"
-								className="w-fit"
-								onPress={() => handleRoll()}
-							>
-								Roll
-							</Button>
-							<Button
-								isIconOnly
-								isDisabled={!output}
-								title="Copy output"
-								startContent={
-									<DuplicateDocumentIcon size={18} />
-								}
-								color="secondary"
-								onPress={handleCopyOutput}
-							/>
-						</div>
-						{error && (
-							<Alert
-								color="danger"
-								title="Invalid Input"
-								className="max-h-fit"
-								description={error}
-							/>
-						)}
-					</CardBody>
-				</Card>
-			</InputSpecsContainer>
-			<Card className="w-full h-full">
-				<CardHeader>Output Dice Roll</CardHeader>
-				<CardBody>
-					<HighlightSyntax
-						showLineNumbers={true}
-						language="number"
-						wrapLongLines={true}
+				<ToolCard
+					title="Dice Specifications"
+					className="h-full w-full md:w-fit"
+				>
+					<div className="flex w-full flex-col gap-4 md:flex-row">
+						<OptionSelect
+							label="Number of Sides to the Dice"
+							options={dieOptions}
+							value={numSides}
+							onChange={setNumSides}
+							className="min-w-[250px]"
+						/>
+						<NumberOption
+							label="Number of Dice to Roll"
+							description="Any number between 1 and 10,000"
+							value={numDice}
+							onChange={setNumDice}
+							minValue={1}
+							maxValue={10_000}
+							className="min-w-[250px]"
+						/>
+					</div>
+					<CheckboxOption
+						isSelected={isFormatAsArray}
+						onChange={setIsFormatAsArray}
 					>
-						{output}
-					</HighlightSyntax>
-				</CardBody>
-			</Card>
+						Return results as an array
+					</CheckboxOption>
+					<div className="flex flex-row justify-end gap-2">
+						<Button onPress={() => handleRoll()}>Roll</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
+						/>
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				title="Output Dice Roll"
+				language="number"
+				output={output}
+				wrapLongLines={true}
+			/>
 		</FeatureOptionItemContainerLayout>
 	);
 };

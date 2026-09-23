@@ -1,20 +1,22 @@
+"use client";
+
 import { useState } from "react";
-import { Card, CardHeader, CardBody } from "@heroui/card";
-import { Textarea } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { addToast } from "@heroui/toast";
-import { Alert } from "@heroui/alert";
-import { Button } from "@heroui/button";
-import HighlightSyntax from "@/components/common/syntaxHighlighter";
-import { DuplicateDocumentIcon } from "@/components/common/icons";
-import { copyToClipboard, escapeJson, unescapeJson } from "@/utils/textUtils";
-import FeatureHeader from "@/components/features/featureHeader";
+import { Button } from "@heroui/react";
 import { escapers_Json } from "@/config/features";
-import { useDisclosure } from "@heroui/modal";
-import FullScreen from "@/components/features/fullScreen.Modal";
-import FullScreenButton from "@/components/common/fullScreenButton";
+import { escapeJson, unescapeJson } from "@/utils/textUtils";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import FeatureOptionItemContainerLayout from "@/layouts/featureOptionItemContainerLayout";
+import CopyButton from "@/components/common/copyButton";
+import FeatureHeader from "../featureHeader";
 import InputSpecsContainer from "../inputSpecsContainer";
+import ToolCard from "../toolCard";
+import CodeInput from "../codeInput";
+import CodeOutputCard from "../codeOutputCard";
+import ErrorAlert from "../errorAlert";
+import OptionSelect, {
+	IndentationOption,
+	indentationOptions,
+} from "../optionSelect";
 
 //----------------------------------------------------------------------------------------
 //Create Component
@@ -23,11 +25,11 @@ const JsonEscaper: React.FC = () => {
 	//------------------------------------------------------------------------------------
 	//Variables
 	//------------------------------------------------------------------------------------
-	const [indentation, setIndentation] = useState<string>("tab");
+	const [indentation, setIndentation] = useState<IndentationOption>("tab");
 	const [error, setError] = useState<string | null>(null);
 	const [input, setInput] = useState<string>("");
 	const [output, setOutput] = useState<string>("");
-	const fullScreenDisclosure = useDisclosure();
+	const copy = useCopyToClipboard();
 
 	//------------------------------------------------------------------------------------
 	//Handle Formatting the Input String
@@ -68,144 +70,68 @@ const JsonEscaper: React.FC = () => {
 		}
 	};
 
-	//------------------------------------------------------------------------------------
-	//Handle Copying the Text to the Clipboard
-	//------------------------------------------------------------------------------------
-	const handleCopyOutput = async (): Promise<void> => {
-		const isSuccess: boolean = await copyToClipboard(output);
-
-		if (isSuccess) {
-			addToast({
-				color: "success",
-				title: "Success",
-				description: "Successfully copied text to clipboard.",
-			});
-		} else {
-			addToast({
-				color: "danger",
-				title: "Error Occurred",
-				description:
-					"There was an error when attempting to save the text to the clipboard.",
-			});
-		}
-	};
+	const handleCopyOutput = (): Promise<void> => copy(output);
 
 	//------------------------------------------------------------------------------------
 	//Return
 	//------------------------------------------------------------------------------------
 	return (
-		<>
-			<FeatureOptionItemContainerLayout>
-				<FeatureHeader>{escapers_Json.name}</FeatureHeader>
-				<InputSpecsContainer>
-					<Card className="w-full min-h-[200px]">
-						<CardHeader>Input JSON</CardHeader>
-						<CardBody>
-							<Textarea
-								disableAnimation
-								classNames={{
-									base: "!h-full",
-									inputWrapper: "!h-full",
-									innerWrapper: "!h-full",
-									input: "!h-full",
-								}}
-								aria-label="Container for the raw text input"
-								value={input}
-								onValueChange={setInput}
-								placeholder={`{"employeeId": 1234, "name": {"first": "Data", "last": "Formatters"}}`}
-							/>
-						</CardBody>
-					</Card>
-					<Card className="min-w-fit h-full">
-						<CardHeader>Formatting Specifications</CardHeader>
-						<CardBody className="flex flex-gap gap-4">
-							<Select
-								aria-label="Options for how to format the JSON output."
-								label="JSON Output Indentation"
-								selectedKeys={[indentation]}
-								onSelectionChange={(e) =>
-									setIndentation(e.currentKey ?? "tab")
-								}
-								variant="bordered"
-							>
-								<SelectItem key={"2"}>2 spaces</SelectItem>
-								<SelectItem key={"4"}>4 spaces</SelectItem>
-								<SelectItem key={"tab"}>Tab</SelectItem>
-								<SelectItem key={"compact"}>Compact</SelectItem>
-							</Select>
-							<div className="flex flex-row gap-2 justify-end w-fit">
-								<Button
-									color="default"
-									onPress={() => {
-										setInput("");
-										setOutput("");
-										setError(null);
-									}}
-								>
-									Clear Input
-								</Button>
-								<Button
-									color="secondary"
-									variant="flat"
-									className="w-fit"
-									onPress={() => handleFormat(input, false)}
-								>
-									Unescape
-								</Button>
-								<Button
-									color="primary"
-									className="w-fit"
-									onPress={() => handleFormat(input, true)}
-								>
-									Escape
-								</Button>
-								<Button
-									isIconOnly
-									isDisabled={!output}
-									title="Copy output"
-									startContent={
-										<DuplicateDocumentIcon size={18} />
-									}
-									color="secondary"
-									onPress={handleCopyOutput}
-								/>
-							</div>
-							{error && (
-								<Alert
-									color="danger"
-									title="Invalid Input"
-									className="max-h-fit"
-									description={error}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</InputSpecsContainer>
-				<Card className="w-full h-full">
-					<CardHeader className="flex flex-row w-full items-start justify-between">
-						<span>Output JSON</span>
-						<FullScreenButton
-							onPress={fullScreenDisclosure.onOpenChange}
+		<FeatureOptionItemContainerLayout>
+			<FeatureHeader>{escapers_Json.name}</FeatureHeader>
+			<InputSpecsContainer>
+				<ToolCard title="Input JSON" className="min-h-[200px] w-full">
+					<CodeInput
+						value={input}
+						onChange={setInput}
+						placeholder={`{"employeeId": 1234, "name": {"first": "Data", "last": "Formatters"}}`}
+					/>
+				</ToolCard>
+				<ToolCard
+					title="Formatting Specifications"
+					className="h-full min-w-fit"
+				>
+					<OptionSelect
+						label="JSON Output Indentation"
+						options={indentationOptions}
+						value={indentation}
+						onChange={setIndentation}
+					/>
+					<div className="flex flex-row justify-end gap-2">
+						<Button
+							variant="tertiary"
+							onPress={() => {
+								setInput("");
+								setOutput("");
+								setError(null);
+							}}
+						>
+							Clear Input
+						</Button>
+						<Button
+							variant="secondary"
+							onPress={() => handleFormat(input, false)}
+						>
+							Unescape
+						</Button>
+						<Button onPress={() => handleFormat(input, true)}>
+							Escape
+						</Button>
+						<CopyButton
+							isDisabled={!output}
+							onPress={handleCopyOutput}
 						/>
-					</CardHeader>
-					<CardBody>
-						<HighlightSyntax showLineNumbers={true} language="json">
-							{output}
-						</HighlightSyntax>
-					</CardBody>
-				</Card>
-			</FeatureOptionItemContainerLayout>
-			<FullScreen
-				isOpen={fullScreenDisclosure.isOpen}
-				onOpenChange={fullScreenDisclosure.onOpenChange}
-				onClose={fullScreenDisclosure.onClose}
+					</div>
+					<ErrorAlert error={error} />
+				</ToolCard>
+			</InputSpecsContainer>
+			<CodeOutputCard
+				allowFullScreen
+				title="Output JSON"
+				language="json"
+				output={output}
 				onCopy={handleCopyOutput}
-			>
-				<HighlightSyntax showLineNumbers={true} language="json">
-					{output}
-				</HighlightSyntax>
-			</FullScreen>
-		</>
+			/>
+		</FeatureOptionItemContainerLayout>
 	);
 };
 
